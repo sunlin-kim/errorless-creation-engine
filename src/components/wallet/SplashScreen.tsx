@@ -30,14 +30,12 @@ export function SplashScreen() {
       style={{ opacity: fading ? 0 : 1 }}
       aria-hidden="true"
     >
-      {/* Radial green gradient pulse */}
-      <div className="splash-gradient-bg" />
-
-      {/* Logo */}
+      {/* Logo (screen blend lets the image's own dark backdrop merge with the page background) */}
       <img
         src={splashLogo}
         alt=""
         className="splash-logo relative z-10 w-[78%] max-w-[420px] select-none"
+        style={{ mixBlendMode: "screen" }}
         draggable={false}
       />
 
