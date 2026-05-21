@@ -71,9 +71,9 @@ export async function encryptString(
   const key = await deriveKey(password, salt, PBKDF2_ITERATIONS);
   const ciphertext = new Uint8Array(
     await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
+      { name: "AES-GCM", iv: iv as BufferSource },
       key,
-      new TextEncoder().encode(plaintext),
+      new TextEncoder().encode(plaintext) as BufferSource,
     ),
   );
   const combined = new Uint8Array(salt.length + iv.length + ciphertext.length);
@@ -100,9 +100,9 @@ export async function decryptString(
   const key = await deriveKey(password, salt, payload.iterations);
   try {
     const plain = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv },
+      { name: "AES-GCM", iv: iv as BufferSource },
       key,
-      ciphertext,
+      ciphertext as BufferSource,
     );
     return new TextDecoder().decode(plain);
   } catch {
