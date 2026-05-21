@@ -76,6 +76,7 @@ async function copyText(text: string): Promise<boolean> {
 }
 
 function ReceivePage() {
+  const t = useT();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
@@ -94,8 +95,8 @@ function ReceivePage() {
       .then((a) =>
         setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol }),
       )
-      .catch(() => toast.error("주소 파생 실패"));
-  }, [mnemonic, network]);
+      .catch(() => toast.error(t("wallet.derivFailed")));
+  }, [mnemonic, network, t]);
 
   if (!mnemonic) {
     return (
