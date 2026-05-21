@@ -13,6 +13,7 @@ import { useAutoLock } from "@/lib/wallet/autolock";
 import { loadUnlockedMnemonic } from "@/lib/wallet/session";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useEffect } from "react";
+import { SplashScreen } from "@/components/wallet/SplashScreen";
 
 function NotFoundComponent() {
   return (
@@ -160,6 +161,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SplashScreen />
       <Outlet />
     </QueryClientProvider>
   );
