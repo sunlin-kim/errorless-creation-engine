@@ -45,8 +45,7 @@ function toChecksumAddress(addrLower: string): string {
 }
 
 function ethAddressFromPubkey(compressedPub: Uint8Array): string {
-  // uncompressed pubkey without 0x04 prefix
-  const point = secp256k1.Point.fromHex(compressedPub);
+  const point = secp256k1.Point.fromBytes(compressedPub);
   const uncompressed = point.toBytes(false); // 65 bytes, leading 0x04
   const hash = keccak_256(uncompressed.slice(1));
   const addr = toHex(hash.slice(-20));
