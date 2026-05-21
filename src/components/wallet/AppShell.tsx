@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SidebarNav } from "./SidebarNav";
+import { BottomNav } from "./BottomNav";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { Bell, Search } from "lucide-react";
@@ -61,8 +62,9 @@ export function AppShell({
           )}
         </header>
 
-        <div className="px-5 lg:px-8 py-6 max-w-6xl mx-auto">{children}</div>
+        <div className="px-5 lg:px-8 py-6 pb-24 lg:pb-6 max-w-6xl mx-auto">{children}</div>
       </main>
+      <BottomNav />
     </div>
   );
 }
