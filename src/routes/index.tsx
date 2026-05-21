@@ -4,6 +4,7 @@ import { BalanceCard } from "@/components/wallet/BalanceCard";
 import { QuickActions } from "@/components/wallet/QuickActions";
 import { AssetRow } from "@/components/wallet/AssetRow";
 import { TxRow } from "@/components/wallet/TxRow";
+import { NewsFeed } from "@/components/wallet/NewsFeed";
 import { assets, transactions, totalKrw } from "@/lib/wallet-data";
 import { ChevronRight, ShieldCheck } from "lucide-react";
 
