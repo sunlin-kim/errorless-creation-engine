@@ -428,7 +428,7 @@ function LiveAssetRow({
   };
   loading: boolean;
 }) {
-  const currency = useWalletStore((s) => s.currency);
+  const fiat = useWalletStore((s) => s.currency);
   const positive = item.change24h >= 0;
   const fiatValue =
     item.balance && item.priceKrw
