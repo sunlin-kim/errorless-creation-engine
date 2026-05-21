@@ -66,30 +66,6 @@ function SettingsPage() {
             )}
           </div>
 
-          <div className="p-3 rounded-xl border border-outline">
-            <div className="flex items-center gap-2">
-              <KeyRound size={14} className="text-on-surface-variant" />
-              <p className="text-sm font-medium">자동 잠금</p>
-            </div>
-            <p className="text-xs text-on-surface-variant mt-0.5">
-              지정한 시간 동안 미사용 시 지갑이 자동으로 잠깁니다.
-            </p>
-            <div className="mt-3 grid grid-cols-5 gap-1.5">
-              {[15, 30, 60, 240, 0].map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setAutoLockMinutes(m)}
-                  className={`h-9 rounded-lg text-xs font-semibold border ${
-                    autoLockMinutes === m
-                      ? "bg-primary text-on-primary border-primary"
-                      : "border-outline bg-surface hover:bg-surface-container"
-                  }`}
-                >
-                  {m === 0 ? "끄기" : m >= 60 ? `${m / 60}시간` : `${m}분`}
-                </button>
-              ))}
-            </div>
-          </div>
 
           <SeedRevealBlock disabled={!vaultPresent} />
 
