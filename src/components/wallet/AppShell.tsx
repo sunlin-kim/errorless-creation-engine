@@ -4,6 +4,7 @@ import { BottomNav } from "./BottomNav";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { Bell, Search } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export function AppShell({
   children,
