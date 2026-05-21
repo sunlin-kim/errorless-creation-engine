@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Send, QrCode, ArrowLeftRight, Sparkles } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const actions = [
   { to: "/send", label: "보내기", icon: Send },
@@ -9,12 +10,14 @@ const actions = [
 ];
 
 export function QuickActions() {
+  const isMobile = useIsMobile();
+
   return (
     <div className="grid grid-cols-4 gap-3">
       {actions.map(({ to, label, icon: Icon }) => (
         <Link
           key={label}
-          to={to}
+          to={isMobile && to === "/activity" ? "/wallet" : to}
           preload="intent"
           className="group flex flex-col items-center gap-2 rounded-2xl border border-outline bg-surface hover:bg-primary-container hover:border-primary/30 transition-colors p-4"
         >

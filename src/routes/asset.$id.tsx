@@ -3,6 +3,7 @@ import { AppShell } from "@/components/wallet/AppShell";
 import { findAsset, fmtKrw, fmtNum, transactions } from "@/lib/wallet-data";
 import { TxRow } from "@/components/wallet/TxRow";
 import { ArrowLeft, Send, QrCode, ArrowLeftRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/asset/$id")({
   component: AssetDetail,
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/asset/$id")({
 
 function AssetDetail() {
   const { id } = Route.useParams();
+  const isMobile = useIsMobile();
   const asset = findAsset(id);
   if (!asset) {
     return (
@@ -64,7 +66,7 @@ function AssetDetail() {
             <div className="mt-5 grid grid-cols-3 gap-3">
               <ActionBtn to="/send" icon={Send} label="보내기" />
               <ActionBtn to="/receive" icon={QrCode} label="받기" />
-              <ActionBtn to="/activity" icon={ArrowLeftRight} label="스왑" />
+              <ActionBtn to={isMobile ? "/wallet" : "/activity"} icon={ArrowLeftRight} label="스왑" />
             </div>
           </section>
 

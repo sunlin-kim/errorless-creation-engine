@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/wallet/AppShell";
@@ -25,6 +25,7 @@ type DirFilter = "all" | "in" | "out";
 
 function ActivityPage() {
   const t = useT();
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
@@ -32,6 +33,10 @@ function ActivityPage() {
   const derived = useDerivedAddresses();
   const [asset, setAsset] = useState<AssetFilter>("all");
   const [dir, setDir] = useState<DirFilter>("all");
+
+  if (isMobile) {
+    return <Navigate to="/" />;
+  }
 
   const addrs = derived ? { eth: derived.eth, btc: derived.btc } : null;
 
