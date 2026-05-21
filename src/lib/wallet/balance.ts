@@ -162,6 +162,7 @@ export interface PriceMap {
   USDT: number;
   BNB: number;
   SOL: number;
+  DUCKY: number;
 }
 
 export interface PricesResult {
