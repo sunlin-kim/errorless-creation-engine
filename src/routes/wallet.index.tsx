@@ -454,7 +454,7 @@ function AddressLine({
   item,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
     networkLabel: string;
     address: string | undefined;
     explorer: string;
