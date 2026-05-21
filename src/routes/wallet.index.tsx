@@ -168,7 +168,7 @@ function WalletInner({
             name={network === "mainnet" ? "Ethereum" : "Sepolia ETH"}
             address={addrs?.eth}
             balance={balancesQ.data?.eth ?? null}
-            priceKrw={balancesQ.data?.prices.ETH ?? 0}
+            priceKrw={balancesQ.data?.prices.prices.ETH ?? 0}
             explorer={`${ep.ethExplorer}/address/${addrs?.eth ?? ""}`}
             loading={balancesQ.isPending}
           />
