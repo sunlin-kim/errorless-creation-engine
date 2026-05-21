@@ -30,6 +30,7 @@ function SettingsPage() {
   const setLanguage = useWalletStore((s) => s.setLanguage);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
 
+  const t = useT();
   const [vaultPresent, setVaultPresent] = useState<boolean>(false);
   useEffect(() => {
     hasVault().then(setVaultPresent);
