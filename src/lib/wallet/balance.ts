@@ -177,7 +177,7 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
   const changeKey = `${vs}_24h_change`;
   try {
     const r = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=${vs}&include_24hr_change=true`,
+      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana,duckyduck&vs_currencies=${vs}&include_24hr_change=true`,
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
     const j = (await r.json()) as Record<string, Record<string, number>>;
