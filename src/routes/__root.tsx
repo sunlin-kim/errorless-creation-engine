@@ -10,6 +10,9 @@ import {
 
 import appCss from "../styles.css?url";
 import { useAutoLock } from "@/lib/wallet/autolock";
+import { loadUnlockedMnemonic } from "@/lib/wallet/session";
+import { useWalletStore } from "@/lib/wallet/store";
+import { useEffect } from "react";
 
 function NotFoundComponent() {
   return (
@@ -128,7 +131,25 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const unlock = useWalletStore((s) => s.unlock);
   useAutoLock();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    loadUnlockedMnemonic()
+      .then((mnemonic) => {
+        if (!cancelled && mnemonic) {
+          unlock(mnemonic);
+        }
+      })
+      .catch(() => {
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [unlock]);
 
   return (
     <QueryClientProvider client={queryClient}>
