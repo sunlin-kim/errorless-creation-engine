@@ -194,7 +194,7 @@ function HistoryRow({ item }: { item: HistoryItem }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <p className="font-medium text-sm">
-            {item.direction === "in" ? "받음" : item.direction === "out" ? "보냄" : "내부 이동"}
+            {item.direction === "in" ? t("activity.dirIn") : item.direction === "out" ? t("activity.dirOut") : t("activity.dirSelf")}
           </p>
           {item.status !== "success" && (
             <span
@@ -204,7 +204,7 @@ function HistoryRow({ item }: { item: HistoryItem }) {
                   : "bg-amber-500/15 text-amber-500"
               }`}
             >
-              {item.status === "failed" ? "실패" : "진행중"}
+              {item.status === "failed" ? t("activity.statusFailed") : t("activity.statusPending")}
             </span>
           )}
         </div>
