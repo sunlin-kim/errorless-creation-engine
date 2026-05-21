@@ -132,7 +132,7 @@ function WalletInner({
     queryKey: ["balances", network, currency, addrs?.eth, addrs?.btc, addrs?.sol],
     queryFn: async () => {
       if (!addrs) throw new Error("no addr");
-      const [eth, btc, usdt, bnb, sol, prices] = await Promise.all([
+      const [eth, btc, usdt, bnb, sol, ducky, prices] = await Promise.all([
         getEthBalance(ep, addrs.eth).catch((e) => {
           console.warn("eth", e);
           return null;
@@ -153,9 +153,13 @@ function WalletInner({
           console.warn("sol", e);
           return null;
         }),
+        getDuckyBalance(ep, addrs.sol).catch((e) => {
+          console.warn("ducky", e);
+          return null;
+        }),
         getPrices(currency),
       ]);
-      return { eth, btc, usdt, bnb, sol, prices };
+      return { eth, btc, usdt, bnb, sol, ducky, prices };
     },
     staleTime: 30_000,
     refetchInterval: 60_000,
