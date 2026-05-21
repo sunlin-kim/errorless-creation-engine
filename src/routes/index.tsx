@@ -20,6 +20,9 @@ function Dashboard() {
           <BalanceCard total={totalKrw()} change={1.74} />
           <QuickActions />
 
+          <NewsFeed />
+
+
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
               <h2 className="text-base font-semibold">보유 자산</h2>
