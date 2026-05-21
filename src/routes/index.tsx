@@ -4,6 +4,7 @@ import { BalanceCard } from "@/components/wallet/BalanceCard";
 import { QuickActions } from "@/components/wallet/QuickActions";
 import { AssetRow } from "@/components/wallet/AssetRow";
 import { TxRow } from "@/components/wallet/TxRow";
+import { NewsFeed } from "@/components/wallet/NewsFeed";
 import { assets, transactions, totalKrw } from "@/lib/wallet-data";
 import { ChevronRight, ShieldCheck } from "lucide-react";
 
@@ -18,6 +19,9 @@ function Dashboard() {
         <div className="lg:col-span-2 space-y-6">
           <BalanceCard total={totalKrw()} change={1.74} />
           <QuickActions />
+
+          <NewsFeed />
+
 
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
