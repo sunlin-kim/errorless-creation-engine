@@ -100,6 +100,7 @@ function WalletInner({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const currency = useWalletStore((s) => s.currency);
   const ep = useMemo(() => getEndpoints(network), [network]);
   const [addrs, setAddrs] = useState<{
     eth: string;
