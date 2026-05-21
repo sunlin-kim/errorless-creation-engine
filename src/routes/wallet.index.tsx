@@ -100,6 +100,7 @@ function WalletInner({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const t = useT();
   const currency = useWalletStore((s) => s.currency);
   const ep = useMemo(() => getEndpoints(network), [network]);
   const [addrs, setAddrs] = useState<{
@@ -118,12 +119,12 @@ function WalletInner({
       })
       .catch((e) => {
         console.error(e);
-        toast.error("주소 파생 실패");
+        toast.error(t("wallet.derivFailed"));
       });
     return () => {
       cancelled = true;
     };
-  }, [mnemonic, network]);
+  }, [mnemonic, network, t]);
 
   const balancesQ = useQuery({
     enabled: !!addrs,
