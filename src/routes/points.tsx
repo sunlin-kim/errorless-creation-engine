@@ -15,9 +15,9 @@ const history = [
 ];
 
 const rewards = [
-  { id: "r1", label: "스타벅스 e-쿠폰", cost: 4500, tag: "HOT" },
-  { id: "r2", label: "거래 수수료 50% 할인권", cost: 3000, tag: "베스트" },
-  { id: "r3", label: "프리미엄 1개월 체험", cost: 8000, tag: "한정" },
+  { id: "r1", label: "휴대폰 구매 포인트", cost: 4500, tag: "HOT" },
+  { id: "r2", label: "레저 · 여행 30% 할인권", cost: 3000, tag: "베스트" },
+  { id: "r3", label: "전기차 충전 포인트", cost: 8000, tag: "한정" },
   { id: "r4", label: "USDT 5달러 전환", cost: 6500 },
 ];
 
@@ -32,7 +32,7 @@ function PointsPage() {
           <div className="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.4),transparent_60%)]" />
           <div className="relative">
             <div className="flex items-center gap-2 text-[11px] tracking-[0.25em] font-semibold text-emerald-100/90 uppercase">
-              <Sparkles size={13} className="text-amber-300" /> Supervizion Points
+              <Sparkles size={13} className="text-amber-300" /> Energy Points
             </div>
             <div className="mt-3 flex items-baseline gap-2">
               <span className="tnum text-4xl sm:text-5xl font-extrabold drop-shadow">
