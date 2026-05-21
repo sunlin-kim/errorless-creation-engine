@@ -116,6 +116,8 @@ export interface PriceMap {
   ETH: number;
   BTC: number;
   USDT: number;
+  BNB: number;
+  SOL: number;
 }
 
 export interface PricesResult {
@@ -126,7 +128,7 @@ export interface PricesResult {
 export async function getPricesKrw(): Promise<PricesResult> {
   try {
     const r = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether&vs_currencies=krw&include_24hr_change=true",
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=krw&include_24hr_change=true",
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
     const j = (await r.json()) as Record<
@@ -138,18 +140,20 @@ export async function getPricesKrw(): Promise<PricesResult> {
         ETH: j.ethereum?.krw ?? 0,
         BTC: j.bitcoin?.krw ?? 0,
         USDT: j.tether?.krw ?? 0,
+        BNB: j.binancecoin?.krw ?? 0,
+        SOL: j.solana?.krw ?? 0,
       },
       changes24h: {
         ETH: j.ethereum?.krw_24h_change ?? 0,
         BTC: j.bitcoin?.krw_24h_change ?? 0,
         USDT: j.tether?.krw_24h_change ?? 0,
+        BNB: j.binancecoin?.krw_24h_change ?? 0,
+        SOL: j.solana?.krw_24h_change ?? 0,
       },
     };
   } catch {
-    return {
-      prices: { ETH: 0, BTC: 0, USDT: 0 },
-      changes24h: { ETH: 0, BTC: 0, USDT: 0 },
-    };
+    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0 };
+    return { prices: zero, changes24h: zero };
   }
 }
 
