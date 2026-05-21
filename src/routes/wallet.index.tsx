@@ -166,7 +166,7 @@ function WalletInner({
     let prev = 0;
     const acc = (b: AssetBalance | null, p: number, ch: number) => {
       if (!b || !p) return;
-      const v = toKrw(b, d.prices.prices);
+      const v = toFiat(b, d.prices.prices);
       total += v;
       prev += v / (1 + ch / 100);
     };
@@ -362,7 +362,7 @@ function LiveBalanceCard({
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
-              {hidden ? "₩ ••••••••" : loading ? "—" : formatKrw(total)}
+              {hidden ? "₩ ••••••••" : loading ? "—" : formatFiat(total)}
             </span>
           </div>
           <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
@@ -432,7 +432,7 @@ function LiveAssetRow({
   const positive = item.change24h >= 0;
   const krw =
     item.balance && item.priceKrw
-      ? toKrw(item.balance, { [item.symbol]: item.priceKrw } as never)
+      ? toFiat(item.balance, { [item.symbol]: item.priceKrw } as never)
       : 0;
   return (
     <div className="flex items-center gap-4 p-3">
@@ -455,7 +455,7 @@ function LiveAssetRow({
       </div>
       <div className="text-right">
         <p className="font-medium tnum text-on-surface">
-          {item.balance && item.priceKrw ? formatKrw(krw) : "—"}
+          {item.balance && item.priceKrw ? formatFiat(krw) : "—"}
         </p>
         <p
           className={`text-xs tnum ${
