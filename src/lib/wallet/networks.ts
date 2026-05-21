@@ -12,6 +12,12 @@ export interface ChainEndpoints {
   btcExplorer: string;
   // USDT (ERC-20) — mainnet only
   usdtContract?: string;
+  // BSC (BNB Smart Chain)
+  bscRpc: string;
+  bscExplorer: string;
+  // Solana JSON-RPC
+  solRpc: string;
+  solExplorer: string;
   label: string;
 }
 
@@ -24,6 +30,10 @@ export function getEndpoints(env: NetworkEnv): ChainEndpoints {
       btcApi: "https://mempool.space/api",
       btcExplorer: "https://mempool.space",
       usdtContract: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      bscRpc: "https://bsc-rpc.publicnode.com",
+      bscExplorer: "https://bscscan.com",
+      solRpc: "https://api.mainnet-beta.solana.com",
+      solExplorer: "https://explorer.solana.com",
       label: "Mainnet",
     };
   }
@@ -33,6 +43,10 @@ export function getEndpoints(env: NetworkEnv): ChainEndpoints {
     ethExplorer: "https://sepolia.etherscan.io",
     btcApi: "https://mempool.space/testnet/api",
     btcExplorer: "https://mempool.space/testnet",
+    bscRpc: "https://bsc-testnet-rpc.publicnode.com",
+    bscExplorer: "https://testnet.bscscan.com",
+    solRpc: "https://api.devnet.solana.com",
+    solExplorer: "https://explorer.solana.com/?cluster=devnet",
     label: "Testnet (Sepolia + BTC testnet)",
   };
 }
