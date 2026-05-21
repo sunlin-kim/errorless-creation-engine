@@ -4,6 +4,7 @@ import { Logo } from "@/components/wallet/Logo";
 import { decryptString } from "@/lib/wallet/crypto";
 import { hasVault, loadVault, deleteVault } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useT } from "@/lib/i18n";
 import { toast } from "sonner";
 import { KeyRound, AlertTriangle } from "lucide-react";
 
