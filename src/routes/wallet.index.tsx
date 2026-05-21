@@ -398,7 +398,7 @@ function LiveAssetRow({
   loading,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
     name: string;
     networkLabel: string;
     balance: AssetBalance | null;
