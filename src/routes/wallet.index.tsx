@@ -259,7 +259,7 @@ function WalletInner({
   }, [balancesQ.data, addrs, network, ep]);
 
   return (
-    <AppShell title="내 지갑" subtitle={`비수탁 · ${ep.label} · 실시간 시세`}>
+    <AppShell title={t("wallet.title")} subtitle={t("wallet.subtitleLive", { label: ep.label })}>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           
@@ -280,9 +280,9 @@ function WalletInner({
 
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold">보유 자산</h2>
+              <h2 className="text-base font-semibold">{t("wallet.holdings")}</h2>
               <span className="text-xs text-on-surface-variant tnum">
-                {items.length}개 · {network === "mainnet" ? "메인넷" : "테스트넷"}
+                {t("wallet.assetsCount", { n: items.length, mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet") })}
               </span>
             </header>
             <div className="divide-y divide-[color:var(--outline)]/40">
@@ -291,7 +291,7 @@ function WalletInner({
               ))}
             </div>
             <p className="mt-4 text-[11px] text-on-surface-variant text-center">
-              잔액은 온체인 RPC·mempool.space, 시세는 CoinGecko에서 실시간 조회됩니다.
+              {t("wallet.dataNote")}
             </p>
           </section>
         </div>
@@ -299,9 +299,9 @@ function WalletInner({
         <aside className="space-y-6">
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="mb-3">
-              <h2 className="text-base font-semibold">받기 주소</h2>
+              <h2 className="text-base font-semibold">{t("wallet.receiveAddrs")}</h2>
               <p className="text-[11px] text-on-surface-variant mt-0.5">
-                체인별 입금 주소 (HD 파생)
+                {t("wallet.receiveAddrsSub")}
               </p>
             </header>
             <div className="space-y-2">
@@ -312,11 +312,7 @@ function WalletInner({
           </section>
 
           <section className="rounded-3xl border border-outline bg-surface p-5 text-xs text-on-surface-variant leading-relaxed">
-            <p>
-              <span className="font-semibold text-on-surface">참고</span> — 현재
-              지원 자산은 BTC, ETH, USDT(ERC-20)입니다. 추가 체인(SOL, MATIC 등)은
-              주소 파생 모듈이 확장되면 자동으로 노출됩니다.
-            </p>
+            <p>{t("wallet.assetsNote")}</p>
           </section>
         </aside>
       </div>
