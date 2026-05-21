@@ -168,30 +168,33 @@ export interface PricesResult {
   changes24h: PriceMap;
 }
 
-export async function getPricesKrw(): Promise<PricesResult> {
+export type FiatCode = "KRW" | "USD";
+
+export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
+  const vs = fiat.toLowerCase();
+  const changeKey = `${vs}_24h_change`;
   try {
     const r = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=krw&include_24hr_change=true",
+      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=${vs}&include_24hr_change=true`,
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
-    const j = (await r.json()) as Record<
-      string,
-      { krw: number; krw_24h_change?: number }
-    >;
+    const j = (await r.json()) as Record<string, Record<string, number>>;
+    const px = (id: string) => j[id]?.[vs] ?? 0;
+    const ch = (id: string) => j[id]?.[changeKey] ?? 0;
     return {
       prices: {
-        ETH: j.ethereum?.krw ?? 0,
-        BTC: j.bitcoin?.krw ?? 0,
-        USDT: j.tether?.krw ?? 0,
-        BNB: j.binancecoin?.krw ?? 0,
-        SOL: j.solana?.krw ?? 0,
+        ETH: px("ethereum"),
+        BTC: px("bitcoin"),
+        USDT: px("tether"),
+        BNB: px("binancecoin"),
+        SOL: px("solana"),
       },
       changes24h: {
-        ETH: j.ethereum?.krw_24h_change ?? 0,
-        BTC: j.bitcoin?.krw_24h_change ?? 0,
-        USDT: j.tether?.krw_24h_change ?? 0,
-        BNB: j.binancecoin?.krw_24h_change ?? 0,
-        SOL: j.solana?.krw_24h_change ?? 0,
+        ETH: ch("ethereum"),
+        BTC: ch("bitcoin"),
+        USDT: ch("tether"),
+        BNB: ch("binancecoin"),
+        SOL: ch("solana"),
       },
     };
   } catch {
@@ -200,17 +203,30 @@ export async function getPricesKrw(): Promise<PricesResult> {
   }
 }
 
-export function toKrw(b: AssetBalance, prices: PriceMap): number {
+/** @deprecated use getPrices("KRW") */
+export const getPricesKrw = () => getPrices("KRW");
+
+export function toFiat(b: AssetBalance, prices: PriceMap): number {
   const price = prices[b.symbol] ?? 0;
   if (price === 0) return 0;
   const base = 10n ** BigInt(b.decimals);
-  // bigint → number 변환 (지갑 잔액은 충분히 작음)
   const whole = Number(b.raw / base);
   const frac = Number(b.raw % base) / Number(base);
   return (whole + frac) * price;
 }
 
-export function formatKrw(n: number): string {
-  if (!Number.isFinite(n) || n === 0) return "₩0";
-  return "₩" + Math.round(n).toLocaleString("ko-KR");
+/** @deprecated use toFiat */
+export const toKrw = toFiat;
+
+export function formatFiat(n: number, fiat: FiatCode = "KRW"): string {
+  if (!Number.isFinite(n)) return fiat === "KRW" ? "₩0" : "$0";
+  if (fiat === "KRW") {
+    if (n === 0) return "₩0";
+    return "₩" + Math.round(n).toLocaleString("ko-KR");
+  }
+  if (n === 0) return "$0.00";
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+/** @deprecated use formatFiat(n, "KRW") */
+export const formatKrw = (n: number) => formatFiat(n, "KRW");

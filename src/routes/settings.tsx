@@ -23,12 +23,22 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
+  const currency = useWalletStore((s) => s.currency);
+  const language = useWalletStore((s) => s.language);
+  const setCurrency = useWalletStore((s) => s.setCurrency);
+  const setLanguage = useWalletStore((s) => s.setLanguage);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
 
   const [vaultPresent, setVaultPresent] = useState<boolean>(false);
   useEffect(() => {
     hasVault().then(setVaultPresent);
   }, [mnemonic]);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   return (
     <AppShell title="설정" subtitle="보안 · 통화 · 법적 고지">
@@ -92,9 +102,25 @@ function SettingsPage() {
         </Card>
 
         <Card title="지역 및 통화" icon={Globe}>
-          <Select label="기본 통화" value="KRW (대한민국 원)" />
-          <Select label="언어" value="한국어 (Korean)" />
-          <Select label="시간대" value="Asia/Seoul (UTC+9)" />
+          <SelectField
+            label="기본 통화"
+            value={currency}
+            onChange={(v) => setCurrency(v as "KRW" | "USD")}
+            options={[
+              { value: "KRW", label: "KRW (대한민국 원)" },
+              { value: "USD", label: "USD (US Dollar)" },
+            ]}
+          />
+          <SelectField
+            label="언어"
+            value={language}
+            onChange={(v) => setLanguage(v as "ko" | "en")}
+            options={[
+              { value: "ko", label: "한국어 (Korean)" },
+              { value: "en", label: "English" },
+            ]}
+          />
+          <StaticField label="시간대" value="Asia/Seoul (UTC+9)" />
         </Card>
 
         <Card title="법적 고지" icon={FileText}>
@@ -274,14 +300,43 @@ function Card({
   );
 }
 
-function Select({ label, value }: { label: string; value: string }) {
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
   return (
-    <button className="w-full flex items-center justify-between p-3 rounded-xl border border-outline hover:bg-surface-container">
+    <label className="w-full block p-3 rounded-xl border border-outline hover:bg-surface-container cursor-pointer">
+      <p className="text-xs text-on-surface-variant">{label}</p>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full bg-transparent text-sm font-medium outline-none cursor-pointer"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value} className="bg-surface text-on-surface">
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function StaticField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="w-full flex items-center justify-between p-3 rounded-xl border border-outline">
       <div className="text-left">
         <p className="text-xs text-on-surface-variant">{label}</p>
         <p className="text-sm font-medium mt-0.5">{value}</p>
       </div>
-      <ChevronRight size={16} className="text-on-surface-variant" />
-    </button>
+      <ChevronRight size={16} className="text-on-surface-variant opacity-40" />
+    </div>
   );
 }

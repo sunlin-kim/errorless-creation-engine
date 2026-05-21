@@ -12,9 +12,9 @@ import {
   getUsdtBalance,
   getBnbBalance,
   getSolBalance,
-  getPricesKrw,
-  toKrw,
-  formatKrw,
+  getPrices,
+  toFiat,
+  formatFiat,
   type AssetBalance,
 } from "@/lib/wallet/balance";
 import {
@@ -100,6 +100,7 @@ function WalletInner({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const currency = useWalletStore((s) => s.currency);
   const ep = useMemo(() => getEndpoints(network), [network]);
   const [addrs, setAddrs] = useState<{
     eth: string;
@@ -126,7 +127,7 @@ function WalletInner({
 
   const balancesQ = useQuery({
     enabled: !!addrs,
-    queryKey: ["balances", network, addrs?.eth, addrs?.btc, addrs?.sol],
+    queryKey: ["balances", network, currency, addrs?.eth, addrs?.btc, addrs?.sol],
     queryFn: async () => {
       if (!addrs) throw new Error("no addr");
       const [eth, btc, usdt, bnb, sol, prices] = await Promise.all([
@@ -150,7 +151,7 @@ function WalletInner({
           console.warn("sol", e);
           return null;
         }),
-        getPricesKrw(),
+        getPrices(currency),
       ]);
       return { eth, btc, usdt, bnb, sol, prices };
     },
@@ -165,7 +166,7 @@ function WalletInner({
     let prev = 0;
     const acc = (b: AssetBalance | null, p: number, ch: number) => {
       if (!b || !p) return;
-      const v = toKrw(b, d.prices.prices);
+      const v = toFiat(b, d.prices.prices);
       total += v;
       prev += v / (1 + ch / 100);
     };
@@ -343,6 +344,7 @@ function LiveBalanceCard({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const currency = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
   const shortAddr = ethAddr
@@ -361,7 +363,7 @@ function LiveBalanceCard({
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
-              {hidden ? "₩ ••••••••" : loading ? "—" : formatKrw(total)}
+              {hidden ? (currency === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, currency)}
             </span>
           </div>
           <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
@@ -428,10 +430,11 @@ function LiveAssetRow({
   };
   loading: boolean;
 }) {
+  const currency = useWalletStore((s) => s.currency);
   const positive = item.change24h >= 0;
-  const krw =
+  const fiatValue =
     item.balance && item.priceKrw
-      ? toKrw(item.balance, { [item.symbol]: item.priceKrw } as never)
+      ? toFiat(item.balance, { [item.symbol]: item.priceKrw } as never)
       : 0;
   return (
     <div className="flex items-center gap-4 p-3">
@@ -454,7 +457,7 @@ function LiveAssetRow({
       </div>
       <div className="text-right">
         <p className="font-medium tnum text-on-surface">
-          {item.balance && item.priceKrw ? formatKrw(krw) : "—"}
+          {item.balance && item.priceKrw ? formatFiat(fiatValue, currency) : "—"}
         </p>
         <p
           className={`text-xs tnum ${
