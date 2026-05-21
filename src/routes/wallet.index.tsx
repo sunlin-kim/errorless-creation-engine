@@ -362,7 +362,7 @@ function LiveBalanceCard({
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
-              {hidden ? "₩ ••••••••" : loading ? "—" : formatFiat(total)}
+              {hidden ? (currency === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, currency)}
             </span>
           </div>
           <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
