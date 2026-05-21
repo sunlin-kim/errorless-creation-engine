@@ -69,7 +69,13 @@ function SendPage() {
   }
 
   const fromAddress =
-    asset === "BTC" ? addrs?.btc ?? "" : addrs?.eth ?? "";
+    asset === "BTC"
+      ? addrs?.btc ?? ""
+      : asset === "SOL"
+        ? addrs?.sol ?? ""
+        : asset === "BNB"
+          ? addrs?.bnb ?? ""
+          : addrs?.eth ?? "";
 
   function validateAddress(): string | null {
     const v = to.trim();
@@ -79,18 +85,28 @@ function SendPage() {
       if (isMain && !/^(bc1|1|3)/.test(v)) return "유효한 BTC 주소가 아닙니다";
       if (!isMain && !/^(tb1|m|n|2)/.test(v))
         return "유효한 BTC 테스트넷 주소가 아닙니다";
+    } else if (asset === "SOL") {
+      if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v))
+        return "유효한 Solana 주소가 아닙니다";
     } else {
+      // ETH / USDT / BNB
       if (!/^0x[0-9a-fA-F]{40}$/.test(v)) return "유효한 EVM 주소가 아닙니다";
     }
     return null;
+  }
+
+  function decimalsFor(a: Asset): number {
+    if (a === "BTC") return 8;
+    if (a === "USDT") return 6;
+    if (a === "SOL") return 9;
+    return 18; // ETH, BNB
   }
 
   async function onSend() {
     const addrErr = validateAddress();
     if (addrErr) return toast.error(addrErr);
     try {
-      const decimals = asset === "BTC" ? 8 : asset === "USDT" ? 6 : 18;
-      parseUnits(amount, decimals); // 형식 검증
+      parseUnits(amount, decimalsFor(asset));
     } catch (e) {
       return toast.error(e instanceof Error ? e.message : "금액 오류");
     }
@@ -106,16 +122,27 @@ function SendPage() {
     setTxid(null);
     let priv: Uint8Array | null = null;
     let btcPub: Uint8Array | null = null;
+    let solPriv: Uint8Array | null = null;
     try {
       const keys = await derivePrivateKeys(mnemonic!, network);
-      priv = asset === "BTC" ? keys.btcPriv : keys.ethPriv;
       btcPub = keys.btcPub;
+      solPriv = keys.solPriv;
+      priv =
+        asset === "BTC"
+          ? keys.btcPriv
+          : asset === "SOL"
+            ? keys.solPriv
+            : keys.ethPriv; // ETH / USDT / BNB
 
       let id: string;
       if (asset === "ETH") {
         id = await sendEth(ep, fromAddress, to.trim(), amount, priv);
       } else if (asset === "USDT") {
         id = await sendUsdt(ep, fromAddress, to.trim(), amount, priv);
+      } else if (asset === "BNB") {
+        id = await sendBnb(ep, fromAddress, to.trim(), amount, priv);
+      } else if (asset === "SOL") {
+        id = await sendSol(ep, fromAddress, to.trim(), amount, priv);
       } else {
         id = await sendBtc(ep, fromAddress, btcPub, to.trim(), amount, priv);
       }
@@ -125,18 +152,24 @@ function SendPage() {
       console.error(e);
       toast.error(e instanceof Error ? e.message : "전송 실패");
     } finally {
-      // 메모리에서 개인키 제거 시도
       if (priv) priv.fill(0);
+      if (solPriv && solPriv !== priv) solPriv.fill(0);
       priv = null;
       btcPub = null;
+      solPriv = null;
       setBusy(false);
     }
   }
 
   const explorerUrl =
-    txid && (asset === "BTC"
+    txid &&
+    (asset === "BTC"
       ? `${ep.btcExplorer}/tx/${txid}`
-      : `${ep.ethExplorer}/tx/${txid}`);
+      : asset === "SOL"
+        ? `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}tx/${txid}`
+        : asset === "BNB"
+          ? `${ep.bscExplorer}/tx/${txid}`
+          : `${ep.ethExplorer}/tx/${txid}`);
 
   const usdtUnavailable = asset === "USDT" && !ep.usdtContract;
 
