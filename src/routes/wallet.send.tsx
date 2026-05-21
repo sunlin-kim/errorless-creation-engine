@@ -186,8 +186,8 @@ function SendPage() {
         <section className="rounded-3xl border border-outline bg-surface p-5 space-y-4">
           <div>
             <p className="text-xs text-on-surface-variant mb-2">자산 선택</p>
-            <div className="grid grid-cols-3 gap-2">
-              {(["ETH", "USDT", "BTC"] as Asset[]).map((a) => (
+            <div className="grid grid-cols-5 gap-2">
+              {(["ETH", "USDT", "BTC", "BNB", "SOL"] as Asset[]).map((a) => (
                 <button
                   key={a}
                   onClick={() => setAsset(a)}
