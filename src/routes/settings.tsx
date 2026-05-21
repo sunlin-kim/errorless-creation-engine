@@ -23,12 +23,22 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
+  const currency = useWalletStore((s) => s.currency);
+  const language = useWalletStore((s) => s.language);
+  const setCurrency = useWalletStore((s) => s.setCurrency);
+  const setLanguage = useWalletStore((s) => s.setLanguage);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
 
   const [vaultPresent, setVaultPresent] = useState<boolean>(false);
   useEffect(() => {
     hasVault().then(setVaultPresent);
   }, [mnemonic]);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   return (
     <AppShell title="설정" subtitle="보안 · 통화 · 법적 고지">
