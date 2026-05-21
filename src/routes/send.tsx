@@ -204,7 +204,7 @@ function SendPage() {
                   뒤로
                 </button>
                 <button
-                  onClick={() => nav({ to: "/activity" })}
+                  onClick={() => nav({ to: "/wallet" })}
                   className="flex-1 h-12 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-95 inline-flex items-center justify-center gap-2"
                 >
                   <Check size={16} /> 송금 실행
