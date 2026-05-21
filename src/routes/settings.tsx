@@ -15,6 +15,7 @@ import { useWalletStore } from "@/lib/wallet/store";
 import { loadVault, deleteVault, hasVault } from "@/lib/wallet/vault";
 import { decryptString } from "@/lib/wallet/crypto";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
