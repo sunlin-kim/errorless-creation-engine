@@ -7,6 +7,7 @@ import { saveVault, hasVault, markBackupConfirmed } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
 import { AlertTriangle, Check, Copy, Eye, EyeOff, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/wallet/setup")({
   component: SetupPage,
