@@ -171,18 +171,18 @@ function SendPage() {
   const usdtUnavailable = asset === "USDT" && !ep.usdtContract;
 
   return (
-    <AppShell title="송금" subtitle={`비수탁 · ${ep.label}`}>
+    <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitle", { label: ep.label })}>
       <div className="mx-auto max-w-xl space-y-5">
         <button
           onClick={() => navigate({ to: "/wallet" })}
           className="inline-flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-on-surface"
         >
-          <ArrowLeft size={14} /> 지갑으로
+          <ArrowLeft size={14} /> {tr("wsend.back")}
         </button>
 
         <section className="rounded-3xl border border-outline bg-surface p-5 space-y-4">
           <div>
-            <p className="text-xs text-on-surface-variant mb-2">자산 선택</p>
+            <p className="text-xs text-on-surface-variant mb-2">{tr("wsend.assetPick")}</p>
             <div className="grid grid-cols-5 gap-2">
               {(["ETH", "USDT", "BTC", "BNB", "SOL"] as Asset[]).map((a) => (
                 <button
@@ -200,20 +200,20 @@ function SendPage() {
             </div>
             {usdtUnavailable && (
               <p className="mt-2 text-[11px] text-amber-500">
-                USDT는 메인넷에서만 전송할 수 있습니다.
+                {tr("wsend.usdtMainnetOnly")}
               </p>
             )}
           </div>
 
           <div>
-            <label className="text-xs text-on-surface-variant">보내는 주소</label>
+            <label className="text-xs text-on-surface-variant">{tr("wsend.fromAddr")}</label>
             <code className="block mt-1 text-[11px] font-mono bg-surface-container rounded-lg px-2.5 py-2 truncate">
               {fromAddress || "—"}
             </code>
           </div>
 
           <div>
-            <label className="text-xs text-on-surface-variant">받는 주소</label>
+            <label className="text-xs text-on-surface-variant">{tr("wsend.toAddr")}</label>
             <input
               value={to}
               onChange={(e) => setTo(e.target.value)}
@@ -223,7 +223,7 @@ function SendPage() {
                     ? "bc1..."
                     : "tb1..."
                   : asset === "SOL"
-                    ? "Solana 주소 (base58)"
+                    ? "Solana address (base58)"
                     : "0x..."
               }
               className="mt-1 w-full h-10 rounded-lg border border-outline bg-surface-container px-3 text-sm font-mono"
@@ -232,7 +232,7 @@ function SendPage() {
 
           <div>
             <label className="text-xs text-on-surface-variant">
-              금액 ({asset})
+              {tr("wsend.amount", { asset })}
             </label>
             <input
               value={amount}
@@ -247,8 +247,7 @@ function SendPage() {
             <div className="flex gap-2 rounded-lg border border-red-500/40 bg-red-500/5 p-3">
               <AlertTriangle size={16} className="text-red-500 shrink-0" />
               <p className="text-[11px] text-on-surface-variant leading-relaxed">
-                메인넷 전송은 즉시 확정되며 되돌릴 수 없습니다. 주소·금액을
-                반드시 두 번 이상 확인하세요.
+                {tr("wsend.mainnetWarn")}
               </p>
             </div>
           )}
@@ -259,12 +258,12 @@ function SendPage() {
             className="w-full h-11 rounded-lg bg-primary text-on-primary font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <Send size={14} />
-            {busy ? "전송 중..." : "전송"}
+            {busy ? tr("wsend.sending") : tr("wsend.send")}
           </button>
 
           {txid && explorerUrl && (
             <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/5 p-3">
-              <p className="text-xs font-semibold text-emerald-500">전송 완료</p>
+              <p className="text-xs font-semibold text-emerald-500">{tr("wsend.success")}</p>
               <a
                 href={explorerUrl}
                 target="_blank"
