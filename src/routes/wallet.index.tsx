@@ -178,7 +178,7 @@ function WalletInner({
               name="Tether USD (ERC-20)"
               address={addrs?.eth}
               balance={balancesQ.data?.usdt ?? null}
-              priceKrw={balancesQ.data?.prices.USDT ?? 0}
+              priceKrw={balancesQ.data?.prices.prices.USDT ?? 0}
               explorer={`${ep.ethExplorer}/token/${ep.usdtContract}?a=${addrs?.eth ?? ""}`}
               loading={balancesQ.isPending}
             />
