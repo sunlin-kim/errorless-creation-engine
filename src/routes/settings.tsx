@@ -85,7 +85,7 @@ function SettingsPage() {
                       : "border-outline bg-surface hover:bg-surface-container"
                   }`}
                 >
-                  {m === 0 ? "끄기" : `${m}분`}
+                  {m === 0 ? "끄기" : m >= 60 ? `${m / 60}시간` : `${m}분`}
                 </button>
               ))}
             </div>
