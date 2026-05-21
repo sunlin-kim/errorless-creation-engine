@@ -190,6 +190,7 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
         USDT: px("tether"),
         BNB: px("binancecoin"),
         SOL: px("solana"),
+        DUCKY: px("duckyduck"),
       },
       changes24h: {
         ETH: ch("ethereum"),
