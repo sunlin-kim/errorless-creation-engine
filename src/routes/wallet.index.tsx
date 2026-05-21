@@ -342,6 +342,8 @@ function LiveBalanceCard({
   setNetwork: (n: Net) => void;
 }) {
   const currency = useWalletStore((s) => s.currency);
+  const t = useT();
+  const currency = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
   const shortAddr = ethAddr
@@ -356,7 +358,7 @@ function LiveBalanceCard({
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs tracking-[0.25em] text-white/70 uppercase">
-            Total Balance · 총 자산 (실시간)
+            {t("wallet.totalBalance")}
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
@@ -378,14 +380,14 @@ function LiveBalanceCard({
           <button
             onClick={onRefresh}
             disabled={isFetching}
-            aria-label="새로고침"
+            aria-label={t("wallet.refresh")}
             className="h-9 w-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 disabled:opacity-50 transition-colors"
           >
             <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
           </button>
           <button
             onClick={() => setHidden((h) => !h)}
-            aria-label="잔액 숨기기"
+            aria-label={t("wallet.hideBalance")}
             className="h-9 w-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 transition-colors"
           >
             {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -395,9 +397,9 @@ function LiveBalanceCard({
 
       <div className="relative mt-7 grid grid-cols-3 gap-3 text-xs">
         {[
-          { label: "지갑 주소 (ETH)", value: shortAddr },
-          { label: "활성 자산", value: `${chains} chains` },
-          { label: "모드", value: network === "mainnet" ? "Mainnet" : "Testnet" },
+          { label: t("wallet.ethAddr"), value: shortAddr },
+          { label: t("wallet.activeAssets"), value: `${chains} ${t("wallet.chains")}` },
+          { label: t("wallet.mode"), value: network === "mainnet" ? "Mainnet" : "Testnet" },
         ].map((s) => (
           <div
             key={s.label}
