@@ -1,6 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
+  Home,
+  Wallet,
+  Gem,
   Send,
   QrCode,
   Activity,
@@ -10,7 +12,9 @@ import {
 import { Logo } from "./Logo";
 
 const items = [
-  { to: "/", label: "대시보드", icon: LayoutDashboard },
+  { to: "/", label: "홈", icon: Home },
+  { to: "/wallet", label: "내 지갑", icon: Wallet },
+  { to: "/points", label: "포인트", icon: Gem },
   { to: "/send", label: "보내기", icon: Send },
   { to: "/receive", label: "받기", icon: QrCode },
   { to: "/activity", label: "거래내역", icon: Activity },
