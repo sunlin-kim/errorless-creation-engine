@@ -43,6 +43,8 @@ export function SplashScreen() {
       <img
         src={splashLogo}
         alt=""
+        fetchPriority="high"
+        decoding="sync"
         className="splash-logo relative z-10 w-[78%] max-w-[420px] select-none"
         style={{ mixBlendMode: "screen" }}
         draggable={false}
