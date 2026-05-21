@@ -4,6 +4,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { clearUnlockedMnemonic, saveUnlockedMnemonic } from "./session";
 
 export type NetworkEnv = "testnet" | "mainnet";
 
@@ -35,8 +36,14 @@ export const useWalletStore = create<WalletState>()(
       lastActivity: Date.now(),
 
       setVaultExists: (v) => set({ vaultExists: v }),
-      unlock: (mnemonic) => set({ mnemonic, lastActivity: Date.now() }),
-      lock: () => set({ mnemonic: null }),
+      unlock: (mnemonic) => {
+        void saveUnlockedMnemonic(mnemonic);
+        set({ mnemonic, lastActivity: Date.now() });
+      },
+      lock: () => {
+        void clearUnlockedMnemonic();
+        set({ mnemonic: null });
+      },
       setNetwork: (n) => set({ network: n }),
       setAutoLockMinutes: (m) => set({ autoLockMinutes: Math.max(0, m) }),
       touchActivity: () => set({ lastActivity: Date.now() }),
