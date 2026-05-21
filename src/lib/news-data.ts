@@ -7,8 +7,10 @@ export type NewsItem = {
   source: string;
   publishedAt: string; // ISO
   url: string;
-  thumb?: string; // gradient seed
+  thumb?: string; // gradient seed (fallback)
+  image?: string; // article thumbnail URL
   duration?: string;
+
 };
 
 export const featuredNews: NewsItem[] = [
@@ -26,11 +28,12 @@ export const featuredNews: NewsItem[] = [
     id: "f2",
     type: "news",
     category: "파트너십",
-    title: "Supervizion × 글로벌 결제 네트워크 MOU 체결",
+    title: "태양광 에너지 업체와 전략적 파트너십 체결 (예정)",
     source: "Supervizion Newsroom",
     publishedAt: "2026-05-18T10:00:00+09:00",
-    url: "https://supervizion.io/news/mou",
-    thumb: "from-emerald-700 via-teal-600 to-cyan-500",
+    url: "https://supervizion.io/news/solar-partnership",
+    thumb: "from-amber-400 via-orange-500 to-emerald-600",
+
   },
   {
     id: "f3",
@@ -81,6 +84,7 @@ export const newsFeed: NewsItem[] = [
     source: "한국경제TV",
     publishedAt: "2026-05-19T15:31:00+09:00",
     url: "https://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202605190440&t=NN",
+    image: "https://img.wowtv.co.kr/nrcs/production/images/20260519/20260519_1f8e779a0e0445a2b818cbfa114fb559.png",
     thumb: "from-amber-500 via-orange-500 to-rose-500",
   },
   {
@@ -93,6 +97,7 @@ export const newsFeed: NewsItem[] = [
     source: "국민일보",
     publishedAt: "2025-12-29T11:05:00+09:00",
     url: "https://www.kmib.co.kr/article/view.asp?arcid=0029176445&code=61151111&cp=nv",
+    image: "https://image.kmib.co.kr/online_image/2025/1229/2025122911050274644_1766973902_0029176445.jpg",
     thumb: "from-rose-500 via-red-500 to-amber-500",
   },
   {
@@ -105,6 +110,7 @@ export const newsFeed: NewsItem[] = [
     source: "한국경제",
     publishedAt: "2025-03-05T15:43:00+09:00",
     url: "https://www.hankyung.com/article/2025030531411",
+    image: "https://img.hankyung.com/photo/202503/AA.39709441.1.jpg",
     thumb: "from-emerald-600 to-teal-700",
   },
   {
@@ -117,6 +123,7 @@ export const newsFeed: NewsItem[] = [
     source: "매일경제",
     publishedAt: "2024-02-29T16:20:00+09:00",
     url: "https://www.mk.co.kr/news/business/10954068",
+    image: "https://wimg.mk.co.kr/news/cms/202402/29/news-p.v1.20240229.b48141c209b24c98af0c08af27d47a20_P1.jpg",
     thumb: "from-indigo-600 via-violet-600 to-fuchsia-500",
   },
 ];
