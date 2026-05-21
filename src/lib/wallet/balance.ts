@@ -116,20 +116,38 @@ export interface PriceMap {
   USDT: number;
 }
 
-export async function getPricesKrw(): Promise<PriceMap> {
+export interface PricesResult {
+  prices: PriceMap;
+  changes24h: PriceMap;
+}
+
+export async function getPricesKrw(): Promise<PricesResult> {
   try {
     const r = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether&vs_currencies=krw",
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether&vs_currencies=krw&include_24hr_change=true",
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
-    const j = (await r.json()) as Record<string, { krw: number }>;
+    const j = (await r.json()) as Record<
+      string,
+      { krw: number; krw_24h_change?: number }
+    >;
     return {
-      ETH: j.ethereum?.krw ?? 0,
-      BTC: j.bitcoin?.krw ?? 0,
-      USDT: j.tether?.krw ?? 0,
+      prices: {
+        ETH: j.ethereum?.krw ?? 0,
+        BTC: j.bitcoin?.krw ?? 0,
+        USDT: j.tether?.krw ?? 0,
+      },
+      changes24h: {
+        ETH: j.ethereum?.krw_24h_change ?? 0,
+        BTC: j.bitcoin?.krw_24h_change ?? 0,
+        USDT: j.tether?.krw_24h_change ?? 0,
+      },
     };
   } catch {
-    return { ETH: 0, BTC: 0, USDT: 0 };
+    return {
+      prices: { ETH: 0, BTC: 0, USDT: 0 },
+      changes24h: { ETH: 0, BTC: 0, USDT: 0 },
+    };
   }
 }
 
