@@ -41,10 +41,10 @@ export function AppShell({
             <div className="flex items-center gap-2">
               <div className="hidden md:flex items-center gap-2 h-10 px-3 rounded-full border border-outline bg-surface text-sm text-on-surface-variant w-64">
                 <Search size={14} />
-                <span>자산·주소·트랜잭션 검색</span>
+                <span>{t("nav.search")}</span>
               </div>
               <button
-                aria-label="알림"
+                aria-label={t("nav.notifications")}
                 className="h-10 w-10 rounded-full grid place-items-center border border-outline bg-surface hover:bg-surface-container text-on-surface relative"
               >
                 <Bell size={16} />
