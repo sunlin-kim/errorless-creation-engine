@@ -24,6 +24,7 @@ type AssetFilter = "all" | "ETH" | "USDT" | "BTC";
 type DirFilter = "all" | "in" | "out";
 
 function ActivityPage() {
+  const t = useT();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
