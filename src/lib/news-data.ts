@@ -84,6 +84,7 @@ export const newsFeed: NewsItem[] = [
     source: "한국경제TV",
     publishedAt: "2026-05-19T15:31:00+09:00",
     url: "https://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202605190440&t=NN",
+    image: "https://img.wowtv.co.kr/nrcs/production/images/20260519/20260519_1f8e779a0e0445a2b818cbfa114fb559.png",
     thumb: "from-amber-500 via-orange-500 to-rose-500",
   },
   {
