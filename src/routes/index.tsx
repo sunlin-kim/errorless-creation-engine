@@ -1,19 +1,37 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/wallet/AppShell";
 import { TxRow } from "@/components/wallet/TxRow";
 import { NewsFeed } from "@/components/wallet/NewsFeed";
 import { transactions } from "@/lib/wallet-data";
-import { ChevronRight, ShieldCheck } from "lucide-react";
+import { ChevronRight, ShieldCheck, Wallet, Lock, KeyRound } from "lucide-react";
+import { hasVault } from "@/lib/wallet/vault";
+import { useWalletStore } from "@/lib/wallet/store";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
 function Dashboard() {
+  const [vaultPresent, setVaultPresent] = useState<boolean | null>(null);
+  const mnemonic = useWalletStore((s) => s.mnemonic);
+  const lock = useWalletStore((s) => s.lock);
+
+  useEffect(() => {
+    hasVault().then(setVaultPresent);
+  }, []);
+
+  const isUnlocked = mnemonic !== null;
+
   return (
     <AppShell title="홈" subtitle="Supervizion · See Beyond. Lead Ahead.">
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          <WalletStatusCard
+            vaultPresent={vaultPresent}
+            isUnlocked={isUnlocked}
+            onLock={lock}
+          />
           <NewsFeed />
         </div>
 
