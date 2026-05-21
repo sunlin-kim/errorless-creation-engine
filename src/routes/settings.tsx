@@ -142,6 +142,7 @@ function SettingsPage() {
 }
 
 function SeedRevealBlock({ disabled }: { disabled: boolean }) {
+  const t = useT();
   const [pw, setPw] = useState("");
   const [seed, setSeed] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -156,7 +157,7 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
       setSeed(m);
     } catch (e) {
       const msg = (e as Error).message;
-      toast.error(msg === "WRONG_PASSWORD" ? "비밀번호가 올바르지 않습니다" : "복호화 실패");
+      toast.error(msg === "WRONG_PASSWORD" ? t("settings.wrongPw") : t("settings.decryptFail"));
     } finally {
       setBusy(false);
     }
@@ -173,10 +174,9 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
       <div className="flex items-center gap-2 text-amber-500 text-xs font-semibold tracking-widest">
         <Eye size={14} /> SEED PHRASE
       </div>
-      <p className="mt-1 text-sm font-medium text-on-surface">시드 구문 백업 보기</p>
+      <p className="mt-1 text-sm font-medium text-on-surface">{t("settings.seedTitle")}</p>
       <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
-        누구에게도 공유하지 마세요. 노출되면 자산 전액 손실 위험이 있습니다.
-        조회 시 비밀번호를 한 번 더 확인합니다.
+        {t("settings.seedDesc")}
       </p>
 
       {!open ? (
@@ -185,7 +185,7 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
           onClick={() => setOpen(true)}
           className="mt-3 h-9 px-3 rounded-lg border border-outline text-xs font-semibold disabled:opacity-40"
         >
-          시드 구문 조회
+          {t("settings.seedReveal")}
         </button>
       ) : !seed ? (
         <div className="mt-3 space-y-2">
@@ -194,7 +194,7 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
             value={pw}
             autoFocus
             onChange={(e) => setPw(e.target.value)}
-            placeholder="비밀번호"
+            placeholder={t("settings.password")}
             className="w-full h-10 rounded-lg border border-outline bg-background px-3 text-sm focus:border-primary outline-none"
           />
           <div className="flex gap-2">
@@ -202,14 +202,14 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
               onClick={hide}
               className="flex-1 h-9 rounded-lg border border-outline text-xs"
             >
-              취소
+              {t("settings.cancel")}
             </button>
             <button
               onClick={reveal}
               disabled={busy || pw.length === 0}
               className="flex-1 h-9 rounded-lg bg-primary text-on-primary text-xs font-semibold disabled:opacity-40"
             >
-              {busy ? "확인 중..." : "조회"}
+              {busy ? t("settings.checking") : t("settings.confirm")}
             </button>
           </div>
         </div>
@@ -230,7 +230,7 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
             onClick={hide}
             className="w-full h-9 rounded-lg border border-outline text-xs font-semibold"
           >
-            숨기기
+            {t("settings.hide")}
           </button>
         </div>
       )}
