@@ -144,14 +144,22 @@ function WalletStatusCard({
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-on-surface">지갑이 활성화되었습니다</h3>
           <p className="text-xs text-on-surface-variant mt-1">
-            테스트넷 모드 · Step 2에서 잔액·주소·송금 기능이 활성화됩니다.
+            주소·잔액을 확인하고 네트워크(테스트넷/메인넷)를 전환할 수 있습니다.
           </p>
-          <button
-            onClick={onLock}
-            className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold hover:bg-surface-container"
-          >
-            <Lock size={14} /> 잠그기
-          </button>
+          <div className="mt-3 flex gap-2">
+            <Link
+              to="/wallet"
+              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:brightness-110"
+            >
+              <Wallet size={14} /> 지갑 열기
+            </Link>
+            <button
+              onClick={onLock}
+              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold hover:bg-surface-container"
+            >
+              <Lock size={14} /> 잠그기
+            </button>
+          </div>
         </div>
       </div>
     </section>

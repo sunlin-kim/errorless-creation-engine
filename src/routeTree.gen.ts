@@ -16,6 +16,7 @@ import { Route as ReceiveRouteImport } from './routes/receive'
 import { Route as PointsRouteImport } from './routes/points'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WalletIndexRouteImport } from './routes/wallet.index'
 import { Route as WalletUnlockRouteImport } from './routes/wallet.unlock'
 import { Route as WalletSetupRouteImport } from './routes/wallet.setup'
 import { Route as AssetIdRouteImport } from './routes/asset.$id'
@@ -55,6 +56,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WalletIndexRoute = WalletIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => WalletRoute,
+} as any)
 const WalletUnlockRoute = WalletUnlockRouteImport.update({
   id: '/unlock',
   path: '/unlock',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/asset/$id': typeof AssetIdRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
+  '/wallet/': typeof WalletIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -90,10 +97,10 @@ export interface FileRoutesByTo {
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
   '/settings': typeof SettingsRoute
-  '/wallet': typeof WalletRouteWithChildren
   '/asset/$id': typeof AssetIdRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
+  '/wallet': typeof WalletIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +114,7 @@ export interface FileRoutesById {
   '/asset/$id': typeof AssetIdRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
+  '/wallet/': typeof WalletIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +129,7 @@ export interface FileRouteTypes {
     | '/asset/$id'
     | '/wallet/setup'
     | '/wallet/unlock'
+    | '/wallet/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,10 +138,10 @@ export interface FileRouteTypes {
     | '/receive'
     | '/send'
     | '/settings'
-    | '/wallet'
     | '/asset/$id'
     | '/wallet/setup'
     | '/wallet/unlock'
+    | '/wallet'
   id:
     | '__root__'
     | '/'
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/asset/$id'
     | '/wallet/setup'
     | '/wallet/unlock'
+    | '/wallet/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -209,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wallet/': {
+      id: '/wallet/'
+      path: '/'
+      fullPath: '/wallet/'
+      preLoaderRoute: typeof WalletIndexRouteImport
+      parentRoute: typeof WalletRoute
+    }
     '/wallet/unlock': {
       id: '/wallet/unlock'
       path: '/unlock'
@@ -236,11 +253,13 @@ declare module '@tanstack/react-router' {
 interface WalletRouteChildren {
   WalletSetupRoute: typeof WalletSetupRoute
   WalletUnlockRoute: typeof WalletUnlockRoute
+  WalletIndexRoute: typeof WalletIndexRoute
 }
 
 const WalletRouteChildren: WalletRouteChildren = {
   WalletSetupRoute: WalletSetupRoute,
   WalletUnlockRoute: WalletUnlockRoute,
+  WalletIndexRoute: WalletIndexRoute,
 }
 
 const WalletRouteWithChildren =
