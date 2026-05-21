@@ -481,10 +481,11 @@ function AddressLine({
     explorer: string;
   };
 }) {
+  const t = useT();
   const copy = () => {
     if (!item.address) return;
     navigator.clipboard.writeText(item.address);
-    toast.success(`${item.symbol} 주소가 복사되었습니다`);
+    toast.success(t("wallet.addrCopied", { sym: item.symbol }));
   };
   return (
     <div className="rounded-lg bg-surface-container px-2.5 py-2">
@@ -499,7 +500,7 @@ function AddressLine({
         <button
           onClick={copy}
           className="h-7 w-7 grid place-items-center rounded hover:bg-surface text-on-surface-variant"
-          title="복사"
+          title={t("wallet.copy")}
         >
           <Copy size={12} />
         </button>
@@ -509,7 +510,7 @@ function AddressLine({
             target="_blank"
             rel="noreferrer"
             className="h-7 w-7 grid place-items-center rounded hover:bg-surface text-on-surface-variant"
-            title="익스플로러"
+            title={t("wallet.explorer")}
           >
             <ExternalLink size={12} />
           </a>
