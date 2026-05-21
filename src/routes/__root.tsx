@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { useAutoLock } from "@/lib/wallet/autolock";
 
 function NotFoundComponent() {
   return (
@@ -127,6 +128,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useAutoLock();
 
   return (
     <QueryClientProvider client={queryClient}>
