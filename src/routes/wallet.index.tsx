@@ -341,7 +341,6 @@ function LiveBalanceCard({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
-  const currency = useWalletStore((s) => s.currency);
   const t = useT();
   const currency = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
