@@ -72,14 +72,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Supervizion — See Beyond. Lead Ahead." },
+      {
+        name: "description",
+        content:
+          "Supervizion 프리미엄 디지털자산 지갑. 멀티체인 송수신·스왑·스테이킹을 한 곳에서.",
+      },
+      { name: "author", content: "Supervizion" },
+      { property: "og:title", content: "Supervizion — Premium Digital Asset Wallet" },
+      { property: "og:description", content: "See Beyond. Lead Ahead." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
