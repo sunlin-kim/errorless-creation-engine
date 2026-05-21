@@ -1,66 +1,144 @@
-# Supervizion 웹 지갑 데모 UI 계획
+# Supervizion 실제 메인넷 지갑 구축 계획
 
-업로드한 Supervizion 로고와 프롬프트의 Material 3 시멘틱 토큰을 그대로 적용한 **프리미엄 그린 톤 웹 지갑 데모 UI**를 구축합니다. 실제 블록체인 연동 없이 더미 데이터로 화면·플로우만 완성도 높게 보여줍니다.
+## ⚠️ 시작 전 필수 동의 사항
 
-## 스택
+이 계획대로 만들면 **실제 비트코인·이더리움이 오갑니다.** 동의가 필요한 항목:
 
-- TanStack Start (web_app 아티팩트 기본 템플릿)
-- Tailwind CSS + CSS 변수로 M3 시멘틱 토큰 구현
-- Pretendard (한국어) + Inter (영문/숫자 tnum)
-- Lucide 아이콘 + 자체 토큰 일러스트
-- 라이트/다크 테마 토글
+1. **비수탁(Non-Custodial) 방식만 지원**
+   - 사용자 시드구문은 **사용자 기기에만 저장**, 서버는 절대 보지 못함
+   - 사용자가 시드 잃으면 자산도 영구 손실 — 복구 불가
+   - 우리(개발자/배포자)는 사용자 자산을 만지지 못함 → 한국 특금법 VASP 신고 의무에서 비교적 자유 (단, 변호사 자문 필수)
 
-## 디자인 토큰 (프롬프트 §5 그대로)
+2. **개발자(본인) 책임 한계 명확화**
+   - 코드 버그로 자산 손실 시 → 사용자 약관에 "as-is, 책임 없음" 명시
+   - 앱 내 메인넷 진입 전 **2단계 경고 + 체크박스 동의** 필수
+   - 베타/실험 라벨 6개월 이상 유지 권장
 
-라이트: primary `#065F46`, primaryContainer `#D1FAE5`, surface `#F8FFFB`, premiumAccent `#D4AF37` 등 전 토큰을 CSS 변수로.
-다크: primary `#34D399`, background `#071F18`, surface `#0B2A22` 등.
-버튼 12dp, 카드 16dp, 잔액에 `font-feature-settings: "tnum"` 강제.
+3. **Google Play / App Store 배포 전 검토**
+   - 비수탁 지갑은 등록 가능하지만 정책 변동 잦음
+   - 직접 APK 사이드로드 배포가 가장 안전한 1차 옵션
 
-## 화면 구성 (좌측 사이드바 + 메인)
+위 사항 동의하시면 아래 계획대로 진행합니다.
 
-1. **온보딩/스플래시** — 업로드 로고 + "SEE BEYOND. LEAD AHEAD." 태그라인, 그린 글로우 배경.
-2. **홈/대시보드**
-   - 잔액 카드: primary→primaryContainer 그라데이션, 총 자산 KRW 환산 + tnum 숫자
-   - 빠른 액션: 보내기 / 받기 / 스왑 / 스테이킹
-   - 보유 자산 리스트 (BTC, ETH, USDT, SOL 등 더미)
-   - 최근 거래 미리보기
-3. **보내기 (Send)** — 풀스크린 시트 형태, 네트워크 선택 → 주소 → 금액 → 수수료(가스) 추정 → 컨펌
-4. **받기 (Receive)** — QR + 주소 복사, 네트워크 칩
-5. **자산 상세** — 차트(더미 SVG), 24h 변동, 거래내역 타임라인
-6. **거래내역 (Activity)** — 필터(전체/송금/수신/스왑), pending/success/failed 상태 칩
-7. **설정** — 보안(니모닉 백업, 생체인증), 통화, 언어, 테마, 법적고지(특금법/이용자보호법 안내)
+---
 
-## 엣지케이스/규제 UI 반영 (프롬프트 §2.3, §6.3)
+## 📦 지원 범위 (Phase 1)
 
-- 송금 컨펌 화면에 트래블룰(100만원↑) 안내 배너
-- 가스 급변 시 "수수료 재추정" 토스트 패턴
-- 니모닉 노출은 풀스크린 + 블러+롱프레스 패턴
-- 휴면/pending 자산 빈 상태 일러스트
+| 자산 | 네트워크 | 라이브러리 |
+|---|---|---|
+| ETH | Ethereum Mainnet | ethers v6 |
+| USDT (ERC-20) | Ethereum Mainnet | ethers v6 |
+| BTC | Bitcoin Mainnet | bitcoinjs-lib + @scure/bip32 |
 
-## 컴포넌트
+추후 Phase 2: SOL, Polygon, BSC, USDC 등 확장 가능.
 
-- `BalanceCard`, `AssetRow`, `ActionButton`, `NetworkChip`, `TxStatusBadge`, `ConfirmSheet`, `MnemonicReveal`, `QRCodeDisplay`, `ThemeToggle`, `SidebarNav`
+---
 
-## 파일 구조
+## 🔑 핵심 보안 아키텍처
 
 ```text
-src/
-  assets/supervizion-logo.png          (업로드 그대로 복사)
-  styles/tokens.css                    (M3 시멘틱 토큰)
-  components/wallet/*                  (위 컴포넌트들)
-  routes/
-    index.tsx        대시보드
-    send.tsx         보내기 플로우
-    receive.tsx      받기
-    activity.tsx     거래내역
-    asset.$id.tsx    자산 상세
-    settings.tsx     설정
+┌─────────────────────────────────────────────────┐
+│ 사용자 기기 (브라우저/Capacitor WebView)         │
+│                                                 │
+│  [시드구문 12/24단어 생성]                       │
+│       ↓ BIP39 → BIP32 HD 키 파생                │
+│  [개인키]                                        │
+│       ↓ AES-GCM + PBKDF2(사용자 비밀번호)        │
+│  [암호화된 시드] → IndexedDB(로컬)               │
+│                                                 │
+│  거래 시: 비밀번호 입력 → 복호화 → 서명 → 방송   │
+└─────────────────────────────────────────────────┘
+                    ↓ 서명된 트랜잭션만
+┌─────────────────────────────────────────────────┐
+│ 퍼블릭 RPC (Alchemy / Infura / mempool.space)   │
+│  - 잔액 조회                                    │
+│  - 트랜잭션 방송                                │
+└─────────────────────────────────────────────────┘
 ```
 
-## 산출 범위 밖 (명시)
+**서버는 시드/개인키를 절대 받지도, 보지도, 저장하지도 않습니다.**
 
-- 실제 지갑 생성/서명/체인 연동 없음 (UI 데모)
-- APK 분석·치환 작업은 별도 (네이티브 영역)
-- 다국어는 한국어 우선, 영문 라벨 병기 수준
+---
 
-승인하시면 바로 구축 시작합니다.
+## 🗂️ 구현 단계 (총 5단계, 단계별로 승인받으며 진행)
+
+### Step 1: 시드 생성·복원·암호화 저장
+- `bip39` + `@scure/bip32`로 12단어 니모닉 생성
+- 사용자 비밀번호로 AES-GCM 암호화 (PBKDF2 100k iter)
+- IndexedDB(`idb` 라이브러리)에 저장
+- 풀스크린 + 블러+롱프레스 시드 노출 UI (기존 계획 유지)
+- 복구: 12단어 입력 → 검증 → 암호화 저장
+
+### Step 2: 잔액·주소 조회 (읽기 전용)
+- ETH 잔액: ethers `provider.getBalance()`
+- USDT 잔액: ERC-20 `balanceOf()` 호출
+- BTC 잔액: mempool.space API (`/api/address/{addr}`)
+- BTC 주소: P2WPKH (bc1...) — 수수료 저렴
+- 가격: CoinGecko 무료 API → KRW 환산
+- 30초 캐시, 자동 새로고침
+
+### Step 3: 송금 (서명 + 방송)
+- **ETH/USDT**: ethers `wallet.sendTransaction()`, EIP-1559 가스 추정
+- **BTC**: bitcoinjs-lib로 PSBT 구성, UTXO는 mempool.space에서 fetch
+- 송금 전 확인 시트: 받는 주소 / 금액 / 네트워크 수수료 / 총 차감
+- 비밀번호 재입력 → 서명 → 방송 → 트랜잭션 해시 표시
+- 100만원 이상 송금 시 **트래블룰 안내 배너** (실제 정보 수집은 안 하지만 사용자 인지용)
+
+### Step 4: 거래내역
+- Etherscan API: 주소 트랜잭션 목록
+- mempool.space: BTC 트랜잭션 목록
+- pending/confirmed 상태 자동 갱신
+
+### Step 5: 보안 강화 + 배포 가드
+- 메인넷 진입 시 **3단계 경고 모달** (베타 / 자산 손실 위험 / 본인 책임)
+- 약관·면책 동의 화면 (앱 최초 실행 시 강제)
+- 자동 잠금 (5분 미사용 시 비밀번호 재입력)
+- 시드 백업 확인 챌린지 (12단어 중 3개 위치 맞히기)
+- Capacitor 빌드 시 ProGuard/난독화 검토
+
+---
+
+## 🛠️ 필요한 외부 서비스 (모두 무료 티어로 시작 가능)
+
+| 서비스 | 용도 | 무료 한도 |
+|---|---|---|
+| **Alchemy** | Ethereum RPC | 월 300M CU |
+| **mempool.space** | Bitcoin RPC | 무료 무제한 |
+| **CoinGecko** | 가격 API | 분당 30 req |
+| **Etherscan** | ETH 거래내역 | 초당 5 req |
+
+→ API 키 필요한 건 Alchemy, Etherscan 2개. **Lovable Secrets로 안전하게 저장.**
+
+---
+
+## 🧪 강력 권장: Phase 0 (테스트넷 동시 지원)
+
+메인넷 코드는 똑같이 동작하므로, **앱 안에 "테스트넷 모드" 토글**을 넣어:
+- 개발·QA는 Sepolia(ETH) / Bitcoin testnet에서 무료로
+- 사용자도 처음엔 테스트넷으로 연습 가능
+- 코드는 동일, RPC 엔드포인트만 분기
+
+이것만 추가해도 안전성이 10배 올라갑니다. **계획에 포함하겠습니다.**
+
+---
+
+## 📋 기술 상세 (개발자용)
+
+- **상태관리**: Zustand (시드 잠금 상태 + 선택 네트워크)
+- **암호화**: Web Crypto API (브라우저 네이티브, 의존성 0)
+- **HD 파생 경로**: ETH `m/44'/60'/0'/0/0`, BTC `m/84'/0'/0'/0/0` (BIP84 segwit)
+- **PSBT 서명**: bitcoinjs-lib `Psbt.signInput()`
+- **타입 안전성**: 모든 주소·금액에 brand type 적용 (실수 방지)
+- **단위**: ETH는 wei, BTC는 satoshi 정수로만 내부 처리 — UI 표시에서만 변환
+
+---
+
+## ⏭️ 다음 단계
+
+이 계획 승인하시면 **Step 1 (시드 생성·암호화 저장)부터 시작**합니다. Step 1만 먼저 만들고 보여드린 다음, OK 받으면 Step 2 진행하는 식으로 안전하게 갈게요.
+
+**승인 전에 꼭 한 번 더 확인해주세요:**
+- [ ] 비수탁 방식 OK (사용자가 시드 잃으면 끝, 복구 불가)
+- [ ] 테스트넷 모드 포함 OK (강력 권장)
+- [ ] 베타 라벨 + 면책 동의 화면 OK
+- [ ] Alchemy/Etherscan 무료 가입해서 API 키 받아오기 OK
