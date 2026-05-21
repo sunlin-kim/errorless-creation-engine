@@ -40,6 +40,8 @@ function WalletPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const setNetwork = useWalletStore((s) => s.setNetwork);
+  const derivedAddresses = useWalletStore((s) => s.derivedAddresses);
+  const setDerivedAddresses = useWalletStore((s) => s.setDerivedAddresses);
   const [vaultExists, setVaultExists] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -87,7 +89,15 @@ function WalletPage() {
     );
   }
 
-  return <WalletInner mnemonic={mnemonic} network={network} setNetwork={setNetwork} />;
+  return (
+    <WalletInner
+      mnemonic={mnemonic}
+      network={network}
+      setNetwork={setNetwork}
+      cachedAddresses={derivedAddresses[network]}
+      setCachedAddresses={setDerivedAddresses}
+    />
+  );
 }
 
 type Net = "testnet" | "mainnet";
@@ -96,10 +106,17 @@ function WalletInner({
   mnemonic,
   network,
   setNetwork,
+  cachedAddresses,
+  setCachedAddresses,
 }: {
   mnemonic: string;
   network: Net;
   setNetwork: (n: Net) => void;
+  cachedAddresses: { eth: string; btc: string; bnb: string; sol: string } | null;
+  setCachedAddresses: (
+    env: Net,
+    addresses: { eth: string; btc: string; bnb: string; sol: string },
+  ) => void;
 }) {
   const t = useT();
   const currency = useWalletStore((s) => s.currency);
@@ -109,14 +126,22 @@ function WalletInner({
     btc: string;
     bnb: string;
     sol: string;
-  } | null>(null);
+  } | null>(cachedAddresses);
 
   useEffect(() => {
+    if (cachedAddresses) {
+      setAddrs(cachedAddresses);
+      return;
+    }
+
     let cancelled = false;
     deriveAddresses(mnemonic, network)
       .then((a) => {
-        if (!cancelled)
-          setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol });
+        if (!cancelled) {
+          const next = { eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol };
+          setAddrs(next);
+          setCachedAddresses(network, next);
+        }
       })
       .catch((e) => {
         console.error(e);
@@ -125,7 +150,7 @@ function WalletInner({
     return () => {
       cancelled = true;
     };
-  }, [mnemonic, network, t]);
+  }, [cachedAddresses, mnemonic, network, setCachedAddresses, t]);
 
   const balancesQ = useQuery({
     enabled: !!addrs,

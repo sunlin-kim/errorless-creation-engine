@@ -117,7 +117,7 @@ const themeInitScript = `(function(){try{var s=localStorage.getItem('sv-theme');
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

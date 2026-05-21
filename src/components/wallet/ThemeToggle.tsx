@@ -8,16 +8,23 @@ function applyTheme(dark: boolean) {
 }
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    const stored = localStorage.getItem("sv-theme");
-    if (stored) return stored === "dark";
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-  });
+  const [mounted, setMounted] = useState(false);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    const stored = localStorage.getItem("sv-theme");
+    const next = stored
+      ? stored === "dark"
+      : (window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false);
+    setDark(next);
+    applyTheme(next);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     applyTheme(dark);
-  }, [dark]);
+  }, [dark, mounted]);
 
   const toggle = () => {
     const next = !dark;
@@ -29,6 +36,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
+      disabled={!mounted}
       aria-label="테마 변경"
       type="button"
       className="h-10 w-10 rounded-full grid place-items-center border border-outline bg-surface hover:bg-surface-container transition-colors text-on-surface"

@@ -10,8 +10,7 @@ const items = [
 ] as const;
 
 export function BottomNav() {
-  const { location } = useRouterState();
-  const path = location.pathname;
+  const path = useRouterState({ select: (s) => s.location.pathname });
   const t = useT();
 
   return (
