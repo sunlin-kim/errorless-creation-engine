@@ -239,23 +239,23 @@ function SeedRevealBlock({ disabled }: { disabled: boolean }) {
 }
 
 function DangerZone({ onWipe }: { onWipe: () => void | Promise<void> }) {
+  const t = useT();
   const [armed, setArmed] = useState(false);
   return (
     <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
       <div className="flex items-center gap-2 text-destructive text-xs font-semibold tracking-widest">
         <AlertTriangle size={14} /> DANGER ZONE
       </div>
-      <p className="mt-1 text-sm font-medium">이 기기에서 지갑 삭제</p>
+      <p className="mt-1 text-sm font-medium">{t("settings.dangerTitle")}</p>
       <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
-        암호화된 시드를 이 기기에서 영구히 제거합니다. 시드 구문 백업이 없다면
-        자산을 복구할 수 없습니다.
+        {t("settings.dangerBody")}
       </p>
       {!armed ? (
         <button
           onClick={() => setArmed(true)}
           className="mt-3 h-9 px-3 rounded-lg border border-destructive/40 text-destructive text-xs font-semibold inline-flex items-center gap-1.5"
         >
-          <Trash2 size={14} /> 삭제 시작
+          <Trash2 size={14} /> {t("settings.deleteStart")}
         </button>
       ) : (
         <div className="mt-3 flex gap-2">
@@ -263,13 +263,13 @@ function DangerZone({ onWipe }: { onWipe: () => void | Promise<void> }) {
             onClick={() => setArmed(false)}
             className="flex-1 h-9 rounded-lg border border-outline text-xs"
           >
-            취소
+            {t("settings.cancel")}
           </button>
           <button
             onClick={onWipe}
             className="flex-1 h-9 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold"
           >
-            영구 삭제 확정
+            {t("settings.deleteConfirm")}
           </button>
         </div>
       )}
