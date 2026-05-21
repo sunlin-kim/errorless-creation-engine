@@ -303,9 +303,17 @@ function ShowSeedStep({
               <EyeOff size={14} /> 숨기기
             </button>
             <button
-              onClick={() => {
-                navigator.clipboard.writeText(mnemonic);
-                toast.success("클립보드에 복사됨 — 즉시 안전한 곳에 보관하고 삭제하세요");
+              onClick={async () => {
+                const ok = await copyText(mnemonic);
+                if (ok) {
+                  toast.success(
+                    "클립보드에 복사됨 — 즉시 안전한 곳에 보관하고 삭제하세요",
+                  );
+                } else {
+                  toast.error(
+                    "자동 복사 실패 — 시드 단어를 길게 눌러 수동 복사하세요",
+                  );
+                }
               }}
               className="flex-1 h-9 rounded-lg border border-outline text-xs flex items-center justify-center gap-1.5 hover:bg-surface"
             >
