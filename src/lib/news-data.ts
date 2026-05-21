@@ -28,11 +28,12 @@ export const featuredNews: NewsItem[] = [
     id: "f2",
     type: "news",
     category: "파트너십",
-    title: "Supervizion × 글로벌 결제 네트워크 MOU 체결",
+    title: "태양광 에너지 업체와 전략적 파트너십 체결 (예정)",
     source: "Supervizion Newsroom",
     publishedAt: "2026-05-18T10:00:00+09:00",
-    url: "https://supervizion.io/news/mou",
-    thumb: "from-emerald-700 via-teal-600 to-cyan-500",
+    url: "https://supervizion.io/news/solar-partnership",
+    thumb: "from-amber-400 via-orange-500 to-emerald-600",
+
   },
   {
     id: "f3",
