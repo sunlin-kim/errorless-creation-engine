@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useT } from "@/lib/i18n";
-import { deriveAddresses } from "@/lib/wallet/derive";
 import { getEndpoints } from "@/lib/wallet/networks";
 import { getAllHistory, type HistoryItem } from "@/lib/wallet/history";
+import { useDerivedAddresses } from "@/lib/wallet/use-derived-addresses";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -29,16 +29,11 @@ function ActivityPage() {
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
   const ep = useMemo(() => getEndpoints(network), [network]);
-  const [addrs, setAddrs] = useState<{ eth: string; btc: string } | null>(null);
+  const derived = useDerivedAddresses();
   const [asset, setAsset] = useState<AssetFilter>("all");
   const [dir, setDir] = useState<DirFilter>("all");
 
-  useEffect(() => {
-    if (!mnemonic) return;
-    deriveAddresses(mnemonic, network)
-      .then((a) => setAddrs({ eth: a.eth, btc: a.btc }))
-      .catch(() => setAddrs(null));
-  }, [mnemonic, network]);
+  const addrs = derived ? { eth: derived.eth, btc: derived.btc } : null;
 
   const q = useQuery({
     enabled: !!addrs,

@@ -3,9 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useT } from "@/lib/i18n";
-import { deriveAddresses } from "@/lib/wallet/derive";
 import { derivePrivateKeys } from "@/lib/wallet/keys";
 import { getEndpoints } from "@/lib/wallet/networks";
+import { useDerivedAddresses } from "@/lib/wallet/use-derived-addresses";
 import {
   sendEth,
   sendUsdt,
@@ -29,27 +29,13 @@ function SendPage() {
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
   const ep = useMemo(() => getEndpoints(network), [network]);
+  const addrs = useDerivedAddresses();
 
   const [asset, setAsset] = useState<Asset>("ETH");
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
-  const [addrs, setAddrs] = useState<{
-    eth: string;
-    btc: string;
-    bnb: string;
-    sol: string;
-  } | null>(null);
   const [txid, setTxid] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!mnemonic) return;
-    deriveAddresses(mnemonic, network)
-      .then((a) =>
-        setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol }),
-      )
-      .catch(() => toast.error(tr("wallet.derivFailed")));
-  }, [mnemonic, network, tr]);
 
   if (!mnemonic) {
     return (
