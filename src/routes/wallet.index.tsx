@@ -141,6 +141,12 @@ function WalletInner({
             </div>
             <div className="flex items-center gap-2">
               <NetworkToggle value={network} onChange={setNetwork} />
+              <Link
+                to="/wallet/send"
+                className="h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold inline-flex items-center gap-1.5"
+              >
+                송금
+              </Link>
               <button
                 onClick={() => balancesQ.refetch()}
                 disabled={balancesQ.isFetching}
