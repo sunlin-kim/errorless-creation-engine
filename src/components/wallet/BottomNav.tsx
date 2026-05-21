@@ -56,7 +56,7 @@ export function BottomNav() {
                       : "text-on-surface-variant"
                   }`}
                 >
-                  {it.label}
+                  {t(it.key)}
                 </span>
               </Link>
             </li>
