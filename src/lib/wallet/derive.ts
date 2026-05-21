@@ -99,13 +99,18 @@ function ed25519CKDpriv(
   return { key: I.slice(0, 32), cc: I.slice(32) };
 }
 
-function deriveSolanaAddress(seed: Uint8Array): string {
-  // m/44'/501'/0'/0'
+/** SOL용 ed25519 비밀키 (32바이트) 파생 — m/44'/501'/0'/0' */
+export function deriveSolanaPrivKey(seed: Uint8Array): Uint8Array {
   let node = ed25519MasterKey(seed);
   for (const idx of [44, 501, 0, 0]) {
     node = ed25519CKDpriv(node, idx);
   }
-  const pub = ed25519.getPublicKey(node.key);
+  return node.key;
+}
+
+function deriveSolanaAddress(seed: Uint8Array): string {
+  const priv = deriveSolanaPrivKey(seed);
+  const pub = ed25519.getPublicKey(priv);
   return base58.encode(pub);
 }
 

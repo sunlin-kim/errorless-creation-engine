@@ -1,15 +1,18 @@
 /**
  * 개인키 파생 — 서명 직전에만 호출하고 즉시 폐기.
- * 사용 후 변수 참조를 끊으면 GC 가 회수한다 (JS 한계).
  */
 import { HDKey } from "@scure/bip32";
+import { ed25519 } from "@noble/curves/ed25519.js";
 import { mnemonicToSeedBytes } from "./seed";
+import { deriveSolanaPrivKey } from "./derive";
 import type { NetworkEnv } from "./store";
 
 export interface PrivateKeys {
-  ethPriv: Uint8Array;
+  ethPriv: Uint8Array; // BNB(BSC)도 동일 키 사용
   btcPriv: Uint8Array;
   btcPub: Uint8Array;
+  solPriv: Uint8Array; // 32-byte ed25519 seed
+  solPub: Uint8Array; // 32-byte 공개키
 }
 
 export async function derivePrivateKeys(
@@ -24,5 +27,13 @@ export async function derivePrivateKeys(
   if (!eth.privateKey || !btc.privateKey || !btc.publicKey) {
     throw new Error("DERIVE_PRIV_FAILED");
   }
-  return { ethPriv: eth.privateKey, btcPriv: btc.privateKey, btcPub: btc.publicKey };
+  const solPriv = deriveSolanaPrivKey(seed);
+  const solPub = ed25519.getPublicKey(solPriv);
+  return {
+    ethPriv: eth.privateKey,
+    btcPriv: btc.privateKey,
+    btcPub: btc.publicKey,
+    solPriv,
+    solPub,
+  };
 }
