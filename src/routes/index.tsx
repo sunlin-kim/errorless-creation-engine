@@ -1,11 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/wallet/AppShell";
-import { BalanceCard } from "@/components/wallet/BalanceCard";
-import { QuickActions } from "@/components/wallet/QuickActions";
-import { AssetRow } from "@/components/wallet/AssetRow";
 import { TxRow } from "@/components/wallet/TxRow";
 import { NewsFeed } from "@/components/wallet/NewsFeed";
-import { assets, transactions, totalKrw } from "@/lib/wallet-data";
+import { transactions } from "@/lib/wallet-data";
 import { ChevronRight, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -18,36 +15,6 @@ function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <NewsFeed />
-
-          <section className="rounded-3xl border border-outline bg-surface p-5">
-            <header className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-semibold">내 지갑</h2>
-              <Link
-                to="/activity"
-                className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
-              >
-                전체 거래 <ChevronRight size={14} />
-              </Link>
-            </header>
-            <BalanceCard total={totalKrw()} change={1.74} />
-            <div className="mt-5">
-              <QuickActions />
-            </div>
-          </section>
-
-          <section className="rounded-3xl border border-outline bg-surface p-5">
-            <header className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold">보유 자산</h2>
-              <span className="text-xs text-on-surface-variant tnum">
-                {assets.length}개 · 6 chains
-              </span>
-            </header>
-            <div className="divide-y divide-[color:var(--outline)]/40">
-              {assets.map((a) => (
-                <AssetRow key={a.id} asset={a} />
-              ))}
-            </div>
-          </section>
         </div>
 
         <aside className="space-y-6">
@@ -85,3 +52,4 @@ function Dashboard() {
     </AppShell>
   );
 }
+
