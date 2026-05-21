@@ -7,8 +7,10 @@ export type NewsItem = {
   source: string;
   publishedAt: string; // ISO
   url: string;
-  thumb?: string; // gradient seed
+  thumb?: string; // gradient seed (fallback)
+  image?: string; // article thumbnail URL
   duration?: string;
+
 };
 
 export const featuredNews: NewsItem[] = [
