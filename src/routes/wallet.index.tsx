@@ -259,6 +259,7 @@ function WalletInner({
         explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${addrs?.sol ?? ""}`,
         color: "#9945FF",
         show: true,
+      },
       {
         symbol: "DUCKY",
         name: "DuckyDuck (SPL)",
