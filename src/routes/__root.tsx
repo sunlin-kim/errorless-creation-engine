@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import splashLogoUrl from "@/assets/splash-logo.png";
+
 import { useAutoLock } from "@/lib/wallet/autolock";
 import { loadUnlockedMnemonic } from "@/lib/wallet/session";
 import { useWalletStore } from "@/lib/wallet/store";
@@ -101,6 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "preload", as: "image", href: splashLogoUrl, fetchpriority: "high" } as any,
+
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
