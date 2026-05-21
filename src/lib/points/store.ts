@@ -52,13 +52,8 @@ function uid() {
 export const usePointsStore = create<PointsState>()(
   persist(
     (set, get) => ({
-      balance: 12480,
-      history: [
-        { id: "seed-1", label: "친구 초대 보상", amount: 1000, type: "earn", createdAt: Date.now() - 9 * ONE_DAY },
-        { id: "seed-2", label: "프리미엄 미션 완료", amount: 500, type: "earn", createdAt: Date.now() - 6 * ONE_DAY },
-        { id: "seed-3", label: "포인트 → ETH 전환", amount: -2400, type: "convert", createdAt: Date.now() - 3 * ONE_DAY },
-        { id: "seed-4", label: "송금 캐시백 (USDT)", amount: 120, type: "earn", createdAt: Date.now() - ONE_DAY },
-      ],
+      balance: 0,
+      history: [],
       lastCheckinAt: null,
 
       earn: (label, amount, type = "earn") => {
@@ -112,7 +107,7 @@ export const usePointsStore = create<PointsState>()(
         set({ balance: 0, history: [], lastCheckinAt: null }),
     }),
     {
-      name: "sv-points-v1",
+      name: "sv-points-v2",
       storage: createJSONStorage(() => localStorage),
     },
   ),
