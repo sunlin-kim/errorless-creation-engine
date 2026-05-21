@@ -39,13 +39,13 @@ function UnlockPage() {
       const mnemonic = await decryptString(v.encryptedMnemonic, pw);
       unlock(mnemonic);
       setVaultExists(true);
-      toast.success("기존 지갑을 불러왔습니다");
+      toast.success(t("unlock.loadedToast"));
       navigate({ to: "/wallet" });
     } catch (err) {
       if ((err as Error).message === "WRONG_PASSWORD") {
-        toast.error("비밀번호가 올바르지 않습니다");
+        toast.error(t("unlock.wrongPw"));
       } else {
-        toast.error("지갑 불러오기 실패: " + (err as Error).message);
+        toast.error(t("unlock.loadFail", { msg: (err as Error).message }));
       }
       setPw("");
     } finally {
@@ -57,7 +57,7 @@ function UnlockPage() {
     await deleteVault();
     useWalletStore.getState().lock();
     setVaultExists(false);
-    toast.success("지갑이 삭제되었습니다");
+    toast.success(t("unlock.deletedToast"));
     navigate({ to: "/wallet/setup" });
   }
 
