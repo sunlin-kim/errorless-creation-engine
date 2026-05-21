@@ -199,7 +199,7 @@ function WalletInner({
     <AppShell title="내 지갑" subtitle={`비수탁 · ${ep.label} · 실시간 시세`}>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {network === "mainnet" && <MainnetWarning />}
+          
 
           <LiveBalanceCard
             total={totals.total}
