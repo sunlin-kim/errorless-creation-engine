@@ -160,8 +160,10 @@ const DIR_ICON = {
 } as const;
 
 function HistoryRow({ item }: { item: HistoryItem }) {
+  const t = useT();
+  const lang = useWalletStore((s) => s.language);
   const Icon = DIR_ICON[item.direction];
-  const time = new Date(item.timestamp).toLocaleString("ko-KR", {
+  const time = new Date(item.timestamp).toLocaleString(lang === "en" ? "en-US" : "ko-KR", {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
