@@ -132,7 +132,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const unlock = useWalletStore((s) => s.unlock);
+  const language = useWalletStore((s) => s.language);
   useAutoLock();
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   useEffect(() => {
     let cancelled = false;
