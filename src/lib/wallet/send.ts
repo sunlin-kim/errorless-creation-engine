@@ -10,7 +10,8 @@
 
 import { Transaction } from "micro-eth-signer";
 import * as btc from "@scure/btc-signer";
-import { hex } from "@scure/base";
+import { hex, base58, base64 } from "@scure/base";
+import { ed25519 } from "@noble/curves/ed25519.js";
 import type { ChainEndpoints } from "./networks";
 
 /* ---------------- 공통 ---------------- */
