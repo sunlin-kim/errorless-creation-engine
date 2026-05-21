@@ -144,10 +144,10 @@ function SendPage() {
         id = await sendBtc(ep, fromAddress, btcPub, to.trim(), amount, priv);
       }
       setTxid(id);
-      toast.success("전송 완료");
+      toast.success(tr("wsend.success"));
     } catch (e) {
       console.error(e);
-      toast.error(e instanceof Error ? e.message : "전송 실패");
+      toast.error(e instanceof Error ? e.message : tr("wsend.errFailed"));
     } finally {
       if (priv) priv.fill(0);
       if (solPriv && solPriv !== priv) solPriv.fill(0);
