@@ -102,9 +102,25 @@ function SettingsPage() {
         </Card>
 
         <Card title="지역 및 통화" icon={Globe}>
-          <Select label="기본 통화" value="KRW (대한민국 원)" />
-          <Select label="언어" value="한국어 (Korean)" />
-          <Select label="시간대" value="Asia/Seoul (UTC+9)" />
+          <SelectField
+            label="기본 통화"
+            value={currency}
+            onChange={(v) => setCurrency(v as "KRW" | "USD")}
+            options={[
+              { value: "KRW", label: "KRW (대한민국 원)" },
+              { value: "USD", label: "USD (US Dollar)" },
+            ]}
+          />
+          <SelectField
+            label="언어"
+            value={language}
+            onChange={(v) => setLanguage(v as "ko" | "en")}
+            options={[
+              { value: "ko", label: "한국어 (Korean)" },
+              { value: "en", label: "English" },
+            ]}
+          />
+          <StaticField label="시간대" value="Asia/Seoul (UTC+9)" />
         </Card>
 
         <Card title="법적 고지" icon={FileText}>
