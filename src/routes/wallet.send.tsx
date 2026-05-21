@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
@@ -13,7 +13,7 @@ import {
   sendSol,
   parseUnits,
 } from "@/lib/wallet/send";
-import { ArrowLeft, Send, AlertTriangle, ExternalLink, Lock } from "lucide-react";
+import { ArrowLeft, Send, AlertTriangle, ExternalLink, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 
 type Asset = "ETH" | "USDT" | "BTC" | "BNB" | "SOL";
@@ -51,18 +51,19 @@ function SendPage() {
 
   if (!mnemonic) {
     return (
-      <AppShell title="송금" subtitle="잠금 해제 필요">
+      <AppShell title="송금" subtitle="지갑 준비 중">
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <Lock size={28} className="mx-auto text-on-surface-variant" />
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            지갑이 잠겨 있습니다.
+            지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
           </p>
-          <Link
-            to="/wallet/unlock"
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/wallet/setup" })}
             className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
           >
-            잠금 해제
-          </Link>
+            <KeyRound size={14} /> 지갑 설정
+          </button>
         </div>
       </AppShell>
     );
