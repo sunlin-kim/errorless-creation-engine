@@ -120,9 +120,9 @@ function WalletInner({
     const d = balancesQ.data;
     if (!d) return 0;
     let sum = 0;
-    if (d.eth) sum += toKrw(d.eth, d.prices);
-    if (d.btc) sum += toKrw(d.btc, d.prices);
-    if (d.usdt) sum += toKrw(d.usdt, d.prices);
+    if (d.eth) sum += toKrw(d.eth, d.prices.prices);
+    if (d.btc) sum += toKrw(d.btc, d.prices.prices);
+    if (d.usdt) sum += toKrw(d.usdt, d.prices.prices);
     return sum;
   }, [balancesQ.data]);
 
