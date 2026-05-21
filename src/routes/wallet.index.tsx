@@ -181,6 +181,7 @@ function WalletInner({
     acc(d.usdt, d.prices.prices.USDT, d.prices.changes24h.USDT);
     acc(d.bnb, d.prices.prices.BNB, d.prices.changes24h.BNB);
     acc(d.sol, d.prices.prices.SOL, d.prices.changes24h.SOL);
+    acc(d.ducky, d.prices.prices.DUCKY, d.prices.changes24h.DUCKY);
     const change = prev > 0 ? ((total - prev) / prev) * 100 : 0;
     return { total, change };
   }, [balancesQ.data]);
