@@ -112,6 +112,49 @@ export async function getBtcBalance(
   };
 }
 
+export async function getBnbBalance(
+  ep: ChainEndpoints,
+  address: string,
+): Promise<AssetBalance> {
+  const hex = (await rpc(ep.bscRpc, "eth_getBalance", [address, "latest"])) as string;
+  const raw = BigInt(hex);
+  return {
+    symbol: "BNB",
+    raw,
+    decimals: BNB_DECIMALS,
+    formatted: formatUnits(raw, BNB_DECIMALS, 6),
+  };
+}
+
+export async function getSolBalance(
+  ep: ChainEndpoints,
+  address: string,
+): Promise<AssetBalance> {
+  const r = await fetch(ep.solRpc, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getBalance",
+      params: [address],
+    }),
+  });
+  if (!r.ok) throw new Error(`SOL RPC HTTP ${r.status}`);
+  const j = (await r.json()) as {
+    result?: { value: number };
+    error?: { message: string };
+  };
+  if (j.error) throw new Error(`SOL: ${j.error.message}`);
+  const raw = BigInt(j.result?.value ?? 0);
+  return {
+    symbol: "SOL",
+    raw,
+    decimals: SOL_DECIMALS,
+    formatted: formatUnits(raw, SOL_DECIMALS, 6),
+  };
+}
+
 export interface PriceMap {
   ETH: number;
   BTC: number;
