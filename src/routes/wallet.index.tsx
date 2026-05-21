@@ -37,22 +37,49 @@ function WalletPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const setNetwork = useWalletStore((s) => s.setNetwork);
+  const [vaultExists, setVaultExists] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    import("@/lib/wallet/vault").then(({ hasVault }) =>
+      hasVault().then(setVaultExists),
+    );
+  }, []);
 
   if (!mnemonic) {
+    const hasExisting = vaultExists === true;
     return (
-      <AppShell title="내 지갑" subtitle="지갑을 준비하고 있습니다">
+      <AppShell title="내 지갑" subtitle={hasExisting ? "지갑이 잠겨 있습니다" : "지갑을 만들거나 복구하세요"}>
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            이 기기의 지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
+            {hasExisting
+              ? "이 기기의 지갑을 사용하려면 비밀번호로 잠금을 해제하세요."
+              : "이 기기에 아직 지갑이 없습니다. 새로 만들거나 시드로 복구할 수 있습니다."}
           </p>
           <div className="mt-4 flex justify-center gap-2">
-            <Link
-              to="/wallet/setup"
-              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
-            >
-              <KeyRound size={14} /> 지갑 설정
-            </Link>
+            {hasExisting ? (
+              <>
+                <Link
+                  to="/wallet/unlock"
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
+                >
+                  <KeyRound size={14} /> 잠금 해제
+                </Link>
+                <Link
+                  to="/wallet/setup"
+                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold"
+                >
+                  지갑 관리
+                </Link>
+              </>
+            ) : (
+              <Link
+                to="/wallet/setup"
+                className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
+              >
+                <KeyRound size={14} /> 지갑 설정
+              </Link>
+            )}
           </div>
         </div>
       </AppShell>
