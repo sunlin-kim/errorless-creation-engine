@@ -300,14 +300,43 @@ function Card({
   );
 }
 
-function Select({ label, value }: { label: string; value: string }) {
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
   return (
-    <button className="w-full flex items-center justify-between p-3 rounded-xl border border-outline hover:bg-surface-container">
+    <label className="w-full block p-3 rounded-xl border border-outline hover:bg-surface-container cursor-pointer">
+      <p className="text-xs text-on-surface-variant">{label}</p>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full bg-transparent text-sm font-medium outline-none cursor-pointer"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value} className="bg-surface text-on-surface">
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function StaticField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="w-full flex items-center justify-between p-3 rounded-xl border border-outline">
       <div className="text-left">
         <p className="text-xs text-on-surface-variant">{label}</p>
         <p className="text-sm font-medium mt-0.5">{value}</p>
       </div>
-      <ChevronRight size={16} className="text-on-surface-variant" />
-    </button>
+      <ChevronRight size={16} className="text-on-surface-variant opacity-40" />
+    </div>
   );
 }
