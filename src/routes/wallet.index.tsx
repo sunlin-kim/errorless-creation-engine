@@ -10,6 +10,8 @@ import {
   getEthBalance,
   getBtcBalance,
   getUsdtBalance,
+  getBnbBalance,
+  getSolBalance,
   getPricesKrw,
   toKrw,
   formatKrw,
