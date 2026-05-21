@@ -5,11 +5,18 @@ import { useWalletStore } from "@/lib/wallet/store";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { derivePrivateKeys } from "@/lib/wallet/keys";
 import { getEndpoints } from "@/lib/wallet/networks";
-import { sendEth, sendUsdt, sendBtc, parseUnits } from "@/lib/wallet/send";
+import {
+  sendEth,
+  sendUsdt,
+  sendBtc,
+  sendBnb,
+  sendSol,
+  parseUnits,
+} from "@/lib/wallet/send";
 import { ArrowLeft, Send, AlertTriangle, ExternalLink, Lock } from "lucide-react";
 import { toast } from "sonner";
 
-type Asset = "ETH" | "USDT" | "BTC";
+type Asset = "ETH" | "USDT" | "BTC" | "BNB" | "SOL";
 
 export const Route = createFileRoute("/wallet/send")({
   component: SendPage,
