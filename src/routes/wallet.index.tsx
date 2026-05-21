@@ -342,7 +342,7 @@ function LiveBalanceCard({
   setNetwork: (n: Net) => void;
 }) {
   const t = useT();
-  const currency = useWalletStore((s) => s.currency);
+  const fiat = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
   const shortAddr = ethAddr
