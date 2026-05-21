@@ -527,6 +527,7 @@ function NetworkToggle({
   value: Net;
   onChange: (n: Net) => void;
 }) {
+  const t = useT();
   return (
     <div className="inline-flex rounded-lg overflow-hidden text-xs bg-white/10 backdrop-blur">
       <button
@@ -535,16 +536,11 @@ function NetworkToggle({
           value === "testnet" ? "bg-white text-black" : "text-white/80"
         }`}
       >
-        테스트넷
+        {t("settings.testnet")}
       </button>
       <button
         onClick={() => {
-          if (
-            value === "mainnet" ||
-            confirm(
-              "메인넷에서는 실제 자산을 다룹니다.\n시드 분실·코드 버그 시 자산을 영구히 잃을 수 있습니다.\n그래도 계속하시겠습니까?",
-            )
-          ) {
+          if (value === "mainnet" || confirm(t("wallet.mainnetWarn"))) {
             onChange("mainnet");
           }
         }}
@@ -552,7 +548,7 @@ function NetworkToggle({
           value === "mainnet" ? "bg-red-600 text-white" : "text-white/80"
         }`}
       >
-        메인넷
+        {t("settings.mainnet")}
       </button>
     </div>
   );
