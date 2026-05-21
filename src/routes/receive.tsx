@@ -3,6 +3,7 @@ import { AppShell } from "@/components/wallet/AppShell";
 import { useEffect, useState } from "react";
 import { Copy, Check, ShieldCheck, KeyRound } from "lucide-react";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useT } from "@/lib/i18n";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { toast } from "sonner";
 

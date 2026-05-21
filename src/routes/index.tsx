@@ -7,12 +7,14 @@ import { transactions } from "@/lib/wallet-data";
 import { ChevronRight, ShieldCheck, Wallet, KeyRound } from "lucide-react";
 import { hasVault } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
 function Dashboard() {
+  const t = useT();
   const [vaultPresent, setVaultPresent] = useState<boolean | null>(null);
   const mnemonic = useWalletStore((s) => s.mnemonic);
 
@@ -23,44 +25,40 @@ function Dashboard() {
   const isReady = vaultPresent === true && mnemonic !== null;
 
   return (
-    <AppShell title="홈" subtitle="Supervizion · See Beyond. Lead Ahead.">
+    <AppShell title={t("home.title")} subtitle={t("home.subtitle")}>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <WalletStatusCard
-            vaultPresent={vaultPresent}
-            isReady={isReady}
-          />
+          <WalletStatusCard vaultPresent={vaultPresent} isReady={isReady} />
           <NewsFeed />
         </div>
 
         <aside className="space-y-6">
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold">최근 거래</h2>
+              <h2 className="text-base font-semibold">{t("home.recentTx")}</h2>
               <Link
                 to="/activity"
                 className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
               >
-                전체 보기 <ChevronRight size={14} />
+                {t("home.viewAll")} <ChevronRight size={14} />
               </Link>
             </header>
             <div className="space-y-1">
-              {transactions.slice(0, 4).map((t) => (
-                <TxRow key={t.id} tx={t} />
+              {transactions.slice(0, 4).map((tx) => (
+                <TxRow key={tx.id} tx={tx} />
               ))}
             </div>
           </section>
 
           <section className="rounded-3xl border border-premium/40 bg-gradient-to-br from-[color:var(--premium)]/10 to-transparent p-5">
             <div className="flex items-center gap-2 text-premium text-xs font-semibold tracking-[0.2em]">
-              <ShieldCheck size={14} /> COMPLIANCE
+              <ShieldCheck size={14} /> {t("home.complianceBadge")}
             </div>
             <h3 className="mt-2 font-semibold text-on-surface">
-              가상자산이용자보호법 적용
+              {t("home.complianceTitle")}
             </h3>
             <p className="mt-2 text-xs text-on-surface-variant leading-relaxed">
-              이용자 예치금은 분리보관되며, 이상거래는 §10에 따라 상시
-              감시됩니다. 1,000,000원 상당 이상 이전 시 트래블룰이 적용됩니다.
+              {t("home.complianceBody")}
             </p>
           </section>
         </aside>
@@ -76,6 +74,7 @@ function WalletStatusCard({
   vaultPresent: boolean | null;
   isReady: boolean;
 }) {
+  const t = useT();
   if (vaultPresent === null) {
     return (
       <section className="rounded-3xl border border-outline bg-surface p-5 h-28 animate-pulse" />
@@ -90,16 +89,15 @@ function WalletStatusCard({
             <Wallet size={20} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-on-surface">실제 지갑을 설정하세요</h3>
+            <h3 className="font-semibold text-on-surface">{t("home.setupTitle")}</h3>
             <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-              비수탁(Non-custodial) 지갑 — 시드 구문은 본인 기기에만 저장됩니다.
-              기본 테스트넷에서 안전하게 시작하세요.
+              {t("home.setupBody")}
             </p>
             <Link
               to="/wallet/setup"
               className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:brightness-110"
             >
-              <KeyRound size={14} /> 지갑 만들기 / 복구
+              <KeyRound size={14} /> {t("home.setupCta")}
             </Link>
           </div>
         </div>
@@ -115,10 +113,8 @@ function WalletStatusCard({
             <Wallet size={20} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-on-surface">지갑을 불러오는 중입니다</h3>
-            <p className="text-xs text-on-surface-variant mt-1">
-              이 기기에 저장된 지갑 정보를 확인하고 있습니다.
-            </p>
+            <h3 className="font-semibold text-on-surface">{t("home.loadingTitle")}</h3>
+            <p className="text-xs text-on-surface-variant mt-1">{t("home.loadingBody")}</p>
           </div>
         </div>
       </section>
@@ -132,16 +128,14 @@ function WalletStatusCard({
           <ShieldCheck size={20} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-on-surface">지갑이 활성화되었습니다</h3>
-          <p className="text-xs text-on-surface-variant mt-1">
-            주소·잔액을 확인하고 네트워크(테스트넷/메인넷)를 전환할 수 있습니다.
-          </p>
+          <h3 className="font-semibold text-on-surface">{t("home.activeTitle")}</h3>
+          <p className="text-xs text-on-surface-variant mt-1">{t("home.activeBody")}</p>
           <div className="mt-3 flex gap-2">
             <Link
               to="/wallet"
               className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:brightness-110"
             >
-              <Wallet size={14} /> 지갑 열기
+              <Wallet size={14} /> {t("home.openWallet")}
             </Link>
           </div>
         </div>
@@ -149,5 +143,3 @@ function WalletStatusCard({
     </section>
   );
 }
-
-

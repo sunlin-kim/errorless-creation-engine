@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useT } from "@/lib/i18n";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { derivePrivateKeys } from "@/lib/wallet/keys";
 import { getEndpoints } from "@/lib/wallet/networks";

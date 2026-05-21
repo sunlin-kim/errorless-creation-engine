@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useT } from "@/lib/i18n";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { getEndpoints } from "@/lib/wallet/networks";
 import { getAllHistory, type HistoryItem } from "@/lib/wallet/history";
