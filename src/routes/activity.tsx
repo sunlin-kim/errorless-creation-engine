@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/wallet/AppShell";
@@ -11,7 +11,7 @@ import {
   ArrowUpRight,
   ArrowLeftRight,
   ExternalLink,
-  Lock,
+  KeyRound,
   RefreshCw,
 } from "lucide-react";
 
@@ -25,6 +25,7 @@ type DirFilter = "all" | "in" | "out";
 function ActivityPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
+  const navigate = useNavigate();
   const ep = useMemo(() => getEndpoints(network), [network]);
   const [addrs, setAddrs] = useState<{ eth: string; btc: string } | null>(null);
   const [asset, setAsset] = useState<AssetFilter>("all");
@@ -47,18 +48,19 @@ function ActivityPage() {
 
   if (!mnemonic) {
     return (
-      <AppShell title="거래내역" subtitle="잠금 해제가 필요합니다">
+      <AppShell title="거래내역" subtitle="지갑 준비 중">
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <Lock size={28} className="mx-auto text-on-surface-variant" />
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            지갑이 잠겨 있어 온체인 거래내역을 가져올 수 없습니다.
+            지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
           </p>
-          <Link
-            to="/wallet/unlock"
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/wallet/setup" })}
             className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
           >
-            잠금 해제
-          </Link>
+            <KeyRound size={14} /> 지갑 설정
+          </button>
         </div>
       </AppShell>
     );

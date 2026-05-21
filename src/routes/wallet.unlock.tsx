@@ -5,7 +5,7 @@ import { decryptString } from "@/lib/wallet/crypto";
 import { hasVault, loadVault, deleteVault } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
 import { toast } from "sonner";
-import { Lock, AlertTriangle } from "lucide-react";
+import { KeyRound, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/wallet/unlock")({
   component: UnlockPage,
@@ -37,13 +37,13 @@ function UnlockPage() {
       const mnemonic = await decryptString(v.encryptedMnemonic, pw);
       unlock(mnemonic);
       setVaultExists(true);
-      toast.success("잠금 해제됨");
-      navigate({ to: "/" });
+      toast.success("기존 지갑을 불러왔습니다");
+      navigate({ to: "/wallet" });
     } catch (err) {
       if ((err as Error).message === "WRONG_PASSWORD") {
         toast.error("비밀번호가 올바르지 않습니다");
       } else {
-        toast.error("잠금 해제 실패: " + (err as Error).message);
+        toast.error("지갑 불러오기 실패: " + (err as Error).message);
       }
       setPw("");
     } finally {
@@ -53,6 +53,7 @@ function UnlockPage() {
 
   async function handleReset() {
     await deleteVault();
+    useWalletStore.getState().lock();
     setVaultExists(false);
     toast.success("지갑이 삭제되었습니다");
     navigate({ to: "/wallet/setup" });
@@ -64,13 +65,13 @@ function UnlockPage() {
         <div className="flex flex-col items-center mb-8">
           <Logo size={48} />
           <h1 className="mt-4 text-xl font-bold">Supervizion</h1>
-          <p className="text-xs text-on-surface-variant mt-1">SEE BEYOND. LEAD AHEAD.</p>
+          <p className="text-xs text-on-surface-variant mt-1">이 기기의 기존 지갑 불러오기</p>
         </div>
 
         <form onSubmit={handleUnlock} className="space-y-4">
           <div className="rounded-2xl border border-outline bg-surface p-5">
             <div className="flex items-center gap-2 mb-3 text-sm font-semibold">
-              <Lock size={16} className="text-primary" /> 비밀번호로 잠금 해제
+              <KeyRound size={16} className="text-primary" /> 기존 비밀번호 확인
             </div>
             <input
               type="password"
@@ -85,7 +86,7 @@ function UnlockPage() {
               disabled={busy || pw.length === 0}
               className="mt-3 w-full h-11 rounded-lg bg-primary text-on-primary font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
             >
-              {busy ? "확인 중..." : "잠금 해제"}
+              {busy ? "확인 중..." : "지갑 불러오기"}
             </button>
           </div>
 
@@ -131,7 +132,7 @@ function UnlockPage() {
             to="/"
             className="block text-center text-xs text-on-surface-variant hover:underline"
           >
-            나중에 하기 (데모 화면으로)
+            홈으로
           </Link>
         </form>
       </div>

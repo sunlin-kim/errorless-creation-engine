@@ -4,7 +4,7 @@ import { AppShell } from "@/components/wallet/AppShell";
 import { TxRow } from "@/components/wallet/TxRow";
 import { NewsFeed } from "@/components/wallet/NewsFeed";
 import { transactions } from "@/lib/wallet-data";
-import { ChevronRight, ShieldCheck, Wallet, Lock, KeyRound } from "lucide-react";
+import { ChevronRight, ShieldCheck, Wallet, KeyRound } from "lucide-react";
 import { hasVault } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
 
@@ -15,13 +15,12 @@ export const Route = createFileRoute("/")({
 function Dashboard() {
   const [vaultPresent, setVaultPresent] = useState<boolean | null>(null);
   const mnemonic = useWalletStore((s) => s.mnemonic);
-  const lock = useWalletStore((s) => s.lock);
 
   useEffect(() => {
     hasVault().then(setVaultPresent);
   }, []);
 
-  const isUnlocked = mnemonic !== null;
+  const isReady = vaultPresent === true && mnemonic !== null;
 
   return (
     <AppShell title="홈" subtitle="Supervizion · See Beyond. Lead Ahead.">
@@ -29,8 +28,7 @@ function Dashboard() {
         <div className="lg:col-span-2 space-y-6">
           <WalletStatusCard
             vaultPresent={vaultPresent}
-            isUnlocked={isUnlocked}
-            onLock={lock}
+            isReady={isReady}
           />
           <NewsFeed />
         </div>
@@ -73,12 +71,10 @@ function Dashboard() {
 
 function WalletStatusCard({
   vaultPresent,
-  isUnlocked,
-  onLock,
+  isReady,
 }: {
   vaultPresent: boolean | null;
-  isUnlocked: boolean;
-  onLock: () => void;
+  isReady: boolean;
 }) {
   if (vaultPresent === null) {
     return (
@@ -111,24 +107,18 @@ function WalletStatusCard({
     );
   }
 
-  if (!isUnlocked) {
+  if (!isReady) {
     return (
-      <section className="rounded-3xl border border-amber-500/40 bg-amber-500/5 p-5">
+      <section className="rounded-3xl border border-primary/40 bg-gradient-to-br from-primary/10 to-transparent p-5">
         <div className="flex items-start gap-4">
-          <div className="h-11 w-11 rounded-xl bg-amber-500/15 text-amber-500 grid place-items-center shrink-0">
-            <Lock size={20} />
+          <div className="h-11 w-11 rounded-xl bg-primary/15 text-primary grid place-items-center shrink-0">
+            <Wallet size={20} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-on-surface">지갑이 잠겨 있습니다</h3>
+            <h3 className="font-semibold text-on-surface">지갑을 불러오는 중입니다</h3>
             <p className="text-xs text-on-surface-variant mt-1">
-              잔액 조회 및 송금을 하려면 비밀번호로 잠금을 해제하세요.
+              이 기기에 저장된 지갑 정보를 확인하고 있습니다.
             </p>
-            <Link
-              to="/wallet/unlock"
-              className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-amber-500 text-amber-950 text-xs font-semibold hover:brightness-110"
-            >
-              <Lock size={14} /> 잠금 해제
-            </Link>
           </div>
         </div>
       </section>
@@ -153,12 +143,6 @@ function WalletStatusCard({
             >
               <Wallet size={14} /> 지갑 열기
             </Link>
-            <button
-              onClick={onLock}
-              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold hover:bg-surface-container"
-            >
-              <Lock size={14} /> 잠그기
-            </button>
           </div>
         </div>
       </div>

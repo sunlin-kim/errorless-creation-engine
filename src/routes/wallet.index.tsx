@@ -22,7 +22,6 @@ import {
   ExternalLink,
   RefreshCw,
   ShieldAlert,
-  Lock,
   KeyRound,
   Eye,
   EyeOff,
@@ -41,24 +40,18 @@ function WalletPage() {
 
   if (!mnemonic) {
     return (
-      <AppShell title="내 지갑" subtitle="잠금 해제가 필요합니다">
+      <AppShell title="내 지갑" subtitle="지갑을 준비하고 있습니다">
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <Lock size={28} className="mx-auto text-on-surface-variant" />
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            지갑이 잠겨 있거나 아직 생성되지 않았습니다.
+            이 기기의 지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
           </p>
           <div className="mt-4 flex justify-center gap-2">
             <Link
-              to="/wallet/unlock"
+              to="/wallet/setup"
               className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
             >
-              <Lock size={14} /> 잠금 해제
-            </Link>
-            <Link
-              to="/wallet/setup"
-              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold"
-            >
-              <KeyRound size={14} /> 새로 만들기
+              <KeyRound size={14} /> 지갑 설정
             </Link>
           </div>
         </div>

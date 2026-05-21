@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useEffect, useState } from "react";
-import { Copy, Check, ShieldCheck, Lock } from "lucide-react";
+import { Copy, Check, ShieldCheck, KeyRound } from "lucide-react";
 import { useWalletStore } from "@/lib/wallet/store";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { toast } from "sonner";
@@ -77,6 +77,7 @@ async function copyText(text: string): Promise<boolean> {
 function ReceivePage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
+  const navigate = useNavigate();
   const [sel, setSel] = useState<AssetId>("ETH");
   const [copied, setCopied] = useState(false);
   const [addrs, setAddrs] = useState<{
@@ -97,18 +98,19 @@ function ReceivePage() {
 
   if (!mnemonic) {
     return (
-      <AppShell title="받기" subtitle="잠금 해제 필요">
+      <AppShell title="받기" subtitle="지갑 준비 중">
         <div className="max-w-xl mx-auto rounded-3xl border border-outline bg-surface p-8 text-center">
-          <Lock size={28} className="mx-auto text-on-surface-variant" />
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            지갑이 잠겨 있거나 아직 생성되지 않았습니다.
+            지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
           </p>
-          <Link
-            to="/wallet/unlock"
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/wallet/setup" })}
             className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
           >
-            잠금 해제
-          </Link>
+            <KeyRound size={14} /> 지갑 설정
+          </button>
         </div>
       </AppShell>
     );
