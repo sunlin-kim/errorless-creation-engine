@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SidebarNav } from "./SidebarNav";
+import { BottomNav } from "./BottomNav";
 import { ThemeToggle } from "./ThemeToggle";
 import { Logo } from "./Logo";
 import { Bell, Search } from "lucide-react";
