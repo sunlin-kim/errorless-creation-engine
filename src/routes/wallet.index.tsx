@@ -259,6 +259,17 @@ function WalletInner({
         explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${addrs?.sol ?? ""}`,
         color: "#9945FF",
         show: true,
+      {
+        symbol: "DUCKY",
+        name: "DuckyDuck (SPL)",
+        networkLabel: "Solana",
+        balance: d?.ducky ?? null,
+        priceKrw: d?.prices.prices.DUCKY ?? 0,
+        change24h: d?.prices.changes24h.DUCKY ?? 0,
+        address: addrs?.sol,
+        explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${ep.duckyMint ?? ""}`,
+        color: "#FFD93D",
+        show: !!ep.duckyMint,
       },
     ];
     return list.filter((i) => i.show);
