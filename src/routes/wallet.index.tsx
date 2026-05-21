@@ -457,7 +457,7 @@ function LiveAssetRow({
       </div>
       <div className="text-right">
         <p className="font-medium tnum text-on-surface">
-          {item.balance && item.priceKrw ? formatFiat(krw) : "—"}
+          {item.balance && item.priceKrw ? formatFiat(fiatValue, currency) : "—"}
         </p>
         <p
           className={`text-xs tnum ${
