@@ -198,10 +198,11 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
         USDT: ch("tether"),
         BNB: ch("binancecoin"),
         SOL: ch("solana"),
+        DUCKY: ch("duckyduck"),
       },
     };
   } catch {
-    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0 };
+    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0, DUCKY: 0 };
     return { prices: zero, changes24h: zero };
   }
 }
