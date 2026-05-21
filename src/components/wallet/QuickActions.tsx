@@ -15,6 +15,7 @@ export function QuickActions() {
         <Link
           key={label}
           to={to}
+          preload="intent"
           className="group flex flex-col items-center gap-2 rounded-2xl border border-outline bg-surface hover:bg-primary-container hover:border-primary/30 transition-colors p-4"
         >
           <span className="h-11 w-11 rounded-full grid place-items-center bg-primary-container text-on-primary-container group-hover:bg-primary group-hover:text-white transition-colors">
