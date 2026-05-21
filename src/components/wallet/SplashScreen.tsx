@@ -4,25 +4,34 @@ import splashLogo from "@/assets/splash-logo.png";
 const SESSION_KEY = "sv-splash-shown";
 
 export function SplashScreen() {
-  const [visible, setVisible] = useState(false);
+  // Start visible by default so the splash covers the home screen from the
+  // very first paint (no flash of underlying UI before the effect runs).
+  const [visible, setVisible] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return !sessionStorage.getItem(SESSION_KEY);
+    } catch {
+      return true;
+    }
+  });
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!visible) return;
     try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {}
-    setVisible(true);
     const fadeT = setTimeout(() => setFading(true), 2200);
     const hideT = setTimeout(() => setVisible(false), 2800);
     return () => {
       clearTimeout(fadeT);
       clearTimeout(hideT);
     };
-  }, []);
+  }, [visible]);
 
   if (!visible) return null;
+
 
   return (
     <div
