@@ -12,9 +12,9 @@ import {
   getUsdtBalance,
   getBnbBalance,
   getSolBalance,
-  getPricesKrw,
-  toKrw,
-  formatKrw,
+  getPrices,
+  toFiat,
+  formatFiat,
   type AssetBalance,
 } from "@/lib/wallet/balance";
 import {
