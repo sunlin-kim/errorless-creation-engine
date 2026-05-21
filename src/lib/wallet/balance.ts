@@ -12,7 +12,7 @@
 import type { ChainEndpoints } from "./networks";
 
 export interface AssetBalance {
-  symbol: "ETH" | "BTC" | "USDT" | "BNB" | "SOL";
+  symbol: "ETH" | "BTC" | "USDT" | "BNB" | "SOL" | "DUCKY";
   /** 최소 단위 정수 (wei / satoshi / 6-decimals / lamports) */
   raw: bigint;
   /** 사람이 읽는 단위 */
@@ -25,6 +25,7 @@ const BTC_DECIMALS = 8;
 const USDT_DECIMALS = 6;
 const BNB_DECIMALS = 18;
 const SOL_DECIMALS = 9;
+const DUCKY_DECIMALS = 9;
 
 function formatUnits(raw: bigint, decimals: number, displayDp = 6): string {
   const neg = raw < 0n;
