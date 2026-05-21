@@ -28,12 +28,14 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/wallet/")({
   component: WalletPage,
 });
 
 function WalletPage() {
+  const t = useT();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const setNetwork = useWalletStore((s) => s.setNetwork);
@@ -48,13 +50,11 @@ function WalletPage() {
   if (!mnemonic) {
     const hasExisting = vaultExists === true;
     return (
-      <AppShell title="내 지갑" subtitle={hasExisting ? "지갑이 잠겨 있습니다" : "지갑을 만들거나 복구하세요"}>
+      <AppShell title={t("wallet.title")} subtitle={hasExisting ? t("wallet.subtitleLocked") : t("wallet.subtitleNoWallet")}>
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            {hasExisting
-              ? "이 기기의 지갑을 사용하려면 비밀번호로 잠금을 해제하세요."
-              : "이 기기에 아직 지갑이 없습니다. 새로 만들거나 시드로 복구할 수 있습니다."}
+            {hasExisting ? t("wallet.noteLocked") : t("wallet.noteNew")}
           </p>
           <div className="mt-4 flex justify-center gap-2">
             {hasExisting ? (
@@ -63,13 +63,13 @@ function WalletPage() {
                   to="/wallet/unlock"
                   className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
                 >
-                  <KeyRound size={14} /> 잠금 해제
+                  <KeyRound size={14} /> {t("wallet.unlock")}
                 </Link>
                 <Link
                   to="/wallet/setup"
                   className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold"
                 >
-                  지갑 관리
+                  {t("wallet.manage")}
                 </Link>
               </>
             ) : (
@@ -77,7 +77,7 @@ function WalletPage() {
                 to="/wallet/setup"
                 className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
               >
-                <KeyRound size={14} /> 지갑 설정
+                <KeyRound size={14} /> {t("wallet.setup")}
               </Link>
             )}
           </div>
@@ -100,6 +100,7 @@ function WalletInner({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const t = useT();
   const currency = useWalletStore((s) => s.currency);
   const ep = useMemo(() => getEndpoints(network), [network]);
   const [addrs, setAddrs] = useState<{
@@ -118,12 +119,12 @@ function WalletInner({
       })
       .catch((e) => {
         console.error(e);
-        toast.error("주소 파생 실패");
+        toast.error(t("wallet.derivFailed"));
       });
     return () => {
       cancelled = true;
     };
-  }, [mnemonic, network]);
+  }, [mnemonic, network, t]);
 
   const balancesQ = useQuery({
     enabled: !!addrs,
@@ -258,7 +259,7 @@ function WalletInner({
   }, [balancesQ.data, addrs, network, ep]);
 
   return (
-    <AppShell title="내 지갑" subtitle={`비수탁 · ${ep.label} · 실시간 시세`}>
+    <AppShell title={t("wallet.title")} subtitle={t("wallet.subtitleLive", { label: ep.label })}>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           
@@ -279,9 +280,9 @@ function WalletInner({
 
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold">보유 자산</h2>
+              <h2 className="text-base font-semibold">{t("wallet.holdings")}</h2>
               <span className="text-xs text-on-surface-variant tnum">
-                {items.length}개 · {network === "mainnet" ? "메인넷" : "테스트넷"}
+                {t("wallet.assetsCount", { n: items.length, mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet") })}
               </span>
             </header>
             <div className="divide-y divide-[color:var(--outline)]/40">
@@ -290,7 +291,7 @@ function WalletInner({
               ))}
             </div>
             <p className="mt-4 text-[11px] text-on-surface-variant text-center">
-              잔액은 온체인 RPC·mempool.space, 시세는 CoinGecko에서 실시간 조회됩니다.
+              {t("wallet.dataNote")}
             </p>
           </section>
         </div>
@@ -298,9 +299,9 @@ function WalletInner({
         <aside className="space-y-6">
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="mb-3">
-              <h2 className="text-base font-semibold">받기 주소</h2>
+              <h2 className="text-base font-semibold">{t("wallet.receiveAddrs")}</h2>
               <p className="text-[11px] text-on-surface-variant mt-0.5">
-                체인별 입금 주소 (HD 파생)
+                {t("wallet.receiveAddrsSub")}
               </p>
             </header>
             <div className="space-y-2">
@@ -311,11 +312,7 @@ function WalletInner({
           </section>
 
           <section className="rounded-3xl border border-outline bg-surface p-5 text-xs text-on-surface-variant leading-relaxed">
-            <p>
-              <span className="font-semibold text-on-surface">참고</span> — 현재
-              지원 자산은 BTC, ETH, USDT(ERC-20)입니다. 추가 체인(SOL, MATIC 등)은
-              주소 파생 모듈이 확장되면 자동으로 노출됩니다.
-            </p>
+            <p>{t("wallet.assetsNote")}</p>
           </section>
         </aside>
       </div>
@@ -344,6 +341,7 @@ function LiveBalanceCard({
   network: Net;
   setNetwork: (n: Net) => void;
 }) {
+  const t = useT();
   const currency = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
@@ -359,7 +357,7 @@ function LiveBalanceCard({
       <div className="relative flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs tracking-[0.25em] text-white/70 uppercase">
-            Total Balance · 총 자산 (실시간)
+            {t("wallet.totalBalance")}
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
@@ -381,14 +379,14 @@ function LiveBalanceCard({
           <button
             onClick={onRefresh}
             disabled={isFetching}
-            aria-label="새로고침"
+            aria-label={t("wallet.refresh")}
             className="h-9 w-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 disabled:opacity-50 transition-colors"
           >
             <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
           </button>
           <button
             onClick={() => setHidden((h) => !h)}
-            aria-label="잔액 숨기기"
+            aria-label={t("wallet.hideBalance")}
             className="h-9 w-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 transition-colors"
           >
             {hidden ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -398,9 +396,9 @@ function LiveBalanceCard({
 
       <div className="relative mt-7 grid grid-cols-3 gap-3 text-xs">
         {[
-          { label: "지갑 주소 (ETH)", value: shortAddr },
-          { label: "활성 자산", value: `${chains} chains` },
-          { label: "모드", value: network === "mainnet" ? "Mainnet" : "Testnet" },
+          { label: t("wallet.ethAddr"), value: shortAddr },
+          { label: t("wallet.activeAssets"), value: `${chains} ${t("wallet.chains")}` },
+          { label: t("wallet.mode"), value: network === "mainnet" ? "Mainnet" : "Testnet" },
         ].map((s) => (
           <div
             key={s.label}
@@ -483,10 +481,11 @@ function AddressLine({
     explorer: string;
   };
 }) {
+  const t = useT();
   const copy = () => {
     if (!item.address) return;
     navigator.clipboard.writeText(item.address);
-    toast.success(`${item.symbol} 주소가 복사되었습니다`);
+    toast.success(t("wallet.addrCopied", { sym: item.symbol }));
   };
   return (
     <div className="rounded-lg bg-surface-container px-2.5 py-2">
@@ -501,7 +500,7 @@ function AddressLine({
         <button
           onClick={copy}
           className="h-7 w-7 grid place-items-center rounded hover:bg-surface text-on-surface-variant"
-          title="복사"
+          title={t("wallet.copy")}
         >
           <Copy size={12} />
         </button>
@@ -511,7 +510,7 @@ function AddressLine({
             target="_blank"
             rel="noreferrer"
             className="h-7 w-7 grid place-items-center rounded hover:bg-surface text-on-surface-variant"
-            title="익스플로러"
+            title={t("wallet.explorer")}
           >
             <ExternalLink size={12} />
           </a>
@@ -528,6 +527,7 @@ function NetworkToggle({
   value: Net;
   onChange: (n: Net) => void;
 }) {
+  const t = useT();
   return (
     <div className="inline-flex rounded-lg overflow-hidden text-xs bg-white/10 backdrop-blur">
       <button
@@ -536,16 +536,11 @@ function NetworkToggle({
           value === "testnet" ? "bg-white text-black" : "text-white/80"
         }`}
       >
-        테스트넷
+        {t("settings.testnet")}
       </button>
       <button
         onClick={() => {
-          if (
-            value === "mainnet" ||
-            confirm(
-              "메인넷에서는 실제 자산을 다룹니다.\n시드 분실·코드 버그 시 자산을 영구히 잃을 수 있습니다.\n그래도 계속하시겠습니까?",
-            )
-          ) {
+          if (value === "mainnet" || confirm(t("wallet.mainnetWarn"))) {
             onChange("mainnet");
           }
         }}
@@ -553,7 +548,7 @@ function NetworkToggle({
           value === "mainnet" ? "bg-red-600 text-white" : "text-white/80"
         }`}
       >
-        메인넷
+        {t("settings.mainnet")}
       </button>
     </div>
   );

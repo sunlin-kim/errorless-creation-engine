@@ -112,6 +112,110 @@ const ko: Dict = {
   "unlock.resetCancel": "취소",
   "unlock.resetConfirm": "지갑 삭제하고 복구",
   "unlock.home": "홈으로",
+
+  // wallet index extras
+  "wallet.derivFailed": "주소 파생 실패",
+  "wallet.addrCopied": "{sym} 주소가 복사되었습니다",
+  "wallet.mainnetWarn":
+    "메인넷에서는 실제 자산을 다룹니다.\n시드 분실·코드 버그 시 자산을 영구히 잃을 수 있습니다.\n그래도 계속하시겠습니까?",
+  "wallet.assetsNote":
+    "참고 — 현재 지원 자산은 BTC, ETH, USDT(ERC-20), BNB, SOL입니다.",
+  "wallet.noteLabel": "참고",
+
+  // home
+  "home.title": "홈",
+  "home.subtitle": "Supervizion · See Beyond. Lead Ahead.",
+  "home.recentTx": "최근 거래",
+  "home.viewAll": "전체 보기",
+  "home.complianceBadge": "COMPLIANCE",
+  "home.complianceTitle": "가상자산이용자보호법 적용",
+  "home.complianceBody":
+    "이용자 예치금은 분리보관되며, 이상거래는 §10에 따라 상시 감시됩니다. 1,000,000원 상당 이상 이전 시 트래블룰이 적용됩니다.",
+  "home.setupTitle": "실제 지갑을 설정하세요",
+  "home.setupBody":
+    "비수탁(Non-custodial) 지갑 — 시드 구문은 본인 기기에만 저장됩니다. 기본 테스트넷에서 안전하게 시작하세요.",
+  "home.setupCta": "지갑 만들기 / 복구",
+  "home.loadingTitle": "지갑을 불러오는 중입니다",
+  "home.loadingBody": "이 기기에 저장된 지갑 정보를 확인하고 있습니다.",
+  "home.activeTitle": "지갑이 활성화되었습니다",
+  "home.activeBody":
+    "주소·잔액을 확인하고 네트워크(테스트넷/메인넷)를 전환할 수 있습니다.",
+  "home.openWallet": "지갑 열기",
+
+  // activity
+  "activity.title": "거래내역",
+  "activity.subtitleWaiting": "지갑 준비 중",
+  "activity.subtitleLive": "온체인 · {label}",
+  "activity.needWallet": "지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.",
+  "activity.allAssets": "전체 자산",
+  "activity.allDirs": "모든 방향",
+  "activity.dirIn": "받음",
+  "activity.dirOut": "보냄",
+  "activity.dirSelf": "내부 이동",
+  "activity.refresh": "새로고침",
+  "activity.loading": "온체인 데이터를 불러오는 중…",
+  "activity.error": "거래내역 로딩 실패. 잠시 후 다시 시도하세요.",
+  "activity.empty": "조건에 맞는 거래가 없습니다.",
+  "activity.statusFailed": "실패",
+  "activity.statusPending": "진행중",
+
+  // receive
+  "receive.title": "받기",
+  "receive.subtitleWaiting": "지갑 준비 중",
+  "receive.subtitle": "체인을 선택하고 주소·QR을 공유하세요 · {mode}",
+  "receive.compatNote": "{network} 호환 자산만 보내세요",
+  "receive.myAddr": "내 {label} 주소",
+  "receive.generating": "주소 생성 중...",
+  "receive.copy": "주소 복사",
+  "receive.copied": "복사됨",
+  "receive.copyFail": "자동 복사 실패 — 주소를 길게 눌러 수동 복사하세요",
+
+  // wallet.send
+  "wsend.title": "송금",
+  "wsend.subtitleWaiting": "지갑 준비 중",
+  "wsend.subtitle": "비수탁 · {label}",
+  "wsend.back": "지갑으로",
+  "wsend.assetPick": "자산 선택",
+  "wsend.usdtMainnetOnly": "USDT는 메인넷에서만 전송할 수 있습니다.",
+  "wsend.fromAddr": "보내는 주소",
+  "wsend.toAddr": "받는 주소",
+  "wsend.amount": "금액 ({asset})",
+  "wsend.mainnetWarn":
+    "메인넷 전송은 즉시 확정되며 되돌릴 수 없습니다. 주소·금액을 반드시 두 번 이상 확인하세요.",
+  "wsend.sending": "전송 중...",
+  "wsend.send": "전송",
+  "wsend.success": "전송 완료",
+  "wsend.errAddrRequired": "받는 주소를 입력하세요",
+  "wsend.errBtcAddr": "유효한 BTC 주소가 아닙니다",
+  "wsend.errBtcTestAddr": "유효한 BTC 테스트넷 주소가 아닙니다",
+  "wsend.errSolAddr": "유효한 Solana 주소가 아닙니다",
+  "wsend.errEvmAddr": "유효한 EVM 주소가 아닙니다",
+  "wsend.errAmount": "금액 오류",
+  "wsend.errFailed": "전송 실패",
+  "wsend.confirmMainnet":
+    "메인넷에서 {amount} {asset} 을(를) 다음 주소로 전송합니다:\n{to}\n\n이 작업은 되돌릴 수 없습니다. 정말 진행하시겠습니까?",
+
+  // unlock extras
+  "unlock.password": "비밀번호",
+  "unlock.checking": "확인 중...",
+  "unlock.loadedToast": "기존 지갑을 불러왔습니다",
+  "unlock.wrongPw": "비밀번호가 올바르지 않습니다",
+  "unlock.loadFail": "지갑 불러오기 실패: {msg}",
+  "unlock.deletedToast": "지갑이 삭제되었습니다",
+
+  // points
+  "points.title": "포인트",
+  "points.subtitle": "Supervizion Rewards",
+  "points.badge": "Energy Points",
+  "points.monthlySummary": "이번 달 적립 {earned} P · 다음 등급까지 {toNext} P",
+  "points.earn": "적립",
+  "points.use": "사용",
+  "points.convert": "전환",
+  "points.store": "포인트 스토어",
+  "points.viewAll": "전체 보기",
+  "points.exchange": "교환",
+  "points.history": "포인트 내역",
+  "points.last30": "최근 30일",
 };
 
 const en: Dict = {
@@ -225,6 +329,103 @@ const en: Dict = {
   "unlock.resetCancel": "Cancel",
   "unlock.resetConfirm": "Delete and restore",
   "unlock.home": "Home",
+
+  "wallet.derivFailed": "Failed to derive addresses",
+  "wallet.addrCopied": "{sym} address copied",
+  "wallet.mainnetWarn":
+    "Mainnet uses real funds.\nLost seed or code bugs may cause permanent loss.\nContinue anyway?",
+  "wallet.assetsNote":
+    "Note — currently supported: BTC, ETH, USDT (ERC-20), BNB, SOL.",
+  "wallet.noteLabel": "Note",
+
+  "home.title": "Home",
+  "home.subtitle": "Supervizion · See Beyond. Lead Ahead.",
+  "home.recentTx": "Recent transactions",
+  "home.viewAll": "View all",
+  "home.complianceBadge": "COMPLIANCE",
+  "home.complianceTitle": "Virtual Asset User Protection Act applied",
+  "home.complianceBody":
+    "User deposits are segregated; abnormal trading is monitored per §10. Transfers worth 1,000,000 KRW or more are subject to the Travel Rule.",
+  "home.setupTitle": "Set up your real wallet",
+  "home.setupBody":
+    "Non-custodial — your seed phrase lives only on this device. Start safely on testnet by default.",
+  "home.setupCta": "Create / restore wallet",
+  "home.loadingTitle": "Loading your wallet",
+  "home.loadingBody": "Checking the wallet stored on this device.",
+  "home.activeTitle": "Wallet is active",
+  "home.activeBody":
+    "View addresses and balances; switch between testnet and mainnet.",
+  "home.openWallet": "Open wallet",
+
+  "activity.title": "Activity",
+  "activity.subtitleWaiting": "Wallet warming up",
+  "activity.subtitleLive": "On-chain · {label}",
+  "activity.needWallet": "Wallet info is not available yet or no wallet exists.",
+  "activity.allAssets": "All assets",
+  "activity.allDirs": "All directions",
+  "activity.dirIn": "Received",
+  "activity.dirOut": "Sent",
+  "activity.dirSelf": "Internal",
+  "activity.refresh": "Refresh",
+  "activity.loading": "Loading on-chain data…",
+  "activity.error": "Failed to load activity. Please retry shortly.",
+  "activity.empty": "No transactions match the filter.",
+  "activity.statusFailed": "Failed",
+  "activity.statusPending": "Pending",
+
+  "receive.title": "Receive",
+  "receive.subtitleWaiting": "Wallet warming up",
+  "receive.subtitle": "Pick a chain and share the address or QR · {mode}",
+  "receive.compatNote": "Only send {network} compatible assets",
+  "receive.myAddr": "My {label} address",
+  "receive.generating": "Generating address...",
+  "receive.copy": "Copy address",
+  "receive.copied": "Copied",
+  "receive.copyFail": "Auto-copy failed — long-press the address to copy manually",
+
+  "wsend.title": "Send",
+  "wsend.subtitleWaiting": "Wallet warming up",
+  "wsend.subtitle": "Non-custodial · {label}",
+  "wsend.back": "Back to wallet",
+  "wsend.assetPick": "Select asset",
+  "wsend.usdtMainnetOnly": "USDT can only be sent on mainnet.",
+  "wsend.fromAddr": "From address",
+  "wsend.toAddr": "To address",
+  "wsend.amount": "Amount ({asset})",
+  "wsend.mainnetWarn":
+    "Mainnet transfers settle immediately and are irreversible. Double-check the address and amount.",
+  "wsend.sending": "Sending...",
+  "wsend.send": "Send",
+  "wsend.success": "Transfer complete",
+  "wsend.errAddrRequired": "Enter a recipient address",
+  "wsend.errBtcAddr": "Invalid BTC address",
+  "wsend.errBtcTestAddr": "Invalid BTC testnet address",
+  "wsend.errSolAddr": "Invalid Solana address",
+  "wsend.errEvmAddr": "Invalid EVM address",
+  "wsend.errAmount": "Invalid amount",
+  "wsend.errFailed": "Send failed",
+  "wsend.confirmMainnet":
+    "You are sending {amount} {asset} on mainnet to:\n{to}\n\nThis cannot be undone. Continue?",
+
+  "unlock.password": "Password",
+  "unlock.checking": "Checking...",
+  "unlock.loadedToast": "Existing wallet loaded",
+  "unlock.wrongPw": "Incorrect password",
+  "unlock.loadFail": "Failed to load wallet: {msg}",
+  "unlock.deletedToast": "Wallet deleted",
+
+  "points.title": "Points",
+  "points.subtitle": "Supervizion Rewards",
+  "points.badge": "Energy Points",
+  "points.monthlySummary": "Earned {earned} P this month · {toNext} P to next tier",
+  "points.earn": "Earn",
+  "points.use": "Use",
+  "points.convert": "Convert",
+  "points.store": "Points store",
+  "points.viewAll": "View all",
+  "points.exchange": "Redeem",
+  "points.history": "Points history",
+  "points.last30": "Last 30 days",
 };
 
 const dicts: Record<string, Dict> = { ko, en };
