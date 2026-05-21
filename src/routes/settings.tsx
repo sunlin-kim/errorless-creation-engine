@@ -8,7 +8,6 @@ import {
   Eye,
   FileText,
   ChevronRight,
-  Lock,
   Trash2,
   AlertTriangle,
 } from "lucide-react";
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
-  const lock = useWalletStore((s) => s.lock);
   const network = useWalletStore((s) => s.network);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
 
@@ -40,27 +38,15 @@ function SettingsPage() {
             <div className="min-w-0">
               <p className="text-sm font-medium">현재 상태</p>
               <p className="text-xs text-on-surface-variant">
-                {mnemonic ? "잠금 해제됨 — 이 기기에서 활성" : "잠금 또는 미설정"}
+                {mnemonic ? "이 기기에서 활성" : "지갑 확인 중 또는 미설정"}
               </p>
             </div>
-            {mnemonic ? (
-              <button
-                onClick={() => {
-                  lock();
-                  toast.success("지갑을 잠갔습니다");
-                }}
-                className="h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold inline-flex items-center gap-1.5"
-              >
-                <Lock size={14} /> 지금 잠그기
-              </button>
-            ) : (
-              <Link
-                to="/wallet/unlock"
-                className="h-9 px-3 rounded-lg border border-outline text-xs font-semibold inline-flex items-center gap-1.5"
-              >
-                <Lock size={14} /> 잠금 해제
-              </Link>
-            )}
+            <Link
+              to={mnemonic ? "/wallet" : "/wallet/setup"}
+              className="h-9 px-3 rounded-lg border border-outline text-xs font-semibold inline-flex items-center gap-1.5"
+            >
+              {mnemonic ? "지갑 보기" : "지갑 설정"}
+            </Link>
           </div>
 
 
@@ -70,7 +56,7 @@ function SettingsPage() {
             <DangerZone
               onWipe={async () => {
                 await deleteVault();
-                lock();
+                useWalletStore.getState().lock();
                 setVaultExists(false);
                 setVaultPresent(false);
                 toast.success("지갑이 이 기기에서 삭제되었습니다");
