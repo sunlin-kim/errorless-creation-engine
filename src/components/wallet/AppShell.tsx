@@ -62,8 +62,9 @@ export function AppShell({
           )}
         </header>
 
-        <div className="px-5 lg:px-8 py-6 max-w-6xl mx-auto">{children}</div>
+        <div className="px-5 lg:px-8 py-6 pb-24 lg:pb-6 max-w-6xl mx-auto">{children}</div>
       </main>
+      <BottomNav />
     </div>
   );
 }
