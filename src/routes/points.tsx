@@ -15,9 +15,9 @@ const history = [
 ];
 
 const rewards = [
-  { id: "r1", label: "스타벅스 e-쿠폰", cost: 4500, tag: "HOT" },
-  { id: "r2", label: "거래 수수료 50% 할인권", cost: 3000, tag: "베스트" },
-  { id: "r3", label: "프리미엄 1개월 체험", cost: 8000, tag: "한정" },
+  { id: "r1", label: "휴대폰 구매 포인트", cost: 4500, tag: "HOT" },
+  { id: "r2", label: "레저 · 여행 30% 할인권", cost: 3000, tag: "베스트" },
+  { id: "r3", label: "전기차 충전 포인트", cost: 8000, tag: "한정" },
   { id: "r4", label: "USDT 5달러 전환", cost: 6500 },
 ];
 
