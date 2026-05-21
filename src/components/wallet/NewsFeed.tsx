@@ -171,21 +171,34 @@ function NewsCard({ item }: { item: NewsItem }) {
       className="group block rounded-2xl border border-outline bg-surface-container overflow-hidden hover:border-primary/40 transition-colors"
     >
       <div
-        className={`relative aspect-[16/9] bg-gradient-to-br ${item.thumb}`}
+        className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${item.thumb ?? ""}`}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)]" />
+        {item.image && (
+          <img
+            src={item.image}
+            alt={item.title}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = "none";
+            }}
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
         {item.type === "video" ? (
           <PlayCircle
             size={48}
             className="absolute inset-0 m-auto text-white drop-shadow-lg"
           />
         ) : (
-          <Newspaper
-            size={28}
-            className="absolute top-4 right-4 text-white/80"
-          />
+          !item.image && (
+            <Newspaper
+              size={28}
+              className="absolute top-4 right-4 text-white/80"
+            />
+          )
         )}
-        <span className="absolute top-3 left-3 text-[10px] tracking-[0.18em] font-semibold uppercase px-2 py-1 rounded-full bg-black/35 text-white backdrop-blur">
+        <span className="absolute top-3 left-3 text-[10px] tracking-[0.18em] font-semibold uppercase px-2 py-1 rounded-full bg-black/45 text-white backdrop-blur">
           {item.category}
         </span>
         {item.duration && (
