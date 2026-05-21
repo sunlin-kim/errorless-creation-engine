@@ -18,6 +18,8 @@ export interface ChainEndpoints {
   // Solana JSON-RPC
   solRpc: string;
   solExplorer: string;
+  // DUCKY (SPL token) — mainnet only
+  duckyMint?: string;
   label: string;
 }
 
@@ -34,6 +36,7 @@ export function getEndpoints(env: NetworkEnv): ChainEndpoints {
       bscExplorer: "https://bscscan.com",
       solRpc: "https://api.mainnet-beta.solana.com",
       solExplorer: "https://explorer.solana.com",
+      duckyMint: "DE8NNksD5m3Kd4ohJAzTwJHLss9zbXdNUegEoL4QxD4C",
       label: "Mainnet",
     };
   }

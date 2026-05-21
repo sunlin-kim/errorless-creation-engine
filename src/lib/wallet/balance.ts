@@ -12,7 +12,7 @@
 import type { ChainEndpoints } from "./networks";
 
 export interface AssetBalance {
-  symbol: "ETH" | "BTC" | "USDT" | "BNB" | "SOL";
+  symbol: "ETH" | "BTC" | "USDT" | "BNB" | "SOL" | "DUCKY";
   /** 최소 단위 정수 (wei / satoshi / 6-decimals / lamports) */
   raw: bigint;
   /** 사람이 읽는 단위 */
@@ -25,6 +25,7 @@ const BTC_DECIMALS = 8;
 const USDT_DECIMALS = 6;
 const BNB_DECIMALS = 18;
 const SOL_DECIMALS = 9;
+const DUCKY_DECIMALS = 9;
 
 function formatUnits(raw: bigint, decimals: number, displayDp = 6): string {
   const neg = raw < 0n;
@@ -155,12 +156,64 @@ export async function getSolBalance(
   };
 }
 
+/** SPL 토큰 잔액 — Solana getTokenAccountsByOwner (jsonParsed) 사용 */
+export async function getSplBalance(
+  ep: ChainEndpoints,
+  owner: string,
+  mint: string,
+  symbol: AssetBalance["symbol"],
+  decimals: number,
+): Promise<AssetBalance | null> {
+  if (!mint) return null;
+  const r = await fetch(ep.solRpc, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getTokenAccountsByOwner",
+      params: [owner, { mint }, { encoding: "jsonParsed" }],
+    }),
+  });
+  if (!r.ok) throw new Error(`SPL RPC HTTP ${r.status}`);
+  const j = (await r.json()) as {
+    result?: {
+      value: Array<{
+        account: { data: { parsed: { info: { tokenAmount: { amount: string } } } } };
+      }>;
+    };
+    error?: { message: string };
+  };
+  if (j.error) throw new Error(`SPL: ${j.error.message}`);
+  let raw = 0n;
+  for (const acc of j.result?.value ?? []) {
+    const amt = acc.account?.data?.parsed?.info?.tokenAmount?.amount;
+    if (amt) raw += BigInt(amt);
+  }
+  return {
+    symbol,
+    raw,
+    decimals,
+    formatted: formatUnits(raw, decimals, 4),
+  };
+}
+
+export async function getDuckyBalance(
+  ep: ChainEndpoints,
+  owner: string,
+): Promise<AssetBalance | null> {
+  if (!ep.duckyMint) return null;
+  return getSplBalance(ep, owner, ep.duckyMint, "DUCKY", DUCKY_DECIMALS);
+}
+
+
 export interface PriceMap {
   ETH: number;
   BTC: number;
   USDT: number;
   BNB: number;
   SOL: number;
+  DUCKY: number;
 }
 
 export interface PricesResult {
@@ -175,7 +228,7 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
   const changeKey = `${vs}_24h_change`;
   try {
     const r = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=${vs}&include_24hr_change=true`,
+      `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana,duckyduck&vs_currencies=${vs}&include_24hr_change=true`,
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
     const j = (await r.json()) as Record<string, Record<string, number>>;
@@ -188,6 +241,7 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
         USDT: px("tether"),
         BNB: px("binancecoin"),
         SOL: px("solana"),
+        DUCKY: px("duckyduck"),
       },
       changes24h: {
         ETH: ch("ethereum"),
@@ -195,10 +249,11 @@ export async function getPrices(fiat: FiatCode = "KRW"): Promise<PricesResult> {
         USDT: ch("tether"),
         BNB: ch("binancecoin"),
         SOL: ch("solana"),
+        DUCKY: ch("duckyduck"),
       },
     };
   } catch {
-    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0 };
+    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0, DUCKY: 0 };
     return { prices: zero, changes24h: zero };
   }
 }

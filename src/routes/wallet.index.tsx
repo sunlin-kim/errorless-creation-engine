@@ -12,6 +12,7 @@ import {
   getUsdtBalance,
   getBnbBalance,
   getSolBalance,
+  getDuckyBalance,
   getPrices,
   toFiat,
   formatFiat,
@@ -131,7 +132,7 @@ function WalletInner({
     queryKey: ["balances", network, currency, addrs?.eth, addrs?.btc, addrs?.sol],
     queryFn: async () => {
       if (!addrs) throw new Error("no addr");
-      const [eth, btc, usdt, bnb, sol, prices] = await Promise.all([
+      const [eth, btc, usdt, bnb, sol, ducky, prices] = await Promise.all([
         getEthBalance(ep, addrs.eth).catch((e) => {
           console.warn("eth", e);
           return null;
@@ -152,9 +153,13 @@ function WalletInner({
           console.warn("sol", e);
           return null;
         }),
+        getDuckyBalance(ep, addrs.sol).catch((e) => {
+          console.warn("ducky", e);
+          return null;
+        }),
         getPrices(currency),
       ]);
-      return { eth, btc, usdt, bnb, sol, prices };
+      return { eth, btc, usdt, bnb, sol, ducky, prices };
     },
     staleTime: 30_000,
     refetchInterval: 60_000,
@@ -176,6 +181,7 @@ function WalletInner({
     acc(d.usdt, d.prices.prices.USDT, d.prices.changes24h.USDT);
     acc(d.bnb, d.prices.prices.BNB, d.prices.changes24h.BNB);
     acc(d.sol, d.prices.prices.SOL, d.prices.changes24h.SOL);
+    acc(d.ducky, d.prices.prices.DUCKY, d.prices.changes24h.DUCKY);
     const change = prev > 0 ? ((total - prev) / prev) * 100 : 0;
     return { total, change };
   }, [balancesQ.data]);
@@ -183,7 +189,7 @@ function WalletInner({
   const items = useMemo(() => {
     const d = balancesQ.data;
     const list: Array<{
-      symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
+      symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL" | "DUCKY";
       name: string;
       networkLabel: string;
       balance: AssetBalance | null;
@@ -253,6 +259,18 @@ function WalletInner({
         explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${addrs?.sol ?? ""}`,
         color: "#9945FF",
         show: true,
+      },
+      {
+        symbol: "DUCKY",
+        name: "DuckyDuck (SPL)",
+        networkLabel: "Solana",
+        balance: d?.ducky ?? null,
+        priceKrw: d?.prices.prices.DUCKY ?? 0,
+        change24h: d?.prices.changes24h.DUCKY ?? 0,
+        address: addrs?.sol,
+        explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${ep.duckyMint ?? ""}`,
+        color: "#FFD93D",
+        show: !!ep.duckyMint,
       },
     ];
     return list.filter((i) => i.show);
@@ -418,7 +436,7 @@ function LiveAssetRow({
   loading,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL" | "DUCKY";
     name: string;
     networkLabel: string;
     balance: AssetBalance | null;
@@ -475,7 +493,7 @@ function AddressLine({
   item,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL" | "DUCKY";
     networkLabel: string;
     address: string | undefined;
     explorer: string;
