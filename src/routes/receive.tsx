@@ -133,17 +133,17 @@ function ReceivePage() {
     const ok = await copyText(address);
     if (ok) {
       setCopied(true);
-      toast.success(`${current.label} 주소가 복사되었습니다`);
+      toast.success(t("wallet.addrCopied", { sym: current.label }));
       setTimeout(() => setCopied(false), 1500);
     } else {
-      toast.error("자동 복사 실패 — 주소를 길게 눌러 수동 복사하세요");
+      toast.error(t("receive.copyFail"));
     }
   };
 
   return (
     <AppShell
-      title="받기"
-      subtitle={`체인을 선택하고 주소·QR을 공유하세요 · ${network === "mainnet" ? "메인넷" : "테스트넷"}`}
+      title={t("receive.title")}
+      subtitle={t("receive.subtitle", { mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet") })}
     >
       <div className="max-w-xl mx-auto rounded-3xl border border-outline bg-surface p-6">
         <div className="flex flex-wrap gap-2">
@@ -167,16 +167,16 @@ function ReceivePage() {
             <QrCanvas value={address ?? ""} />
           </div>
           <p className="mt-3 text-xs text-on-surface-variant">
-            {current.network} 호환 자산만 보내세요
+            {t("receive.compatNote", { network: current.network })}
           </p>
         </div>
 
         <div className="mt-6 rounded-2xl bg-surface-container p-4">
           <p className="text-xs text-on-surface-variant">
-            내 {current.label} 주소
+            {t("receive.myAddr", { label: current.label })}
           </p>
           <p className="mt-1 break-all font-mono text-sm font-medium min-h-[1.25rem]">
-            {address ?? "주소 생성 중..."}
+            {address ?? t("receive.generating")}
           </p>
           <button
             onClick={copy}
@@ -184,7 +184,7 @@ function ReceivePage() {
             className="mt-3 w-full h-11 rounded-xl bg-primary text-primary-foreground font-medium inline-flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-50"
           >
             {copied ? <Check size={16} /> : <Copy size={16} />}
-            {copied ? "복사됨" : "주소 복사"}
+            {copied ? t("receive.copied") : t("receive.copy")}
           </button>
         </div>
 
