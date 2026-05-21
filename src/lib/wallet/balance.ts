@@ -12,10 +12,10 @@
 import type { ChainEndpoints } from "./networks";
 
 export interface AssetBalance {
-  symbol: "ETH" | "BTC" | "USDT";
-  /** 최소 단위 정수 (wei / satoshi / 6-decimals) */
+  symbol: "ETH" | "BTC" | "USDT" | "BNB" | "SOL";
+  /** 최소 단위 정수 (wei / satoshi / 6-decimals / lamports) */
   raw: bigint;
-  /** 사람이 읽는 단위 (ETH / BTC / USDT) */
+  /** 사람이 읽는 단위 */
   formatted: string;
   decimals: number;
 }
@@ -23,6 +23,8 @@ export interface AssetBalance {
 const ETH_DECIMALS = 18;
 const BTC_DECIMALS = 8;
 const USDT_DECIMALS = 6;
+const BNB_DECIMALS = 18;
+const SOL_DECIMALS = 9;
 
 function formatUnits(raw: bigint, decimals: number, displayDp = 6): string {
   const neg = raw < 0n;
@@ -110,10 +112,55 @@ export async function getBtcBalance(
   };
 }
 
+export async function getBnbBalance(
+  ep: ChainEndpoints,
+  address: string,
+): Promise<AssetBalance> {
+  const hex = (await rpc(ep.bscRpc, "eth_getBalance", [address, "latest"])) as string;
+  const raw = BigInt(hex);
+  return {
+    symbol: "BNB",
+    raw,
+    decimals: BNB_DECIMALS,
+    formatted: formatUnits(raw, BNB_DECIMALS, 6),
+  };
+}
+
+export async function getSolBalance(
+  ep: ChainEndpoints,
+  address: string,
+): Promise<AssetBalance> {
+  const r = await fetch(ep.solRpc, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getBalance",
+      params: [address],
+    }),
+  });
+  if (!r.ok) throw new Error(`SOL RPC HTTP ${r.status}`);
+  const j = (await r.json()) as {
+    result?: { value: number };
+    error?: { message: string };
+  };
+  if (j.error) throw new Error(`SOL: ${j.error.message}`);
+  const raw = BigInt(j.result?.value ?? 0);
+  return {
+    symbol: "SOL",
+    raw,
+    decimals: SOL_DECIMALS,
+    formatted: formatUnits(raw, SOL_DECIMALS, 6),
+  };
+}
+
 export interface PriceMap {
   ETH: number;
   BTC: number;
   USDT: number;
+  BNB: number;
+  SOL: number;
 }
 
 export interface PricesResult {
@@ -124,7 +171,7 @@ export interface PricesResult {
 export async function getPricesKrw(): Promise<PricesResult> {
   try {
     const r = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether&vs_currencies=krw&include_24hr_change=true",
+      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin,tether,binancecoin,solana&vs_currencies=krw&include_24hr_change=true",
     );
     if (!r.ok) throw new Error("price HTTP " + r.status);
     const j = (await r.json()) as Record<
@@ -136,18 +183,20 @@ export async function getPricesKrw(): Promise<PricesResult> {
         ETH: j.ethereum?.krw ?? 0,
         BTC: j.bitcoin?.krw ?? 0,
         USDT: j.tether?.krw ?? 0,
+        BNB: j.binancecoin?.krw ?? 0,
+        SOL: j.solana?.krw ?? 0,
       },
       changes24h: {
         ETH: j.ethereum?.krw_24h_change ?? 0,
         BTC: j.bitcoin?.krw_24h_change ?? 0,
         USDT: j.tether?.krw_24h_change ?? 0,
+        BNB: j.binancecoin?.krw_24h_change ?? 0,
+        SOL: j.solana?.krw_24h_change ?? 0,
       },
     };
   } catch {
-    return {
-      prices: { ETH: 0, BTC: 0, USDT: 0 },
-      changes24h: { ETH: 0, BTC: 0, USDT: 0 },
-    };
+    const zero = { ETH: 0, BTC: 0, USDT: 0, BNB: 0, SOL: 0 };
+    return { prices: zero, changes24h: zero };
   }
 }
 

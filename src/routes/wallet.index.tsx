@@ -10,6 +10,8 @@ import {
   getEthBalance,
   getBtcBalance,
   getUsdtBalance,
+  getBnbBalance,
+  getSolBalance,
   getPricesKrw,
   toKrw,
   formatKrw,
@@ -79,13 +81,19 @@ function WalletInner({
   setNetwork: (n: Net) => void;
 }) {
   const ep = useMemo(() => getEndpoints(network), [network]);
-  const [addrs, setAddrs] = useState<{ eth: string; btc: string } | null>(null);
+  const [addrs, setAddrs] = useState<{
+    eth: string;
+    btc: string;
+    bnb: string;
+    sol: string;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     deriveAddresses(mnemonic, network)
       .then((a) => {
-        if (!cancelled) setAddrs({ eth: a.eth, btc: a.btc });
+        if (!cancelled)
+          setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol });
       })
       .catch((e) => {
         console.error(e);
@@ -98,10 +106,10 @@ function WalletInner({
 
   const balancesQ = useQuery({
     enabled: !!addrs,
-    queryKey: ["balances", network, addrs?.eth, addrs?.btc],
+    queryKey: ["balances", network, addrs?.eth, addrs?.btc, addrs?.sol],
     queryFn: async () => {
       if (!addrs) throw new Error("no addr");
-      const [eth, btc, usdt, prices] = await Promise.all([
+      const [eth, btc, usdt, bnb, sol, prices] = await Promise.all([
         getEthBalance(ep, addrs.eth).catch((e) => {
           console.warn("eth", e);
           return null;
@@ -114,9 +122,17 @@ function WalletInner({
           console.warn("usdt", e);
           return null;
         }),
+        getBnbBalance(ep, addrs.bnb).catch((e) => {
+          console.warn("bnb", e);
+          return null;
+        }),
+        getSolBalance(ep, addrs.sol).catch((e) => {
+          console.warn("sol", e);
+          return null;
+        }),
         getPricesKrw(),
       ]);
-      return { eth, btc, usdt, prices };
+      return { eth, btc, usdt, bnb, sol, prices };
     },
     staleTime: 30_000,
     refetchInterval: 60_000,
@@ -131,12 +147,13 @@ function WalletInner({
       if (!b || !p) return;
       const v = toKrw(b, d.prices.prices);
       total += v;
-      // ch is % change; previous value = current / (1 + ch/100)
       prev += v / (1 + ch / 100);
     };
     acc(d.eth, d.prices.prices.ETH, d.prices.changes24h.ETH);
     acc(d.btc, d.prices.prices.BTC, d.prices.changes24h.BTC);
     acc(d.usdt, d.prices.prices.USDT, d.prices.changes24h.USDT);
+    acc(d.bnb, d.prices.prices.BNB, d.prices.changes24h.BNB);
+    acc(d.sol, d.prices.prices.SOL, d.prices.changes24h.SOL);
     const change = prev > 0 ? ((total - prev) / prev) * 100 : 0;
     return { total, change };
   }, [balancesQ.data]);
@@ -144,7 +161,7 @@ function WalletInner({
   const items = useMemo(() => {
     const d = balancesQ.data;
     const list: Array<{
-      symbol: "BTC" | "ETH" | "USDT";
+      symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
       name: string;
       networkLabel: string;
       balance: AssetBalance | null;
@@ -190,6 +207,30 @@ function WalletInner({
         explorer: `${ep.ethExplorer}/token/${ep.usdtContract ?? ""}?a=${addrs?.eth ?? ""}`,
         color: "#26A17B",
         show: !!ep.usdtContract,
+      },
+      {
+        symbol: "BNB",
+        name: network === "mainnet" ? "BNB Smart Chain" : "BSC Testnet",
+        networkLabel: "BSC",
+        balance: d?.bnb ?? null,
+        priceKrw: d?.prices.prices.BNB ?? 0,
+        change24h: d?.prices.changes24h.BNB ?? 0,
+        address: addrs?.bnb,
+        explorer: `${ep.bscExplorer}/address/${addrs?.bnb ?? ""}`,
+        color: "#F3BA2F",
+        show: true,
+      },
+      {
+        symbol: "SOL",
+        name: network === "mainnet" ? "Solana" : "Solana Devnet",
+        networkLabel: "Solana",
+        balance: d?.sol ?? null,
+        priceKrw: d?.prices.prices.SOL ?? 0,
+        change24h: d?.prices.changes24h.SOL ?? 0,
+        address: addrs?.sol,
+        explorer: `${ep.solExplorer}${ep.solExplorer.includes("?") ? "&" : "/"}address/${addrs?.sol ?? ""}`,
+        color: "#9945FF",
+        show: true,
       },
     ];
     return list.filter((i) => i.show);
@@ -357,7 +398,7 @@ function LiveAssetRow({
   loading,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
     name: string;
     networkLabel: string;
     balance: AssetBalance | null;
@@ -413,7 +454,7 @@ function AddressLine({
   item,
 }: {
   item: {
-    symbol: "BTC" | "ETH" | "USDT";
+    symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
     networkLabel: string;
     address: string | undefined;
     explorer: string;
