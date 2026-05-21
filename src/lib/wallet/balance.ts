@@ -156,6 +156,57 @@ export async function getSolBalance(
   };
 }
 
+/** SPL 토큰 잔액 — Solana getTokenAccountsByOwner (jsonParsed) 사용 */
+export async function getSplBalance(
+  ep: ChainEndpoints,
+  owner: string,
+  mint: string,
+  symbol: AssetBalance["symbol"],
+  decimals: number,
+): Promise<AssetBalance | null> {
+  if (!mint) return null;
+  const r = await fetch(ep.solRpc, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "getTokenAccountsByOwner",
+      params: [owner, { mint }, { encoding: "jsonParsed" }],
+    }),
+  });
+  if (!r.ok) throw new Error(`SPL RPC HTTP ${r.status}`);
+  const j = (await r.json()) as {
+    result?: {
+      value: Array<{
+        account: { data: { parsed: { info: { tokenAmount: { amount: string } } } } };
+      }>;
+    };
+    error?: { message: string };
+  };
+  if (j.error) throw new Error(`SPL: ${j.error.message}`);
+  let raw = 0n;
+  for (const acc of j.result?.value ?? []) {
+    const amt = acc.account?.data?.parsed?.info?.tokenAmount?.amount;
+    if (amt) raw += BigInt(amt);
+  }
+  return {
+    symbol,
+    raw,
+    decimals,
+    formatted: formatUnits(raw, decimals, 4),
+  };
+}
+
+export async function getDuckyBalance(
+  ep: ChainEndpoints,
+  owner: string,
+): Promise<AssetBalance | null> {
+  if (!ep.duckyMint) return null;
+  return getSplBalance(ep, owner, ep.duckyMint, "DUCKY", DUCKY_DECIMALS);
+}
+
+
 export interface PriceMap {
   ETH: number;
   BTC: number;
