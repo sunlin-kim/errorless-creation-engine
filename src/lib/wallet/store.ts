@@ -31,7 +31,7 @@ export const useWalletStore = create<WalletState>()(
       vaultExists: null,
       mnemonic: null,
       network: "mainnet",
-      autoLockMinutes: 60,
+      autoLockMinutes: 0,
       lastActivity: Date.now(),
 
       setVaultExists: (v) => set({ vaultExists: v }),
