@@ -14,6 +14,10 @@ interface WalletState {
   vaultExists: boolean | null;
   /** 잠금 해제된 평문 니모닉 — 메모리에만 (persist 제외) */
   mnemonic: string | null;
+  derivedAddresses: {
+    mainnet: { eth: string; btc: string; bnb: string; sol: string } | null;
+    testnet: { eth: string; btc: string; bnb: string; sol: string } | null;
+  };
   network: NetworkEnv;
   currency: FiatCurrency;
   language: AppLanguage;
@@ -25,6 +29,10 @@ interface WalletState {
   setVaultExists: (v: boolean) => void;
   unlock: (mnemonic: string) => void;
   lock: () => void;
+  setDerivedAddresses: (
+    env: NetworkEnv,
+    addresses: { eth: string; btc: string; bnb: string; sol: string },
+  ) => void;
   setNetwork: (n: NetworkEnv) => void;
   setCurrency: (c: FiatCurrency) => void;
   setLanguage: (l: AppLanguage) => void;
@@ -37,6 +45,7 @@ export const useWalletStore = create<WalletState>()(
     (set) => ({
       vaultExists: null,
       mnemonic: null,
+      derivedAddresses: { mainnet: null, testnet: null },
       network: "mainnet",
       currency: "KRW",
       language: "ko",
@@ -50,8 +59,15 @@ export const useWalletStore = create<WalletState>()(
       },
       lock: () => {
         void clearUnlockedMnemonic();
-        set({ mnemonic: null });
+        set({ mnemonic: null, derivedAddresses: { mainnet: null, testnet: null } });
       },
+      setDerivedAddresses: (env, addresses) =>
+        set((s) => ({
+          derivedAddresses: {
+            ...s.derivedAddresses,
+            [env]: addresses,
+          },
+        })),
       setNetwork: (n) => set({ network: n }),
       setCurrency: (c) => set({ currency: c }),
       setLanguage: (l) => set({ language: l }),
