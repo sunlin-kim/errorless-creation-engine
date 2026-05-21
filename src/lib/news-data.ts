@@ -123,6 +123,7 @@ export const newsFeed: NewsItem[] = [
     source: "매일경제",
     publishedAt: "2024-02-29T16:20:00+09:00",
     url: "https://www.mk.co.kr/news/business/10954068",
+    image: "https://wimg.mk.co.kr/news/cms/202402/29/news-p.v1.20240229.b48141c209b24c98af0c08af27d47a20_P1.jpg",
     thumb: "from-indigo-600 via-violet-600 to-fuchsia-500",
   },
 ];
