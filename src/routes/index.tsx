@@ -27,7 +27,6 @@ function Dashboard() {
   return (
     <AppShell title={t("home.title")} subtitle={t("home.subtitle")}>
       <div className="space-y-6">
-        <WalletStatusCard vaultPresent={vaultPresent} isReady={isReady} />
         <NewsFeed />
       </div>
     </AppShell>
