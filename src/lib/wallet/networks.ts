@@ -18,6 +18,8 @@ export interface ChainEndpoints {
   // Solana JSON-RPC
   solRpc: string;
   solExplorer: string;
+  // DUCKY (SPL token) — mainnet only
+  duckyMint?: string;
   label: string;
 }
 
