@@ -220,7 +220,15 @@ function SendPage() {
             <input
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              placeholder={asset === "BTC" ? (network === "mainnet" ? "bc1..." : "tb1...") : "0x..."}
+              placeholder={
+                asset === "BTC"
+                  ? network === "mainnet"
+                    ? "bc1..."
+                    : "tb1..."
+                  : asset === "SOL"
+                    ? "Solana 주소 (base58)"
+                    : "0x..."
+              }
               className="mt-1 w-full h-10 rounded-lg border border-outline bg-surface-container px-3 text-sm font-mono"
             />
           </div>
