@@ -26,31 +26,9 @@ function Dashboard() {
 
   return (
     <AppShell title={t("home.title")} subtitle={t("home.subtitle")}>
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <WalletStatusCard vaultPresent={vaultPresent} isReady={isReady} />
-          <NewsFeed />
-        </div>
-
-        <aside className="hidden lg:block space-y-6">
-          <section className="rounded-3xl border border-outline bg-surface p-5">
-            <header className="flex items-center justify-between mb-2">
-              <h2 className="text-base font-semibold">{t("home.recentTx")}</h2>
-              <Link
-                to="/activity"
-                className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
-              >
-                {t("home.viewAll")} <ChevronRight size={14} />
-              </Link>
-            </header>
-            <div className="space-y-1">
-              {transactions.slice(0, 4).map((tx) => (
-                <TxRow key={tx.id} tx={tx} />
-              ))}
-            </div>
-          </section>
-
-        </aside>
+      <div className="space-y-6">
+        <WalletStatusCard vaultPresent={vaultPresent} isReady={isReady} />
+        <NewsFeed />
       </div>
     </AppShell>
   );
