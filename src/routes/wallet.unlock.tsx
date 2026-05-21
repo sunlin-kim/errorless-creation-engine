@@ -13,6 +13,7 @@ export const Route = createFileRoute("/wallet/unlock")({
 });
 
 function UnlockPage() {
+  const t = useT();
   const navigate = useNavigate();
   const unlock = useWalletStore((s) => s.unlock);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
