@@ -67,20 +67,20 @@ function UnlockPage() {
         <div className="flex flex-col items-center mb-8">
           <Logo size={48} />
           <h1 className="mt-4 text-xl font-bold">Supervizion</h1>
-          <p className="text-xs text-on-surface-variant mt-1">이 기기의 기존 지갑 불러오기</p>
+          <p className="text-xs text-on-surface-variant mt-1">{t("unlock.tagline")}</p>
         </div>
 
         <form onSubmit={handleUnlock} className="space-y-4">
           <div className="rounded-2xl border border-outline bg-surface p-5">
             <div className="flex items-center gap-2 mb-3 text-sm font-semibold">
-              <KeyRound size={16} className="text-primary" /> 기존 비밀번호 확인
+              <KeyRound size={16} className="text-primary" /> {t("unlock.passwordCheck")}
             </div>
             <input
               type="password"
               value={pw}
               onChange={(e) => setPw(e.target.value)}
               autoFocus
-              placeholder="비밀번호"
+              placeholder={t("unlock.password")}
               className="w-full h-11 rounded-lg border border-outline bg-background px-3 text-sm focus:border-primary outline-none"
             />
             <button
@@ -88,7 +88,7 @@ function UnlockPage() {
               disabled={busy || pw.length === 0}
               className="mt-3 w-full h-11 rounded-lg bg-primary text-on-primary font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
             >
-              {busy ? "확인 중..." : "지갑 불러오기"}
+              {busy ? t("unlock.checking") : t("unlock.loadWallet")}
             </button>
           </div>
 
