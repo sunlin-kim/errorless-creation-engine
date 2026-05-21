@@ -12,6 +12,7 @@ import {
   getUsdtBalance,
   getBnbBalance,
   getSolBalance,
+  getDuckyBalance,
   getPrices,
   toFiat,
   formatFiat,
