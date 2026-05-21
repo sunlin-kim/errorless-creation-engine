@@ -99,16 +99,13 @@ function UnlockPage() {
                 onClick={() => setConfirmReset(true)}
                 className="text-xs text-on-surface-variant hover:text-on-surface hover:underline"
               >
-                비밀번호를 잊으셨나요?
+                {t("unlock.forgot")}
               </button>
             ) : (
               <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-left">
                 <div className="flex items-start gap-2 text-xs">
                   <AlertTriangle size={14} className="text-destructive shrink-0 mt-0.5" />
-                  <p>
-                    비밀번호 복구는 불가능합니다. 지갑을 삭제하고 시드 구문으로 다시 복구할 수 있습니다.
-                    <strong> 시드가 없으면 자산을 영구히 잃습니다.</strong>
-                  </p>
+                  <p>{t("unlock.resetWarn")}</p>
                 </div>
                 <div className="flex gap-2 mt-3">
                   <button
@@ -116,14 +113,14 @@ function UnlockPage() {
                     onClick={() => setConfirmReset(false)}
                     className="flex-1 h-9 rounded-lg border border-outline text-xs"
                   >
-                    취소
+                    {t("unlock.resetCancel")}
                   </button>
                   <button
                     type="button"
                     onClick={handleReset}
                     className="flex-1 h-9 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold"
                   >
-                    지갑 삭제하고 복구
+                    {t("unlock.resetConfirm")}
                   </button>
                 </div>
               </div>
@@ -134,7 +131,7 @@ function UnlockPage() {
             to="/"
             className="block text-center text-xs text-on-surface-variant hover:underline"
           >
-            홈으로
+            {t("unlock.home")}
           </Link>
         </form>
       </div>
