@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as ReceiveRouteImport } from './routes/receive'
@@ -16,6 +17,11 @@ import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssetIdRouteImport } from './routes/asset.$id'
 
+const WalletRoute = WalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/asset/$id': typeof AssetIdRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/asset/$id': typeof AssetIdRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
   '/settings': typeof SettingsRoute
+  '/wallet': typeof WalletRoute
   '/asset/$id': typeof AssetIdRoute
 }
 export interface FileRouteTypes {
@@ -80,9 +89,17 @@ export interface FileRouteTypes {
     | '/receive'
     | '/send'
     | '/settings'
+    | '/wallet'
     | '/asset/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/activity' | '/receive' | '/send' | '/settings' | '/asset/$id'
+  to:
+    | '/'
+    | '/activity'
+    | '/receive'
+    | '/send'
+    | '/settings'
+    | '/wallet'
+    | '/asset/$id'
   id:
     | '__root__'
     | '/'
@@ -90,6 +107,7 @@ export interface FileRouteTypes {
     | '/receive'
     | '/send'
     | '/settings'
+    | '/wallet'
     | '/asset/$id'
   fileRoutesById: FileRoutesById
 }
@@ -99,11 +117,19 @@ export interface RootRouteChildren {
   ReceiveRoute: typeof ReceiveRoute
   SendRoute: typeof SendRoute
   SettingsRoute: typeof SettingsRoute
+  WalletRoute: typeof WalletRoute
   AssetIdRoute: typeof AssetIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wallet': {
+      id: '/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -155,8 +181,19 @@ const rootRouteChildren: RootRouteChildren = {
   ReceiveRoute: ReceiveRoute,
   SendRoute: SendRoute,
   SettingsRoute: SettingsRoute,
+  WalletRoute: WalletRoute,
   AssetIdRoute: AssetIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
