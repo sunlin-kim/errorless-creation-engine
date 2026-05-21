@@ -342,7 +342,7 @@ function LiveBalanceCard({
   setNetwork: (n: Net) => void;
 }) {
   const t = useT();
-  const currency = useWalletStore((s) => s.currency);
+  const fiat = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
   const shortAddr = ethAddr
@@ -361,7 +361,7 @@ function LiveBalanceCard({
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
-              {hidden ? (currency === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, currency)}
+              {hidden ? (fiat === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, fiat)}
             </span>
           </div>
           <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
@@ -428,7 +428,7 @@ function LiveAssetRow({
   };
   loading: boolean;
 }) {
-  const currency = useWalletStore((s) => s.currency);
+  const fiat = useWalletStore((s) => s.currency);
   const positive = item.change24h >= 0;
   const fiatValue =
     item.balance && item.priceKrw
@@ -455,7 +455,7 @@ function LiveAssetRow({
       </div>
       <div className="text-right">
         <p className="font-medium tnum text-on-surface">
-          {item.balance && item.priceKrw ? formatFiat(fiatValue, currency) : "—"}
+          {item.balance && item.priceKrw ? formatFiat(fiatValue, fiat) : "—"}
         </p>
         <p
           className={`text-xs tnum ${
