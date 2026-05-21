@@ -1,82 +1,134 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/wallet/AppShell";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ShieldCheck,
-  Fingerprint,
   Globe,
   Coins,
   KeyRound,
   Eye,
   FileText,
   ChevronRight,
+  Lock,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
+import { useWalletStore } from "@/lib/wallet/store";
+import { loadVault, deleteVault, hasVault } from "@/lib/wallet/vault";
+import { decryptString } from "@/lib/wallet/crypto";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
 });
 
-const mnemonic =
-  "aurora vault green pulse orbit ledger silent harbor noble crystal axiom forge";
-
 function SettingsPage() {
-  const [bio, setBio] = useState(true);
-  const [autoLock, setAutoLock] = useState(true);
-  const [reveal, setReveal] = useState(false);
+  const mnemonic = useWalletStore((s) => s.mnemonic);
+  const lock = useWalletStore((s) => s.lock);
+  const autoLockMinutes = useWalletStore((s) => s.autoLockMinutes);
+  const setAutoLockMinutes = useWalletStore((s) => s.setAutoLockMinutes);
+  const network = useWalletStore((s) => s.network);
+  const setVaultExists = useWalletStore((s) => s.setVaultExists);
+
+  const [vaultPresent, setVaultPresent] = useState<boolean>(false);
+  useEffect(() => {
+    hasVault().then(setVaultPresent);
+  }, [mnemonic]);
 
   return (
     <AppShell title="설정" subtitle="보안 · 통화 · 법적 고지">
       <div className="grid lg:grid-cols-2 gap-6">
         <Card title="보안" icon={ShieldCheck}>
-          <Toggle
-            icon={Fingerprint}
-            title="생체 인증"
-            desc="앱 잠금 해제 시 지문/Face ID 사용"
-            on={bio}
-            onChange={setBio}
-          />
-          <Toggle
-            icon={KeyRound}
-            title="자동 잠금"
-            desc="2분 미사용 시 자동 잠금"
-            on={autoLock}
-            onChange={setAutoLock}
-          />
-
-          <div className="rounded-2xl border border-warning/30 bg-warning/5 p-4">
-            <div className="flex items-center gap-2 text-warning text-xs font-semibold tracking-widest">
-              <Eye size={14} /> SEED PHRASE
+          <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-outline">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">현재 상태</p>
+              <p className="text-xs text-on-surface-variant">
+                {mnemonic ? "잠금 해제됨 — 이 기기에서 활성" : "잠금 또는 미설정"}
+              </p>
             </div>
-            <p className="mt-1 text-sm font-medium text-on-surface">시드 구문 백업</p>
-            <p className="mt-1 text-xs text-on-surface-variant">
-              누구에게도 공유하지 마세요. 노출 시 자산 전액 손실 위험.
+            {mnemonic ? (
+              <button
+                onClick={() => {
+                  lock();
+                  toast.success("지갑을 잠갔습니다");
+                }}
+                className="h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold inline-flex items-center gap-1.5"
+              >
+                <Lock size={14} /> 지금 잠그기
+              </button>
+            ) : (
+              <Link
+                to="/wallet/unlock"
+                className="h-9 px-3 rounded-lg border border-outline text-xs font-semibold inline-flex items-center gap-1.5"
+              >
+                <Lock size={14} /> 잠금 해제
+              </Link>
+            )}
+          </div>
+
+          <div className="p-3 rounded-xl border border-outline">
+            <div className="flex items-center gap-2">
+              <KeyRound size={14} className="text-on-surface-variant" />
+              <p className="text-sm font-medium">자동 잠금</p>
+            </div>
+            <p className="text-xs text-on-surface-variant mt-0.5">
+              지정한 시간 동안 미사용 시 지갑이 자동으로 잠깁니다.
             </p>
-
-            <div className="relative mt-3">
-              <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-surface-container">
-                {mnemonic.split(" ").map((w, i) => (
-                  <div
-                    key={i}
-                    className="text-xs tnum px-2 py-1.5 rounded-md bg-background border border-outline"
-                  >
-                    <span className="text-on-surface-variant mr-1">{i + 1}.</span>
-                    {reveal ? w : "••••"}
-                  </div>
-                ))}
-              </div>
-              {!reveal && (
+            <div className="mt-3 grid grid-cols-5 gap-1.5">
+              {[1, 5, 15, 30, 0].map((m) => (
                 <button
-                  onMouseDown={() => setReveal(true)}
-                  onMouseUp={() => setReveal(false)}
-                  onMouseLeave={() => setReveal(false)}
-                  onTouchStart={() => setReveal(true)}
-                  onTouchEnd={() => setReveal(false)}
-                  className="absolute inset-0 rounded-xl bg-background/60 backdrop-blur-md grid place-items-center text-xs font-medium text-on-surface hover:bg-background/50"
+                  key={m}
+                  onClick={() => setAutoLockMinutes(m)}
+                  className={`h-9 rounded-lg text-xs font-semibold border ${
+                    autoLockMinutes === m
+                      ? "bg-primary text-on-primary border-primary"
+                      : "border-outline bg-surface hover:bg-surface-container"
+                  }`}
                 >
-                  길게 눌러 표시
+                  {m === 0 ? "끄기" : `${m}분`}
                 </button>
-              )}
+              ))}
             </div>
+          </div>
+
+          <SeedRevealBlock disabled={!vaultPresent} />
+
+          {vaultPresent && (
+            <DangerZone
+              onWipe={async () => {
+                await deleteVault();
+                lock();
+                setVaultExists(false);
+                setVaultPresent(false);
+                toast.success("지갑이 이 기기에서 삭제되었습니다");
+              }}
+            />
+          )}
+        </Card>
+
+        <Card title="네트워크" icon={Coins}>
+          <div className="p-3 rounded-xl border border-outline">
+            <p className="text-sm font-medium">활성 네트워크</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">
+              현재 모드:{" "}
+              <span
+                className={`font-semibold ${
+                  network === "mainnet" ? "text-red-500" : "text-emerald-500"
+                }`}
+              >
+                {network === "mainnet" ? "메인넷" : "테스트넷"}
+              </span>
+            </p>
+            <Link
+              to="/wallet"
+              className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            >
+              지갑에서 네트워크 전환 <ChevronRight size={12} />
+            </Link>
+          </div>
+          <div className="text-xs text-on-surface-variant leading-relaxed px-1">
+            지원: Ethereum (Mainnet · Sepolia), Bitcoin (Mainnet · Testnet), USDT
+            (ERC-20). 그 외 체인은 로드맵 상 후속 단계에서 추가됩니다.
           </div>
         </Card>
 
@@ -86,50 +138,158 @@ function SettingsPage() {
           <Select label="시간대" value="Asia/Seoul (UTC+9)" />
         </Card>
 
-        <Card title="네트워크" icon={Coins}>
-          {[
-            "Ethereum Mainnet",
-            "BNB Smart Chain",
-            "Polygon PoS",
-            "Arbitrum One",
-            "Base",
-            "Solana",
-            "Bitcoin",
-          ].map((n) => (
-            <div
-              key={n}
-              className="flex items-center justify-between py-2.5 border-b border-outline/40 last:border-0"
-            >
-              <span className="text-sm">{n}</span>
-              <span className="text-xs text-success">활성</span>
-            </div>
-          ))}
-        </Card>
-
         <Card title="법적 고지" icon={FileText}>
           <p className="text-xs text-on-surface-variant leading-relaxed">
-            본 앱은 대한민국 <strong>특정금융정보법</strong>(VASP 신고 필요) 및
-            <strong> 가상자산이용자보호법</strong>(2024.7.19 시행)을 따릅니다.
-            이용자 예치금은 §6에 따라 분리보관되며, 이상거래는 §10에 따라 상시
-            감시됩니다. 100만원 상당 이상 가상자산 이전 시 트래블룰이
-            적용됩니다.
+            본 앱은 <strong>비수탁(Non-custodial)</strong> 도구입니다. 시드 구문 및
+            개인키는 사용자 기기에만 존재하며, 운영자는 자산을 보관·복구·동결할
+            수 없습니다. 자산 손실에 대한 모든 책임은 사용자에게 있습니다.
           </p>
-          <div className="mt-3 space-y-1">
-            {["이용약관", "개인정보처리방침", "오픈소스 라이선스", "버전 정보"].map(
-              (i) => (
-                <button
-                  key={i}
-                  className="w-full flex items-center justify-between py-2 text-sm hover:text-primary"
-                >
-                  <span>{i}</span>
-                  <ChevronRight size={14} className="text-on-surface-variant" />
-                </button>
-              ),
-            )}
-          </div>
+          <Link
+            to="/legal/disclaimer"
+            className="mt-2 w-full flex items-center justify-between py-2 text-sm hover:text-primary"
+          >
+            <span>전체 면책 고지 보기</span>
+            <ChevronRight size={14} className="text-on-surface-variant" />
+          </Link>
         </Card>
       </div>
     </AppShell>
+  );
+}
+
+function SeedRevealBlock({ disabled }: { disabled: boolean }) {
+  const [pw, setPw] = useState("");
+  const [seed, setSeed] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  async function reveal() {
+    setBusy(true);
+    try {
+      const v = await loadVault();
+      if (!v) throw new Error("NO_VAULT");
+      const m = await decryptString(v.encryptedMnemonic, pw);
+      setSeed(m);
+    } catch (e) {
+      const msg = (e as Error).message;
+      toast.error(msg === "WRONG_PASSWORD" ? "비밀번호가 올바르지 않습니다" : "복호화 실패");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function hide() {
+    setSeed(null);
+    setPw("");
+    setOpen(false);
+  }
+
+  return (
+    <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4">
+      <div className="flex items-center gap-2 text-amber-500 text-xs font-semibold tracking-widest">
+        <Eye size={14} /> SEED PHRASE
+      </div>
+      <p className="mt-1 text-sm font-medium text-on-surface">시드 구문 백업 보기</p>
+      <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
+        누구에게도 공유하지 마세요. 노출되면 자산 전액 손실 위험이 있습니다.
+        조회 시 비밀번호를 한 번 더 확인합니다.
+      </p>
+
+      {!open ? (
+        <button
+          disabled={disabled}
+          onClick={() => setOpen(true)}
+          className="mt-3 h-9 px-3 rounded-lg border border-outline text-xs font-semibold disabled:opacity-40"
+        >
+          시드 구문 조회
+        </button>
+      ) : !seed ? (
+        <div className="mt-3 space-y-2">
+          <input
+            type="password"
+            value={pw}
+            autoFocus
+            onChange={(e) => setPw(e.target.value)}
+            placeholder="비밀번호"
+            className="w-full h-10 rounded-lg border border-outline bg-background px-3 text-sm focus:border-primary outline-none"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={hide}
+              className="flex-1 h-9 rounded-lg border border-outline text-xs"
+            >
+              취소
+            </button>
+            <button
+              onClick={reveal}
+              disabled={busy || pw.length === 0}
+              className="flex-1 h-9 rounded-lg bg-primary text-on-primary text-xs font-semibold disabled:opacity-40"
+            >
+              {busy ? "확인 중..." : "조회"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <div className="grid grid-cols-3 gap-1.5 p-3 rounded-xl bg-surface-container">
+            {seed.split(" ").map((w, i) => (
+              <div
+                key={i}
+                className="text-xs tnum px-2 py-1.5 rounded-md bg-background border border-outline"
+              >
+                <span className="text-on-surface-variant mr-1">{i + 1}.</span>
+                <span className="font-mono">{w}</span>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={hide}
+            className="w-full h-9 rounded-lg border border-outline text-xs font-semibold"
+          >
+            숨기기
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DangerZone({ onWipe }: { onWipe: () => void | Promise<void> }) {
+  const [armed, setArmed] = useState(false);
+  return (
+    <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4">
+      <div className="flex items-center gap-2 text-destructive text-xs font-semibold tracking-widest">
+        <AlertTriangle size={14} /> DANGER ZONE
+      </div>
+      <p className="mt-1 text-sm font-medium">이 기기에서 지갑 삭제</p>
+      <p className="mt-1 text-xs text-on-surface-variant leading-relaxed">
+        암호화된 시드를 이 기기에서 영구히 제거합니다. 시드 구문 백업이 없다면
+        자산을 복구할 수 없습니다.
+      </p>
+      {!armed ? (
+        <button
+          onClick={() => setArmed(true)}
+          className="mt-3 h-9 px-3 rounded-lg border border-destructive/40 text-destructive text-xs font-semibold inline-flex items-center gap-1.5"
+        >
+          <Trash2 size={14} /> 삭제 시작
+        </button>
+      ) : (
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => setArmed(false)}
+            className="flex-1 h-9 rounded-lg border border-outline text-xs"
+          >
+            취소
+          </button>
+          <button
+            onClick={onWipe}
+            className="flex-1 h-9 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold"
+          >
+            영구 삭제 확정
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -152,42 +312,6 @@ function Card({
       </header>
       {children}
     </section>
-  );
-}
-
-function Toggle({
-  icon: Icon,
-  title,
-  desc,
-  on,
-  onChange,
-}: {
-  icon: React.ComponentType<{ size?: number }>;
-  title: string;
-  desc: string;
-  on: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <button
-      onClick={() => onChange(!on)}
-      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface-container text-left"
-    >
-      <span className="h-9 w-9 rounded-full grid place-items-center bg-surface-container text-on-surface-variant">
-        <Icon size={14} />
-      </span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium">{title}</p>
-        <p className="text-xs text-on-surface-variant">{desc}</p>
-      </div>
-      <span
-        className={`relative h-6 w-11 rounded-full transition-colors ${on ? "bg-primary" : "bg-outline"}`}
-      >
-        <span
-          className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white transition-transform shadow ${on ? "translate-x-5" : ""}`}
-        />
-      </span>
-    </button>
   );
 }
 

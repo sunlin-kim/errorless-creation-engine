@@ -20,6 +20,7 @@ import { Route as WalletIndexRouteImport } from './routes/wallet.index'
 import { Route as WalletUnlockRouteImport } from './routes/wallet.unlock'
 import { Route as WalletSetupRouteImport } from './routes/wallet.setup'
 import { Route as WalletSendRouteImport } from './routes/wallet.send'
+import { Route as LegalDisclaimerRouteImport } from './routes/legal.disclaimer'
 import { Route as AssetIdRouteImport } from './routes/asset.$id'
 
 const WalletRoute = WalletRouteImport.update({
@@ -77,6 +78,11 @@ const WalletSendRoute = WalletSendRouteImport.update({
   path: '/send',
   getParentRoute: () => WalletRoute,
 } as any)
+const LegalDisclaimerRoute = LegalDisclaimerRouteImport.update({
+  id: '/legal/disclaimer',
+  path: '/legal/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssetIdRoute = AssetIdRouteImport.update({
   id: '/asset/$id',
   path: '/asset/$id',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/wallet': typeof WalletRouteWithChildren
   '/asset/$id': typeof AssetIdRoute
+  '/legal/disclaimer': typeof LegalDisclaimerRoute
   '/wallet/send': typeof WalletSendRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/send': typeof SendRoute
   '/settings': typeof SettingsRoute
   '/asset/$id': typeof AssetIdRoute
+  '/legal/disclaimer': typeof LegalDisclaimerRoute
   '/wallet/send': typeof WalletSendRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/wallet': typeof WalletRouteWithChildren
   '/asset/$id': typeof AssetIdRoute
+  '/legal/disclaimer': typeof LegalDisclaimerRoute
   '/wallet/send': typeof WalletSendRoute
   '/wallet/setup': typeof WalletSetupRoute
   '/wallet/unlock': typeof WalletUnlockRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/wallet'
     | '/asset/$id'
+    | '/legal/disclaimer'
     | '/wallet/send'
     | '/wallet/setup'
     | '/wallet/unlock'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/send'
     | '/settings'
     | '/asset/$id'
+    | '/legal/disclaimer'
     | '/wallet/send'
     | '/wallet/setup'
     | '/wallet/unlock'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/wallet'
     | '/asset/$id'
+    | '/legal/disclaimer'
     | '/wallet/send'
     | '/wallet/setup'
     | '/wallet/unlock'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   WalletRoute: typeof WalletRouteWithChildren
   AssetIdRoute: typeof AssetIdRoute
+  LegalDisclaimerRoute: typeof LegalDisclaimerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletSendRouteImport
       parentRoute: typeof WalletRoute
     }
+    '/legal/disclaimer': {
+      id: '/legal/disclaimer'
+      path: '/legal/disclaimer'
+      fullPath: '/legal/disclaimer'
+      preLoaderRoute: typeof LegalDisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/asset/$id': {
       id: '/asset/$id'
       path: '/asset/$id'
@@ -295,7 +315,18 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   WalletRoute: WalletRouteWithChildren,
   AssetIdRoute: AssetIdRoute,
+  LegalDisclaimerRoute: LegalDisclaimerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
