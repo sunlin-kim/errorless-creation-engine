@@ -56,12 +56,22 @@ function SetupPage() {
   const [showSeed, setShowSeed] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // 이미 vault 있으면 바로 지갑으로 보냄
+  const [existingVault, setExistingVault] = useState(false);
+
+  // 이미 vault 있으면 안내만 표시(자동 리다이렉트 X) — 사용자가 직접 unlock/덮어쓰기 선택
   useEffect(() => {
     hasVault().then((exists) => {
-      if (exists) navigate({ to: "/wallet" });
+      setExistingVault(exists);
     });
-  }, [navigate]);
+  }, []);
+
+  async function overwriteExisting() {
+    if (!confirm("기존 지갑을 삭제하고 새로 만드시겠습니까? 시드가 없으면 자산을 영구히 잃습니다.")) return;
+    const { deleteVault } = await import("@/lib/wallet/vault");
+    await deleteVault();
+    setExistingVault(false);
+    toast.success("기존 지갑이 삭제되었습니다. 새로 만들 수 있습니다.");
+  }
 
   function startCreate() {
     setMnemonic(createMnemonic());
@@ -160,12 +170,36 @@ function SetupPage() {
 
       <main className="flex-1 px-5 py-8 max-w-lg w-full mx-auto">
         {mode === "intro" && (
-          <IntroStep
-            agreed={agreed}
-            setAgreed={setAgreed}
-            onCreate={startCreate}
-            onRestore={() => setMode("restore")}
-          />
+          <>
+            {existingVault && (
+              <div className="mb-4 rounded-2xl border border-primary/40 bg-primary/5 p-4 text-sm">
+                <p className="font-semibold mb-2">이 기기에 이미 지갑이 있습니다</p>
+                <p className="text-on-surface-variant text-xs mb-3">
+                  기존 비밀번호로 잠금 해제하거나, 삭제 후 새로 만들 수 있습니다.
+                </p>
+                <div className="flex gap-2">
+                  <Link
+                    to="/wallet/unlock"
+                    className="flex-1 h-10 rounded-lg bg-primary text-on-primary text-xs font-semibold inline-flex items-center justify-center"
+                  >
+                    비밀번호로 잠금 해제
+                  </Link>
+                  <button
+                    onClick={overwriteExisting}
+                    className="flex-1 h-10 rounded-lg border border-destructive/50 text-destructive text-xs font-semibold"
+                  >
+                    삭제하고 새로 만들기
+                  </button>
+                </div>
+              </div>
+            )}
+            <IntroStep
+              agreed={agreed}
+              setAgreed={setAgreed}
+              onCreate={startCreate}
+              onRestore={() => setMode("restore")}
+            />
+          </>
         )}
         {mode === "create-show" && (
           <ShowSeedStep
