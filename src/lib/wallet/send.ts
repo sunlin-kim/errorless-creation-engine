@@ -243,3 +243,162 @@ export async function sendBtc(
   if (!bRes.ok) throw new Error(`방송 실패: ${text}`);
   return text.trim();
 }
+
+/* ---------------- BNB (BSC) ---------------- */
+
+/** BSC는 EVM이므로 sendEthLike 재사용. ChainEndpoints 의 bscRpc/체인ID로 임시 변형. */
+export async function sendBnb(
+  ep: ChainEndpoints,
+  from: string,
+  to: string,
+  amountBnb: string,
+  privateKey: Uint8Array,
+): Promise<string> {
+  const bscEp: ChainEndpoints = {
+    ...ep,
+    ethRpc: ep.bscRpc,
+    ethChainId: ep.bscRpc.includes("testnet") ? 97 : 56,
+    ethExplorer: ep.bscExplorer,
+  };
+  return sendEthLike({
+    ep: bscEp,
+    from,
+    to,
+    valueWei: parseUnits(amountBnb, 18),
+    privateKey,
+  });
+}
+
+/* ---------------- Solana ---------------- */
+
+/** compact-u16 (shortvec) 인코딩 */
+function shortvecEncode(n: number): Uint8Array {
+  const out: number[] = [];
+  let v = n;
+  while (true) {
+    let b = v & 0x7f;
+    v >>>= 7;
+    if (v === 0) {
+      out.push(b);
+      break;
+    } else {
+      out.push(b | 0x80);
+    }
+  }
+  return new Uint8Array(out);
+}
+
+function concatBytes(...arrs: Uint8Array[]): Uint8Array {
+  const total = arrs.reduce((s, a) => s + a.length, 0);
+  const out = new Uint8Array(total);
+  let o = 0;
+  for (const a of arrs) {
+    out.set(a, o);
+    o += a.length;
+  }
+  return out;
+}
+
+function u32le(n: number): Uint8Array {
+  const b = new Uint8Array(4);
+  new DataView(b.buffer).setUint32(0, n, true);
+  return b;
+}
+
+function u64le(n: bigint): Uint8Array {
+  const b = new Uint8Array(8);
+  new DataView(b.buffer).setBigUint64(0, n, true);
+  return b;
+}
+
+async function solRpc<T>(
+  url: string,
+  method: string,
+  params: unknown[],
+): Promise<T> {
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+  });
+  const j = (await r.json()) as { result?: T; error?: { message: string } };
+  if (j.error) throw new Error(j.error.message);
+  return j.result as T;
+}
+
+/**
+ * SOL 전송 (System Program transfer).
+ * - legacy 트랜잭션 포맷
+ * - 1 SOL = 1_000_000_000 lamports
+ * - 수수료(~5000 lamports/서명)는 발신자 잔액에서 차감됨
+ */
+export async function sendSol(
+  ep: ChainEndpoints,
+  fromAddress: string,
+  toAddress: string,
+  amountSol: string,
+  privateKey: Uint8Array,
+): Promise<string> {
+  const lamports = parseUnits(amountSol, 9);
+
+  // 1) 주소 → pubkey bytes
+  let fromPub: Uint8Array;
+  let toPub: Uint8Array;
+  try {
+    fromPub = base58.decode(fromAddress);
+    toPub = base58.decode(toAddress);
+    if (fromPub.length !== 32 || toPub.length !== 32) {
+      throw new Error("pubkey length");
+    }
+  } catch {
+    throw new Error("유효한 Solana 주소가 아닙니다");
+  }
+  const systemProgramId = new Uint8Array(32); // all zeros
+
+  // 2) 최신 blockhash
+  const bh = await solRpc<{ value: { blockhash: string } }>(
+    ep.solRpc,
+    "getLatestBlockhash",
+    [{ commitment: "finalized" }],
+  );
+  const blockhash = base58.decode(bh.value.blockhash);
+  if (blockhash.length !== 32) throw new Error("blockhash length");
+
+  // 3) Message 빌드
+  // header: numRequiredSignatures=1, numReadonlySignedAccounts=0,
+  //         numReadonlyUnsignedAccounts=1 (system program)
+  const header = new Uint8Array([1, 0, 1]);
+  const accountKeys = concatBytes(fromPub, toPub, systemProgramId);
+  const accountKeysSection = concatBytes(shortvecEncode(3), accountKeys);
+
+  // instruction: programIdIndex=2, accounts=[0,1], data = u32le(2) + u64le(lamports)
+  const ixData = concatBytes(u32le(2), u64le(lamports));
+  const instruction = concatBytes(
+    new Uint8Array([2]), // programIdIndex
+    shortvecEncode(2), // accounts length
+    new Uint8Array([0, 1]),
+    shortvecEncode(ixData.length),
+    ixData,
+  );
+  const instructionsSection = concatBytes(shortvecEncode(1), instruction);
+
+  const message = concatBytes(
+    header,
+    accountKeysSection,
+    blockhash,
+    instructionsSection,
+  );
+
+  // 4) ed25519 서명
+  const signature = ed25519.sign(message, privateKey);
+
+  // 5) Transaction = compact-array(signatures) + message
+  const tx = concatBytes(shortvecEncode(1), signature, message);
+
+  // 6) 방송 (base64 인코딩)
+  const txid = await solRpc<string>(ep.solRpc, "sendTransaction", [
+    base64.encode(tx),
+    { encoding: "base64", skipPreflight: false, preflightCommitment: "processed" },
+  ]);
+  return txid;
+}
