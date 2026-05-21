@@ -121,6 +121,7 @@ function ActionBtn({
   return (
     <Link
       to={to}
+      preload="intent"
       className="h-12 rounded-xl bg-primary-container text-on-primary-container font-medium text-sm inline-flex items-center justify-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
     >
       <Icon size={16} />
