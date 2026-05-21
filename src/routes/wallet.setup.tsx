@@ -56,10 +56,10 @@ function SetupPage() {
   const [showSeed, setShowSeed] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // 이미 vault 있으면 unlock 으로 보냄
+  // 이미 vault 있으면 바로 지갑으로 보냄
   useEffect(() => {
     hasVault().then((exists) => {
-      if (exists) navigate({ to: "/wallet/unlock" });
+      if (exists) navigate({ to: "/wallet" });
     });
   }, [navigate]);
 
