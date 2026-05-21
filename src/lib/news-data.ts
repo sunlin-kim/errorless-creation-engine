@@ -110,6 +110,7 @@ export const newsFeed: NewsItem[] = [
     source: "한국경제",
     publishedAt: "2025-03-05T15:43:00+09:00",
     url: "https://www.hankyung.com/article/2025030531411",
+    image: "https://img.hankyung.com/photo/202503/AA.39709441.1.jpg",
     thumb: "from-emerald-600 to-teal-700",
   },
   {
