@@ -97,6 +97,7 @@ export const newsFeed: NewsItem[] = [
     source: "국민일보",
     publishedAt: "2025-12-29T11:05:00+09:00",
     url: "https://www.kmib.co.kr/article/view.asp?arcid=0029176445&code=61151111&cp=nv",
+    image: "https://image.kmib.co.kr/online_image/2025/1229/2025122911050274644_1766973902_0029176445.jpg",
     thumb: "from-rose-500 via-red-500 to-amber-500",
   },
   {
