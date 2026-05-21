@@ -14,14 +14,26 @@ export const Route = createFileRoute("/")({
 
 function Dashboard() {
   return (
-    <AppShell title="대시보드" subtitle="Supervizion · See Beyond. Lead Ahead.">
+    <AppShell title="홈" subtitle="Supervizion · See Beyond. Lead Ahead.">
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <BalanceCard total={totalKrw()} change={1.74} />
-          <QuickActions />
-
           <NewsFeed />
 
+          <section className="rounded-3xl border border-outline bg-surface p-5">
+            <header className="flex items-center justify-between mb-3">
+              <h2 className="text-base font-semibold">내 지갑</h2>
+              <Link
+                to="/activity"
+                className="text-xs text-primary inline-flex items-center gap-1 hover:underline"
+              >
+                전체 거래 <ChevronRight size={14} />
+              </Link>
+            </header>
+            <BalanceCard total={totalKrw()} change={1.74} />
+            <div className="mt-5">
+              <QuickActions />
+            </div>
+          </section>
 
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
