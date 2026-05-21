@@ -188,7 +188,7 @@ function WalletInner({
             name={network === "mainnet" ? "Bitcoin" : "Bitcoin Testnet"}
             address={addrs?.btc}
             balance={balancesQ.data?.btc ?? null}
-            priceKrw={balancesQ.data?.prices.BTC ?? 0}
+            priceKrw={balancesQ.data?.prices.prices.BTC ?? 0}
             explorer={`${ep.btcExplorer}/address/${addrs?.btc ?? ""}`}
             loading={balancesQ.isPending}
           />
