@@ -7,6 +7,7 @@ import { saveVault, hasVault, markBackupConfirmed } from "@/lib/wallet/vault";
 import { useWalletStore } from "@/lib/wallet/store";
 import { AlertTriangle, Check, Copy, Eye, EyeOff, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/wallet/setup")({
   component: SetupPage,
@@ -255,18 +256,19 @@ function IntroStep({
   onCreate: () => void;
   onRestore: () => void;
 }) {
+  const t = useT();
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-amber-500/40 bg-amber-500/5 p-4">
         <div className="flex items-start gap-3">
           <ShieldAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
           <div className="text-sm text-on-surface">
-            <p className="font-semibold mb-1">⚠️ 베타 — 비수탁 지갑</p>
+            <p className="font-semibold mb-1">{t("setup.betaTitle")}</p>
             <ul className="space-y-1 text-on-surface-variant list-disc list-inside text-xs">
-              <li>시드 구문은 본인 기기에만 저장됩니다. 분실 시 자산을 영구히 잃습니다.</li>
-              <li>Supervizion 은 시드·비밀번호·자산을 보관하지 않으며 복구해드릴 수 없습니다.</li>
-              <li>코드 결함으로 자산 손실이 발생할 수 있으며, 모든 책임은 사용자에게 있습니다.</li>
-              <li>기본 네트워크는 <strong>테스트넷</strong> 입니다. 메인넷 전환은 추후 단계에서 별도 경고와 함께.</li>
+              <li>{t("setup.warn1")}</li>
+              <li>{t("setup.warn2")}</li>
+              <li>{t("setup.warn3")}</li>
+              <li>{t("setup.warn4")}</li>
             </ul>
           </div>
         </div>
@@ -279,9 +281,7 @@ function IntroStep({
           onChange={(e) => setAgreed(e.target.checked)}
           className="mt-0.5 h-4 w-4 accent-primary"
         />
-        <span className="text-sm">
-          위 내용을 모두 읽었으며, 비수탁 지갑의 위험을 이해하고 동의합니다.
-        </span>
+        <span className="text-sm">{t("setup.agree")}</span>
       </label>
 
       <div className="space-y-3 pt-2">
@@ -290,20 +290,20 @@ function IntroStep({
           onClick={onCreate}
           className="w-full h-12 rounded-xl bg-primary text-on-primary font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110 transition"
         >
-          새 지갑 생성
+          {t("setup.create")}
         </button>
         <button
           disabled={!agreed}
           onClick={onRestore}
           className="w-full h-12 rounded-xl border border-outline font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-container transition"
         >
-          시드로 기존 지갑 복구
+          {t("setup.restore")}
         </button>
         <Link
           to="/"
           className="block text-center text-xs text-on-surface-variant pt-2 hover:underline"
         >
-          나중에 하기 (데모 화면으로)
+          {t("setup.later")}
         </Link>
       </div>
     </div>

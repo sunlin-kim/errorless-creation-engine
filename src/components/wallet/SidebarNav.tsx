@@ -7,23 +7,24 @@ import {
   QrCode,
   Activity,
   Settings,
-  ShieldCheck,
 } from "lucide-react";
 import { Logo } from "./Logo";
+import { useT } from "@/lib/i18n";
 
 const items = [
-  { to: "/", label: "홈", icon: Home },
-  { to: "/wallet", label: "내 지갑", icon: Wallet },
-  { to: "/points", label: "포인트", icon: Gem },
-  { to: "/send", label: "보내기", icon: Send },
-  { to: "/receive", label: "받기", icon: QrCode },
-  { to: "/activity", label: "거래내역", icon: Activity },
-  { to: "/settings", label: "설정", icon: Settings },
-];
+  { to: "/", key: "nav.home", icon: Home },
+  { to: "/wallet", key: "nav.wallet", icon: Wallet },
+  { to: "/points", key: "nav.points", icon: Gem },
+  { to: "/send", key: "nav.send", icon: Send },
+  { to: "/receive", key: "nav.receive", icon: QrCode },
+  { to: "/activity", key: "nav.activity", icon: Activity },
+  { to: "/settings", key: "nav.settings", icon: Settings },
+] as const;
 
 export function SidebarNav() {
   const { location } = useRouterState();
   const path = location.pathname;
+  const t = useT();
 
   return (
     <aside className="hidden lg:flex w-64 shrink-0 flex-col border-r border-outline bg-sidebar min-h-screen sticky top-0">
@@ -47,12 +48,11 @@ export function SidebarNav() {
               }`}
             >
               <Icon size={18} strokeWidth={active ? 2.2 : 1.8} />
-              {item.label}
+              {t(item.key)}
             </Link>
           );
         })}
       </nav>
-
     </aside>
   );
 }

@@ -1,21 +1,23 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Wallet, Gem, Settings } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 const items = [
-  { to: "/", label: "홈", icon: Home, match: (p: string) => p === "/" },
-  { to: "/wallet", label: "내 지갑", icon: Wallet, match: (p: string) => p.startsWith("/wallet") || p.startsWith("/asset") || p.startsWith("/send") || p.startsWith("/receive") },
-  { to: "/points", label: "포인트", icon: Gem, match: (p: string) => p.startsWith("/points") },
-  { to: "/settings", label: "설정", icon: Settings, match: (p: string) => p.startsWith("/settings") },
+  { to: "/", key: "nav.home", icon: Home, match: (p: string) => p === "/" },
+  { to: "/wallet", key: "nav.wallet", icon: Wallet, match: (p: string) => p.startsWith("/wallet") || p.startsWith("/asset") || p.startsWith("/send") || p.startsWith("/receive") },
+  { to: "/points", key: "nav.points", icon: Gem, match: (p: string) => p.startsWith("/points") },
+  { to: "/settings", key: "nav.settings", icon: Settings, match: (p: string) => p.startsWith("/settings") },
 ] as const;
 
 export function BottomNav() {
   const { location } = useRouterState();
   const path = location.pathname;
+  const t = useT();
 
   return (
     <nav
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-outline bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
-      aria-label="모바일 하단 내비게이션"
+      aria-label={t("nav.mobile")}
     >
       <ul className="grid grid-cols-4">
         {items.map((it) => {
@@ -54,7 +56,7 @@ export function BottomNav() {
                       : "text-on-surface-variant"
                   }`}
                 >
-                  {it.label}
+                  {t(it.key)}
                 </span>
               </Link>
             </li>
