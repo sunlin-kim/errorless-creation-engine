@@ -272,7 +272,7 @@ function AssetCard({
     navigator.clipboard.writeText(address);
     toast.success("주소가 복사되었습니다");
   };
-  const krw = balance ? toKrw(balance, { ETH: priceKrw, BTC: priceKrw, USDT: priceKrw } as never) : 0;
+  const krw = balance && priceKrw ? toKrw(balance, { [symbol]: priceKrw } as never) : 0;
   return (
     <section className="rounded-2xl border border-outline bg-surface p-4">
       <div className="flex items-center justify-between">
