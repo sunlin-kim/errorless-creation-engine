@@ -53,15 +53,6 @@ export function SidebarNav() {
         })}
       </nav>
 
-      <div className="m-3 rounded-2xl border border-premium/40 bg-gradient-to-br from-[color:var(--premium)]/10 to-transparent p-4">
-        <div className="flex items-center gap-2 text-premium text-xs font-semibold tracking-wider">
-          <ShieldCheck size={14} /> PREMIUM
-        </div>
-        <p className="mt-2 text-xs text-on-surface-variant leading-relaxed">
-          가상자산이용자보호법 §6·§7에 따라 예치금 분리보관 및 동일종목·수량
-          보관이 적용됩니다.
-        </p>
-      </div>
     </aside>
   );
 }
