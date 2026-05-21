@@ -69,7 +69,7 @@ export function NewsFeed() {
                     className="absolute inset-0 m-auto text-white drop-shadow-2xl"
                   />
                 )}
-                <span className="absolute top-4 left-4 text-[10px] tracking-[0.2em] font-semibold uppercase px-2.5 py-1 rounded-full bg-white/15 text-white backdrop-blur">
+                <span className="absolute top-4 left-4 text-[10px] tracking-[0.2em] font-semibold uppercase px-2.5 py-1 rounded-full bg-white/15 text-white">
                   {featured[slide].category}
                 </span>
                 {featured[slide].duration && (
@@ -198,7 +198,7 @@ function NewsCard({ item }: { item: NewsItem }) {
             />
           )
         )}
-        <span className="absolute top-3 left-3 text-[10px] tracking-[0.18em] font-semibold uppercase px-2 py-1 rounded-full bg-black/45 text-white backdrop-blur">
+        <span className="absolute top-3 left-3 text-[10px] tracking-[0.18em] font-semibold uppercase px-2 py-1 rounded-full bg-black/45 text-white">
           {item.category}
         </span>
         {item.duration && (

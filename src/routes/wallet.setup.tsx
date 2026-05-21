@@ -335,7 +335,7 @@ function ShowSeedStep({
         {!showSeed && (
           <button
             onClick={() => setShowSeed(true)}
-            className="absolute inset-0 z-10 grid place-items-center backdrop-blur-md bg-background/60 rounded-2xl"
+            className="absolute inset-0 z-10 grid place-items-center bg-background/60 rounded-2xl"
           >
             <div className="text-center">
               <Eye size={28} className="mx-auto mb-2 text-primary" />

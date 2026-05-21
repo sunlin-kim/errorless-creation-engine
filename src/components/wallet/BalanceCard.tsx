@@ -22,7 +22,7 @@ export function BalanceCard({ total, change }: { total: number; change: number }
               {hidden ? "₩ ••••••••" : fmtKrw(total)}
             </span>
           </div>
-          <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
+          <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full">
             <TrendingUp size={14} className={positive ? "" : "rotate-180"} />
             <span className="tnum">
               {positive ? "+" : ""}
@@ -47,7 +47,7 @@ export function BalanceCard({ total, change }: { total: number; change: number }
           { label: "활성 네트워크", value: "6 chains" },
           { label: "보안 등급", value: "Premium" },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5">
+          <div key={s.label} className="rounded-xl bg-white/10 px-3 py-2.5">
             <p className="text-white/60">{s.label}</p>
             <p className="mt-1 font-medium tnum">{s.value}</p>
           </div>
