@@ -50,17 +50,6 @@ function Dashboard() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-premium/40 bg-gradient-to-br from-[color:var(--premium)]/10 to-transparent p-5">
-            <div className="flex items-center gap-2 text-premium text-xs font-semibold tracking-[0.2em]">
-              <ShieldCheck size={14} /> {t("home.complianceBadge")}
-            </div>
-            <h3 className="mt-2 font-semibold text-on-surface">
-              {t("home.complianceTitle")}
-            </h3>
-            <p className="mt-2 text-xs text-on-surface-variant leading-relaxed">
-              {t("home.complianceBody")}
-            </p>
-          </section>
         </aside>
       </div>
     </AppShell>
@@ -106,19 +95,7 @@ function WalletStatusCard({
   }
 
   if (!isReady) {
-    return (
-      <section className="rounded-3xl border border-primary/40 bg-gradient-to-br from-primary/10 to-transparent p-5">
-        <div className="flex items-start gap-4">
-          <div className="h-11 w-11 rounded-xl bg-primary/15 text-primary grid place-items-center shrink-0">
-            <Wallet size={20} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-on-surface">{t("home.loadingTitle")}</h3>
-            <p className="text-xs text-on-surface-variant mt-1">{t("home.loadingBody")}</p>
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (
