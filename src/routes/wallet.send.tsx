@@ -24,6 +24,7 @@ export const Route = createFileRoute("/wallet/send")({
 });
 
 function SendPage() {
+  const tr = useT();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const navigate = useNavigate();
@@ -47,23 +48,23 @@ function SendPage() {
       .then((a) =>
         setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol }),
       )
-      .catch(() => toast.error("주소 파생 실패"));
-  }, [mnemonic, network]);
+      .catch(() => toast.error(tr("wallet.derivFailed")));
+  }, [mnemonic, network, tr]);
 
   if (!mnemonic) {
     return (
-      <AppShell title="송금" subtitle="지갑 준비 중">
+      <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitleWaiting")}>
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
-            지갑 정보를 아직 불러오지 못했거나 생성되지 않았습니다.
+            {tr("activity.needWallet")}
           </p>
           <button
             type="button"
             onClick={() => navigate({ to: "/wallet/setup" })}
             className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
           >
-            <KeyRound size={14} /> 지갑 설정
+            <KeyRound size={14} /> {tr("wallet.setup")}
           </button>
         </div>
       </AppShell>
