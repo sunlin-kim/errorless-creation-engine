@@ -32,13 +32,20 @@ function SendPage() {
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
-  const [addrs, setAddrs] = useState<{ eth: string; btc: string } | null>(null);
+  const [addrs, setAddrs] = useState<{
+    eth: string;
+    btc: string;
+    bnb: string;
+    sol: string;
+  } | null>(null);
   const [txid, setTxid] = useState<string | null>(null);
 
   useEffect(() => {
     if (!mnemonic) return;
     deriveAddresses(mnemonic, network)
-      .then((a) => setAddrs({ eth: a.eth, btc: a.btc }))
+      .then((a) =>
+        setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol }),
+      )
       .catch(() => toast.error("주소 파생 실패"));
   }, [mnemonic, network]);
 
