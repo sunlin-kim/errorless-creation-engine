@@ -42,7 +42,7 @@ export const useWalletStore = create<WalletState>()(
       touchActivity: () => set({ lastActivity: Date.now() }),
     }),
     {
-      name: "sv-wallet-prefs",
+      name: "sv-wallet-prefs-v2",
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({
         network: s.network,
