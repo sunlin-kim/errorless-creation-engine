@@ -26,6 +26,7 @@ export function BottomNav() {
             <li key={it.to}>
               <Link
                 to={it.to}
+                preload="render"
                 className="group relative flex flex-col items-center justify-center gap-1 pt-2.5 pb-2"
               >
                 <span
