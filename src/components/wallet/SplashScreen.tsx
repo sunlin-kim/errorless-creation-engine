@@ -4,9 +4,10 @@ import splashLogo from "@/assets/splash-logo.png";
 const SESSION_KEY = "sv-splash-shown";
 
 export function SplashScreen() {
-  // Start visible by default so the splash covers the home screen from the
-  // very first paint (no flash of underlying UI before the effect runs).
-  const [visible, setVisible] = useState(() => {
+  // Render on first paint (incl. SSR). A pure-CSS animation handles
+  // fade-out + auto-removal so the splash disappears even if React
+  // hydration is delayed. After fully animated out, we unmount.
+  const [mounted, setMounted] = useState(() => {
     if (typeof window === "undefined") return true;
     try {
       return !sessionStorage.getItem(SESSION_KEY);
@@ -14,80 +15,60 @@ export function SplashScreen() {
       return true;
     }
   });
-  const [fading, setFading] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!visible) return;
+    if (!mounted) return;
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {}
-    const fadeT = setTimeout(() => setFading(true), 2200);
-    const hideT = setTimeout(() => setVisible(false), 2800);
-    return () => {
-      clearTimeout(fadeT);
-      clearTimeout(hideT);
-    };
-  }, [visible]);
+    const t = setTimeout(() => setMounted(false), 3000);
+    return () => clearTimeout(t);
+  }, [mounted]);
 
-  if (!visible) return null;
-
+  if (!mounted) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black transition-opacity duration-500"
-      style={{ opacity: fading ? 0 : 1 }}
-      aria-hidden="true"
-    >
-      {/* Logo (screen blend lets the image's own dark backdrop merge with the page background) */}
+    <div className="splash-root" aria-hidden="true">
       <img
         src={splashLogo}
         alt=""
         fetchPriority="high"
         decoding="sync"
-        className="splash-logo relative z-10 w-[78%] max-w-[420px] select-none"
+        className="splash-logo"
         style={{ mixBlendMode: "screen" }}
         draggable={false}
       />
 
       <style>{`
-        @keyframes splashGradientPulse {
-          0% { opacity: 0; transform: scale(0.6); }
-          40% { opacity: 1; transform: scale(1.05); }
-          70% { opacity: 0.85; transform: scale(1); }
-          100% { opacity: 0.6; transform: scale(1.1); }
+        @keyframes splashFadeOut {
+          0%, 78% { opacity: 1; visibility: visible; }
+          100% { opacity: 0; visibility: hidden; }
         }
         @keyframes splashLogoIn {
           0% { opacity: 0; transform: scale(0.85); filter: blur(12px) brightness(1.6); }
           55% { opacity: 1; transform: scale(1.03); filter: blur(0) brightness(1.2); }
           100% { opacity: 1; transform: scale(1); filter: blur(0) brightness(1); }
         }
-        @keyframes splashShimmer {
-          0% { background-position: -150% 0; }
-          100% { background-position: 250% 0; }
-        }
-        .splash-gradient-bg {
-          position: absolute;
+        .splash-root {
+          position: fixed;
           inset: 0;
-          background:
-            radial-gradient(circle at 50% 50%, rgba(34,197,94,0.55) 0%, rgba(16,185,129,0.25) 25%, rgba(0,0,0,0) 60%),
-            radial-gradient(circle at 50% 50%, rgba(74,222,128,0.35) 0%, rgba(0,0,0,0) 45%);
-          animation: splashGradientPulse 2.4s ease-out forwards;
-          filter: blur(20px);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #000;
+          animation: splashFadeOut 2.8s ease forwards;
+          pointer-events: none;
         }
         .splash-logo {
+          position: relative;
+          z-index: 10;
+          width: 78%;
+          max-width: 420px;
+          user-select: none;
           animation: splashLogoIn 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
           filter: drop-shadow(0 0 28px rgba(34,197,94,0.55)) drop-shadow(0 0 60px rgba(16,185,129,0.35));
-        }
-        .splash-logo::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
-          background-size: 200% 100%;
-          animation: splashShimmer 1.8s ease-in-out 0.3s both;
-          mix-blend-mode: overlay;
-          pointer-events: none;
         }
       `}</style>
     </div>
