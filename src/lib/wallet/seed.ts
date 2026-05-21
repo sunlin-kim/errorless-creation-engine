@@ -7,7 +7,7 @@
  */
 
 import { generateMnemonic, validateMnemonic, mnemonicToSeed } from "@scure/bip39";
-import { wordlist } from "@scure/bip39/wordlists/english";
+import { wordlist } from "@scure/bip39/wordlists/english.js";
 
 export const MNEMONIC_WORD_COUNT = 12;
 

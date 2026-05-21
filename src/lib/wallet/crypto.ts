@@ -43,7 +43,7 @@ async function deriveKey(
   const enc = new TextEncoder();
   const baseKey = await crypto.subtle.importKey(
     "raw",
-    enc.encode(password),
+    enc.encode(password) as BufferSource,
     { name: "PBKDF2" },
     false,
     ["deriveKey"],
