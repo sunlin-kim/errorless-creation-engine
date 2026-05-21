@@ -82,18 +82,15 @@ function SendPage() {
 
   function validateAddress(): string | null {
     const v = to.trim();
-    if (!v) return "받는 주소를 입력하세요";
+    if (!v) return tr("wsend.errAddrRequired");
     if (asset === "BTC") {
       const isMain = network === "mainnet";
-      if (isMain && !/^(bc1|1|3)/.test(v)) return "유효한 BTC 주소가 아닙니다";
-      if (!isMain && !/^(tb1|m|n|2)/.test(v))
-        return "유효한 BTC 테스트넷 주소가 아닙니다";
+      if (isMain && !/^(bc1|1|3)/.test(v)) return tr("wsend.errBtcAddr");
+      if (!isMain && !/^(tb1|m|n|2)/.test(v)) return tr("wsend.errBtcTestAddr");
     } else if (asset === "SOL") {
-      if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v))
-        return "유효한 Solana 주소가 아닙니다";
+      if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v)) return tr("wsend.errSolAddr");
     } else {
-      // ETH / USDT / BNB
-      if (!/^0x[0-9a-fA-F]{40}$/.test(v)) return "유효한 EVM 주소가 아닙니다";
+      if (!/^0x[0-9a-fA-F]{40}$/.test(v)) return tr("wsend.errEvmAddr");
     }
     return null;
   }
@@ -102,7 +99,7 @@ function SendPage() {
     if (a === "BTC") return 8;
     if (a === "USDT") return 6;
     if (a === "SOL") return 9;
-    return 18; // ETH, BNB
+    return 18;
   }
 
   async function onSend() {
@@ -111,13 +108,10 @@ function SendPage() {
     try {
       parseUnits(amount, decimalsFor(asset));
     } catch (e) {
-      return toast.error(e instanceof Error ? e.message : "금액 오류");
+      return toast.error(e instanceof Error ? e.message : tr("wsend.errAmount"));
     }
     if (network === "mainnet") {
-      const ok = confirm(
-        `메인넷에서 ${amount} ${asset} 을(를) 다음 주소로 전송합니다:\n${to}\n\n` +
-          "이 작업은 되돌릴 수 없습니다. 정말 진행하시겠습니까?",
-      );
+      const ok = confirm(tr("wsend.confirmMainnet", { amount, asset, to }));
       if (!ok) return;
     }
 
