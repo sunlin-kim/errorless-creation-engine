@@ -127,7 +127,7 @@ function WalletInner({
 
   const balancesQ = useQuery({
     enabled: !!addrs,
-    queryKey: ["balances", network, addrs?.eth, addrs?.btc, addrs?.sol],
+    queryKey: ["balances", network, currency, addrs?.eth, addrs?.btc, addrs?.sol],
     queryFn: async () => {
       if (!addrs) throw new Error("no addr");
       const [eth, btc, usdt, bnb, sol, prices] = await Promise.all([
@@ -151,7 +151,7 @@ function WalletInner({
           console.warn("sol", e);
           return null;
         }),
-        getPricesKrw(),
+        getPrices(currency),
       ]);
       return { eth, btc, usdt, bnb, sol, prices };
     },
