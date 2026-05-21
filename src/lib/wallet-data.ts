@@ -72,6 +72,16 @@ export const assets: Asset[] = [
     change24h: 2.04,
     color: "#28A0F0",
   },
+  {
+    id: "ducky",
+    symbol: "DUCKY",
+    name: "Ducky",
+    network: "Solana",
+    balance: 1_250_000,
+    priceKrw: 0.42,
+    change24h: 12.85,
+    color: "#FFD93D",
+  },
 ];
 
 export type TxStatus = "success" | "pending" | "failed";
