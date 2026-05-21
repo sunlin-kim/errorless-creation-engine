@@ -15,6 +15,7 @@ export function AppShell({
   title?: string;
   subtitle?: string;
 }) {
+  const t = useT();
   return (
     <div className="min-h-screen flex bg-background text-on-surface">
       <SidebarNav />
