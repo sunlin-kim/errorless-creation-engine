@@ -189,7 +189,7 @@ function WalletInner({
   const items = useMemo(() => {
     const d = balancesQ.data;
     const list: Array<{
-      symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL";
+      symbol: "BTC" | "ETH" | "USDT" | "BNB" | "SOL" | "DUCKY";
       name: string;
       networkLabel: string;
       balance: AssetBalance | null;
