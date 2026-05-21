@@ -71,3 +71,91 @@ function Dashboard() {
   );
 }
 
+function WalletStatusCard({
+  vaultPresent,
+  isUnlocked,
+  onLock,
+}: {
+  vaultPresent: boolean | null;
+  isUnlocked: boolean;
+  onLock: () => void;
+}) {
+  if (vaultPresent === null) {
+    return (
+      <section className="rounded-3xl border border-outline bg-surface p-5 h-28 animate-pulse" />
+    );
+  }
+
+  if (!vaultPresent) {
+    return (
+      <section className="rounded-3xl border border-primary/40 bg-gradient-to-br from-primary/10 to-transparent p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-11 w-11 rounded-xl bg-primary/15 text-primary grid place-items-center shrink-0">
+            <Wallet size={20} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-on-surface">실제 지갑을 설정하세요</h3>
+            <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
+              비수탁(Non-custodial) 지갑 — 시드 구문은 본인 기기에만 저장됩니다.
+              기본 테스트넷에서 안전하게 시작하세요.
+            </p>
+            <Link
+              to="/wallet/setup"
+              className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:brightness-110"
+            >
+              <KeyRound size={14} /> 지갑 만들기 / 복구
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!isUnlocked) {
+    return (
+      <section className="rounded-3xl border border-amber-500/40 bg-amber-500/5 p-5">
+        <div className="flex items-start gap-4">
+          <div className="h-11 w-11 rounded-xl bg-amber-500/15 text-amber-500 grid place-items-center shrink-0">
+            <Lock size={20} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-on-surface">지갑이 잠겨 있습니다</h3>
+            <p className="text-xs text-on-surface-variant mt-1">
+              잔액 조회 및 송금을 하려면 비밀번호로 잠금을 해제하세요.
+            </p>
+            <Link
+              to="/wallet/unlock"
+              className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-amber-500 text-amber-950 text-xs font-semibold hover:brightness-110"
+            >
+              <Lock size={14} /> 잠금 해제
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="rounded-3xl border border-emerald-500/40 bg-emerald-500/5 p-5">
+      <div className="flex items-start gap-4">
+        <div className="h-11 w-11 rounded-xl bg-emerald-500/15 text-emerald-500 grid place-items-center shrink-0">
+          <ShieldCheck size={20} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-on-surface">지갑이 활성화되었습니다</h3>
+          <p className="text-xs text-on-surface-variant mt-1">
+            테스트넷 모드 · Step 2에서 잔액·주소·송금 기능이 활성화됩니다.
+          </p>
+          <button
+            onClick={onLock}
+            className="mt-3 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg border border-outline text-xs font-semibold hover:bg-surface-container"
+          >
+            <Lock size={14} /> 잠그기
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
