@@ -79,6 +79,8 @@ function ReceivePage() {
   const t = useT();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
+  const cachedAddresses = useWalletStore((s) => s.derivedAddresses[s.network]);
+  const setDerivedAddresses = useWalletStore((s) => s.setDerivedAddresses);
   const navigate = useNavigate();
   const [sel, setSel] = useState<AssetId>("ETH");
   const [copied, setCopied] = useState(false);
@@ -87,16 +89,24 @@ function ReceivePage() {
     btc: string;
     bnb: string;
     sol: string;
-  } | null>(null);
+  } | null>(cachedAddresses);
 
   useEffect(() => {
     if (!mnemonic) return;
+
+    if (cachedAddresses) {
+      setAddrs(cachedAddresses);
+      return;
+    }
+
     deriveAddresses(mnemonic, network)
-      .then((a) =>
-        setAddrs({ eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol }),
-      )
+      .then((a) => {
+        const next = { eth: a.eth, btc: a.btc, bnb: a.bnb, sol: a.sol };
+        setAddrs(next);
+        setDerivedAddresses(network, next);
+      })
       .catch(() => toast.error(t("wallet.derivFailed")));
-  }, [mnemonic, network, t]);
+  }, [cachedAddresses, mnemonic, network, setDerivedAddresses, t]);
 
   if (!mnemonic) {
     return (
