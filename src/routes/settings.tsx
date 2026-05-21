@@ -5,7 +5,6 @@ import {
   ShieldCheck,
   Globe,
   Coins,
-  KeyRound,
   Eye,
   FileText,
   ChevronRight,
