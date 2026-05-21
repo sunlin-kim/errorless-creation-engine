@@ -75,7 +75,7 @@ function SettingsPage() {
               지정한 시간 동안 미사용 시 지갑이 자동으로 잠깁니다.
             </p>
             <div className="mt-3 grid grid-cols-5 gap-1.5">
-              {[1, 5, 15, 30, 0].map((m) => (
+              {[15, 30, 60, 240, 0].map((m) => (
                 <button
                   key={m}
                   onClick={() => setAutoLockMinutes(m)}
@@ -85,7 +85,7 @@ function SettingsPage() {
                       : "border-outline bg-surface hover:bg-surface-container"
                   }`}
                 >
-                  {m === 0 ? "끄기" : `${m}분`}
+                  {m === 0 ? "끄기" : m >= 60 ? `${m / 60}시간` : `${m}분`}
                 </button>
               ))}
             </div>

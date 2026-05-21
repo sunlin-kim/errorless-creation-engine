@@ -31,7 +31,7 @@ export const useWalletStore = create<WalletState>()(
       vaultExists: null,
       mnemonic: null,
       network: "mainnet",
-      autoLockMinutes: 5,
+      autoLockMinutes: 60,
       lastActivity: Date.now(),
 
       setVaultExists: (v) => set({ vaultExists: v }),
@@ -42,7 +42,7 @@ export const useWalletStore = create<WalletState>()(
       touchActivity: () => set({ lastActivity: Date.now() }),
     }),
     {
-      name: "sv-wallet-prefs-v2",
+      name: "sv-wallet-prefs-v3",
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({
         network: s.network,
