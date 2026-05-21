@@ -65,14 +65,13 @@ export const newsFeed: NewsItem[] = [
     id: "n2",
     type: "news",
     category: "파트너십",
-    title:
-      "바타안경제특구청(AFAB), 산업 및 인력개발 프로젝트를 위해 Supervizion글로벌(주)와 전략적 파트너십 체결",
+    title: "태양광 에너지 업체와 전략적 파트너십 체결 (예정)",
     excerpt:
-      "바타안경제특구청(AFAB)은 5월 14일 필리핀 바탄 마리벨레스 본청에서 한국의 Supervizion글로벌(주) 및 글로벌인재교육개발원(GHRDI)과 산업…",
-    source: "Supervizion Global",
+      "Supervizion이 국내 태양광 에너지 업체와 전략적 파트너십 체결을 앞두고 있습니다. 재생에너지 기반의 에너지 포인트(EP) 생태계 확장이 본격화될 전망입니다.",
+    source: "Supervizion Newsroom",
     publishedAt: "2026-05-17T09:00:00+09:00",
-    url: "https://supervizion.io/news/afab",
-    thumb: "from-amber-500 via-orange-500 to-rose-500",
+    url: "https://supervizion.io/news/solar-partnership",
+    thumb: "from-amber-400 via-orange-500 to-emerald-600",
   },
   {
     id: "n3",
