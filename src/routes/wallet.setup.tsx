@@ -56,12 +56,22 @@ function SetupPage() {
   const [showSeed, setShowSeed] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  // 이미 vault 있으면 바로 지갑으로 보냄
+  const [existingVault, setExistingVault] = useState(false);
+
+  // 이미 vault 있으면 안내만 표시(자동 리다이렉트 X) — 사용자가 직접 unlock/덮어쓰기 선택
   useEffect(() => {
     hasVault().then((exists) => {
-      if (exists) navigate({ to: "/wallet" });
+      setExistingVault(exists);
     });
-  }, [navigate]);
+  }, []);
+
+  async function overwriteExisting() {
+    if (!confirm("기존 지갑을 삭제하고 새로 만드시겠습니까? 시드가 없으면 자산을 영구히 잃습니다.")) return;
+    const { deleteVault } = await import("@/lib/wallet/vault");
+    await deleteVault();
+    setExistingVault(false);
+    toast.success("기존 지갑이 삭제되었습니다. 새로 만들 수 있습니다.");
+  }
 
   function startCreate() {
     setMnemonic(createMnemonic());
