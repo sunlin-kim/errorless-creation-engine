@@ -15,12 +15,12 @@ export const featuredNews: NewsItem[] = [
   {
     id: "f1",
     type: "news",
-    category: "이벤트",
-    title: "제 2회 Supervizion 공식 커뮤니티 전국 모임",
+    category: "런칭 이벤트",
+    title: "SPC SLC 공식 런칭 — 새로운 시작을 함께하세요",
     source: "Supervizion Newsroom",
     publishedAt: "2026-05-20T19:00:00+09:00",
-    url: "https://supervizion.io/events/community-2",
-    thumb: "from-slate-800 via-emerald-900 to-emerald-600",
+    url: "https://supervizion.io/events/spc-slc-launch",
+    thumb: "from-indigo-800 via-violet-700 to-fuchsia-500",
   },
   {
     id: "f2",

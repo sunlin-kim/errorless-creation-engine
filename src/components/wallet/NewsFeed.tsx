@@ -127,13 +127,13 @@ export function NewsFeed() {
             <div className="flex items-center justify-between p-4 sm:p-5">
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold tracking-widest uppercase text-white/80">
-                  <ShoppingBag size={12} /> P2U
+                  <ShoppingBag size={12} /> EP
                 </div>
                 <p className="mt-1.5 text-sm text-white/85">
-                  생활에 플러스가 되는 최저가 쇼핑몰
+                  생활에 플러스가 되는 에너지 포인트 EP
                 </p>
                 <p className="mt-0.5 text-lg font-extrabold text-yellow-300 leading-tight">
-                  P2U를 시작하세요!
+                  EP를 시작하세요!
                 </p>
               </div>
               <Sparkles size={42} className="shrink-0 text-yellow-300 drop-shadow" />
