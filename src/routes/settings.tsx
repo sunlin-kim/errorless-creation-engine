@@ -24,8 +24,6 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const lock = useWalletStore((s) => s.lock);
-  const autoLockMinutes = useWalletStore((s) => s.autoLockMinutes);
-  const setAutoLockMinutes = useWalletStore((s) => s.setAutoLockMinutes);
   const network = useWalletStore((s) => s.network);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
 
