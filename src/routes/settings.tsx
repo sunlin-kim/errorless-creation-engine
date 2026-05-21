@@ -43,21 +43,21 @@ function SettingsPage() {
   }, [language]);
 
   return (
-    <AppShell title="설정" subtitle="보안 · 통화 · 법적 고지">
+    <AppShell title={t("settings.title")} subtitle={t("settings.subtitle")}>
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card title="보안" icon={ShieldCheck}>
+        <Card title={t("settings.security")} icon={ShieldCheck}>
           <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-outline">
             <div className="min-w-0">
-              <p className="text-sm font-medium">현재 상태</p>
+              <p className="text-sm font-medium">{t("settings.currentStatus")}</p>
               <p className="text-xs text-on-surface-variant">
-                {mnemonic ? "이 기기에서 활성" : "지갑 확인 중 또는 미설정"}
+                {mnemonic ? t("settings.active") : t("settings.notReady")}
               </p>
             </div>
             <Link
               to={mnemonic ? "/wallet" : "/wallet/setup"}
               className="h-9 px-3 rounded-lg border border-outline text-xs font-semibold inline-flex items-center gap-1.5"
             >
-              {mnemonic ? "지갑 보기" : "지갑 설정"}
+              {mnemonic ? t("settings.viewWallet") : t("settings.walletSetup")}
             </Link>
           </div>
 
@@ -71,41 +71,40 @@ function SettingsPage() {
                 useWalletStore.getState().lock();
                 setVaultExists(false);
                 setVaultPresent(false);
-                toast.success("지갑이 이 기기에서 삭제되었습니다");
+                toast.success(t("settings.deleted"));
               }}
             />
           )}
         </Card>
 
-        <Card title="네트워크" icon={Coins}>
+        <Card title={t("settings.network")} icon={Coins}>
           <div className="p-3 rounded-xl border border-outline">
-            <p className="text-sm font-medium">활성 네트워크</p>
+            <p className="text-sm font-medium">{t("settings.activeNetwork")}</p>
             <p className="text-xs text-on-surface-variant mt-0.5">
-              현재 모드:{" "}
+              {t("settings.currentMode")}{" "}
               <span
                 className={`font-semibold ${
                   network === "mainnet" ? "text-red-500" : "text-emerald-500"
                 }`}
               >
-                {network === "mainnet" ? "메인넷" : "테스트넷"}
+                {network === "mainnet" ? t("settings.mainnet") : t("settings.testnet")}
               </span>
             </p>
             <Link
               to="/wallet"
               className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
-              지갑에서 네트워크 전환 <ChevronRight size={12} />
+              {t("settings.switchNetwork")} <ChevronRight size={12} />
             </Link>
           </div>
           <div className="text-xs text-on-surface-variant leading-relaxed px-1">
-            지원: Ethereum (Mainnet · Sepolia), Bitcoin (Mainnet · Testnet), USDT
-            (ERC-20). 그 외 체인은 로드맵 상 후속 단계에서 추가됩니다.
+            {t("settings.networkNote")}
           </div>
         </Card>
 
-        <Card title="지역 및 통화" icon={Globe}>
+        <Card title={t("settings.region")} icon={Globe}>
           <SelectField
-            label="기본 통화"
+            label={t("settings.currency")}
             value={currency}
             onChange={(v) => setCurrency(v as "KRW" | "USD")}
             options={[
@@ -114,7 +113,7 @@ function SettingsPage() {
             ]}
           />
           <SelectField
-            label="언어"
+            label={t("settings.language")}
             value={language}
             onChange={(v) => setLanguage(v as "ko" | "en")}
             options={[
@@ -122,20 +121,18 @@ function SettingsPage() {
               { value: "en", label: "English" },
             ]}
           />
-          <StaticField label="시간대" value="Asia/Seoul (UTC+9)" />
+          <StaticField label={t("settings.timezone")} value="Asia/Seoul (UTC+9)" />
         </Card>
 
-        <Card title="법적 고지" icon={FileText}>
+        <Card title={t("settings.legal")} icon={FileText}>
           <p className="text-xs text-on-surface-variant leading-relaxed">
-            본 앱은 <strong>비수탁(Non-custodial)</strong> 도구입니다. 시드 구문 및
-            개인키는 사용자 기기에만 존재하며, 운영자는 자산을 보관·복구·동결할
-            수 없습니다. 자산 손실에 대한 모든 책임은 사용자에게 있습니다.
+            {t("settings.legalBody")}
           </p>
           <Link
             to="/legal/disclaimer"
             className="mt-2 w-full flex items-center justify-between py-2 text-sm hover:text-primary"
           >
-            <span>전체 면책 고지 보기</span>
+            <span>{t("settings.legalLink")}</span>
             <ChevronRight size={14} className="text-on-surface-variant" />
           </Link>
         </Card>
