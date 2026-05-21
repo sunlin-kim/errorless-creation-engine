@@ -6,7 +6,7 @@
 @import "@fontsource/inter/600.css";
 @import "@fontsource/inter/700.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 /*
  * Supervizion — Material 3 semantic tokens
