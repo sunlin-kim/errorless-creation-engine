@@ -78,7 +78,7 @@ function PointsPage() {
               <button
                 onClick={handleCheckin}
                 disabled={!canCheckin}
-                className="h-11 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-11 rounded-xl bg-white/15 hover:bg-white/25 text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {canCheckin ? <TrendingUp size={15} /> : <Check size={15} />}
                 {canCheckin ? "적립" : "출석완료"}
@@ -88,7 +88,7 @@ function PointsPage() {
                   const target = document.getElementById("rewards-section");
                   target?.scrollIntoView({ behavior: "smooth", block: "start" });
                 }}
-                className="h-11 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                className="h-11 rounded-xl bg-white/15 hover:bg-white/25 text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Gift size={15} /> 사용
               </button>

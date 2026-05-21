@@ -16,7 +16,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-outline bg-background/95 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-outline bg-background pb-[env(safe-area-inset-bottom)]"
       aria-label={t("nav.mobile")}
     >
       <ul className="grid grid-cols-4">

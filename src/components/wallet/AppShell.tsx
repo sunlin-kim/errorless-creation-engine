@@ -20,7 +20,7 @@ export function AppShell({
     <div className="min-h-screen flex bg-background text-on-surface">
       <SidebarNav />
       <main className="flex-1 min-w-0">
-        <header className="sticky top-0 z-30 backdrop-blur-xl bg-background/80 border-b border-outline">
+        <header className="sticky top-0 z-30 bg-background border-b border-outline">
           <div className="px-5 lg:px-8 h-16 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <div className="lg:hidden">

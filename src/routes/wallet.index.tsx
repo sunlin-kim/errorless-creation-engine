@@ -382,7 +382,7 @@ function LiveBalanceCard({
               {hidden ? (fiat === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, fiat)}
             </span>
           </div>
-          <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full backdrop-blur">
+          <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full">
             <TrendingUp size={14} className={positive ? "" : "rotate-180"} />
             <span className="tnum">
               {positive ? "+" : ""}
@@ -420,7 +420,7 @@ function LiveBalanceCard({
         ].map((s) => (
           <div
             key={s.label}
-            className="rounded-xl bg-white/10 backdrop-blur px-3 py-2.5"
+            className="rounded-xl bg-white/10 px-3 py-2.5"
           >
             <p className="text-white/60">{s.label}</p>
             <p className="mt-1 font-medium tnum truncate">{s.value}</p>
@@ -547,7 +547,7 @@ function NetworkToggle({
 }) {
   const t = useT();
   return (
-    <div className="inline-flex rounded-lg overflow-hidden text-xs bg-white/10 backdrop-blur">
+    <div className="inline-flex rounded-lg overflow-hidden text-xs bg-white/10">
       <button
         onClick={() => onChange("testnet")}
         className={`px-2.5 h-9 ${
