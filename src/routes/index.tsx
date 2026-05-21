@@ -32,7 +32,7 @@ function Dashboard() {
           <NewsFeed />
         </div>
 
-        <aside className="space-y-6">
+        <aside className="hidden lg:block space-y-6">
           <section className="rounded-3xl border border-outline bg-surface p-5">
             <header className="flex items-center justify-between mb-2">
               <h2 className="text-base font-semibold">{t("home.recentTx")}</h2>
