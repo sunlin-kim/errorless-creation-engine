@@ -32,7 +32,7 @@ function PointsPage() {
           <div className="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(52,211,153,0.4),transparent_60%)]" />
           <div className="relative">
             <div className="flex items-center gap-2 text-[11px] tracking-[0.25em] font-semibold text-emerald-100/90 uppercase">
-              <Sparkles size={13} className="text-amber-300" /> Supervizion Points
+              <Sparkles size={13} className="text-amber-300" /> Energy Points
             </div>
             <div className="mt-3 flex items-baseline gap-2">
               <span className="tnum text-4xl sm:text-5xl font-extrabold drop-shadow">
