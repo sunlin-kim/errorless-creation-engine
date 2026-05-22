@@ -63,14 +63,14 @@ export const assets: Asset[] = [
     color: "#8247E5",
   },
   {
-    id: "arb",
-    symbol: "ARB",
-    name: "Arbitrum",
-    network: "Arbitrum",
-    balance: 540.2,
-    priceKrw: 1_240,
+    id: "bnb",
+    symbol: "BNB",
+    name: "BNB",
+    network: "BSC",
+    balance: 2.45,
+    priceKrw: 820_000,
     change24h: 2.04,
-    color: "#28A0F0",
+    color: "#F3BA2F",
   },
 ];
 
