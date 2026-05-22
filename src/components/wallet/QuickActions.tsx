@@ -29,13 +29,8 @@ export function QuickActions() {
     <div className="grid grid-cols-4 gap-3">
       {actions.map((action) => {
         const { to, label, icon: Icon, image } = action;
-        return (
-          <Link
-            key={label}
-            to={isMobile && to === "/activity" ? "/wallet" : to}
-            preload="intent"
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-outline bg-surface hover:bg-primary-container hover:border-primary/30 transition-colors p-4"
-          >
+        const content = (
+          <>
             <span className="h-11 w-11 rounded-full grid place-items-center bg-primary-container text-on-primary-container group-hover:bg-primary group-hover:text-white transition-colors overflow-hidden">
               {Icon ? (
                 <Icon size={18} />
@@ -55,6 +50,25 @@ export function QuickActions() {
               ) : null}
             </span>
             <span className="text-xs font-medium text-on-surface">{label}</span>
+          </>
+        );
+        const className =
+          "group flex flex-col items-center gap-2 rounded-2xl border border-outline bg-surface hover:bg-primary-container hover:border-primary/30 transition-colors p-4";
+        if (label === "Vizion Power") {
+          return (
+            <div key={label} className={className} aria-disabled="true">
+              {content}
+            </div>
+          );
+        }
+        return (
+          <Link
+            key={label}
+            to={isMobile && to === "/activity" ? "/wallet" : to}
+            preload="intent"
+            className={className}
+          >
+            {content}
           </Link>
         );
       })}
