@@ -56,9 +56,15 @@ export function QuickActions() {
           "group flex flex-col items-center gap-2 rounded-2xl border border-outline bg-surface hover:bg-primary-container hover:border-primary/30 transition-colors p-4";
         if (label === "Vizion Power") {
           return (
-            <div key={label} className={className} aria-disabled="true">
+            <a
+              key={label}
+              href="https://www.supervizion.ai/vizionpower"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={className}
+            >
               {content}
-            </div>
+            </a>
           );
         }
         return (
