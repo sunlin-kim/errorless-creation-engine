@@ -141,11 +141,13 @@ function TileItem({ tile }: { tile: Tile }) {
       {...wrapperProps}
       className="group flex flex-col items-center gap-2 cursor-pointer"
     >
-      <div className="h-16 w-16 rounded-full border border-outline bg-surface grid place-items-center transition-all group-hover:border-primary/50 group-hover:bg-primary/5">
+      <div
+        className={`h-16 w-16 rounded-full border ${tile.border} ${tile.bg} grid place-items-center transition-all group-hover:scale-105 group-hover:shadow-sm`}
+      >
         <Icon
           size={28}
-          strokeWidth={1.5}
-          className="text-on-surface group-hover:text-primary transition-colors"
+          strokeWidth={1.75}
+          className={`${tile.color} transition-colors`}
         />
       </div>
       <span className="text-xs font-medium text-on-surface text-center leading-tight">
