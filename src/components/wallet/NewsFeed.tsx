@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { featuredNews, newsFeed, insights, relativeTime, type NewsItem } from "@/lib/news-data";
+import { featuredNews, newsFeed, relativeTime, type NewsItem } from "@/lib/news-data";
+import { InsightGrid } from "./InsightGrid";
 import {
   PlayCircle,
   Newspaper,
