@@ -19,6 +19,8 @@
 ## 2) Capacitor로 진짜 .apk 빌드 (로컬 PC 필요)
 
 `capacitor.config.ts`가 프로젝트 루트에 준비되어 있습니다.
+이 저장소에는 이제 **`android/` 네이티브 프로젝트가 포함**되어 있어,
+APK가 실제로 사용하는 런처 설정과 아이콘 리소스가 함께 관리됩니다.
 
 ### ⚠️ 중요: "앱이 설치는 되는데 홈/앱서랍에 아이콘이 안 보이고 검색해야 실행됨" 문제
 
@@ -26,11 +28,13 @@
 Android 어댑티브 런처 아이콘 렌더링이 실패했습니다. 결과적으로 런처가 빈
 아이콘으로 처리해 **앱서랍/홈에서 보이지 않고 "검색"으로만 실행**됩니다.
 
-수정 완료 항목:
+정밀 수정 완료 항목:
 - `resources/icon.png` (1024×1024 정사각형, 불투명)
 - `resources/icon-foreground.png` + `resources/icon-background.png` (어댑티브 아이콘)
 - `resources/splash.png`, `resources/splash-dark.png` (2732×2732)
 - `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` 정사각형 재생성
+- `android/app/src/main/AndroidManifest.xml` 내 **`MAIN` + `LAUNCHER`** 진입점 확인
+- `android/app/src/main/res/mipmap-*`, `mipmap-anydpi-v26/` 런처 아이콘 실생성 확인
 
 아래 빌드 절차에서 **`@capacitor/assets generate` 단계를 반드시 실행**하세요.
 이미 잘못된 APK를 설치했다면 **기기에서 먼저 제거(또는 데이터 삭제)** 후 재설치하세요.
@@ -56,18 +60,15 @@ npm i -D @capacitor/assets
 # 2. 웹 앱 프로덕션 빌드
 npm run build
 
-# 3. 안드로이드 플랫폼 추가 (최초 1회)
-npx cap add android
-
-# 4. ★ 런처 아이콘 / 스플래시 생성 (필수!)
+# 3. ★ 런처 아이콘 / 스플래시 생성 (필수!)
 #    resources/icon.png + resources/splash.png 를 읽어
 #    android/app/src/main/res/mipmap-*/, drawable-*/ 에 모든 해상도 자동 생성
 npx @capacitor/assets generate --android
 
-# 5. 동기화
+# 4. 동기화
 npx cap sync android
 
-# 6. Android Studio 열기
+# 5. Android Studio 열기
 npx cap open android
 ```
 
@@ -93,10 +94,11 @@ npx cap sync android
 
 ---
 
-## 트russelshooting
+## Troubleshooting
 
-- **앱서랍에 안 보이고 검색해야 실행됨** → 런처 아이콘이 비정상(투명/비정사각형).
-  위 4단계(`@capacitor/assets generate --android`)를 실행했는지 확인. 기기에서
+- **앱서랍에 안 보이고 검색해야 실행됨** → APK 내부 Android 런처 리소스가 누락/오염되었거나,
+  이전 잘못된 설치본의 런처 캐시가 남아있는 경우가 대부분입니다.
+  위 3단계(`@capacitor/assets generate --android`)를 실행했는지 확인. 기기에서
   앱 제거 후 재설치.
 - **흰 화면**: `capacitor.config.ts`의 `server.url`이 가리키는 도메인이
   실제로 배포(Publish)되어 있어야 합니다. 현재 설정: `https://supervizion.ai`
