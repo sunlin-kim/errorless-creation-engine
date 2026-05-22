@@ -16,7 +16,6 @@ export function NewsFeed() {
   const [tab, setTab] = useState<Tab>("news");
   const [slide, setSlide] = useState(0);
 
-  const items = tab === "news" ? newsFeed : insights;
   const featured = featuredNews;
 
   const next = () => setSlide((s) => (s + 1) % featured.length);
