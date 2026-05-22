@@ -148,16 +148,20 @@ export function NewsFeed() {
       )}
 
       {/* List */}
-      <div className="px-5 pb-5">
-        <h3 className="text-sm font-semibold text-on-surface-variant mb-3 mt-1">
-          {tab === "news" ? "새 소식" : "최신 인사이트"}
-        </h3>
-        <div className="space-y-4">
-          {items.map((item) => (
-            <NewsCard key={item.id} item={item} />
-          ))}
+      {tab === "news" ? (
+        <div className="px-5 pb-5">
+          <h3 className="text-sm font-semibold text-on-surface-variant mb-3 mt-1">
+            새 소식
+          </h3>
+          <div className="space-y-4">
+            {newsFeed.map((item) => (
+              <NewsCard key={item.id} item={item} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <InsightGrid />
+      )}
     </section>
   );
 }
