@@ -16,21 +16,91 @@ type Tile = {
   label: string;
   icon: LucideIcon;
   href?: string;
+  // Tailwind classes for icon color, border tint, background tint
+  color: string;
+  border: string;
+  bg: string;
 };
 
 const brand: Tile[] = [
-  { id: "home", label: "홈페이지", icon: Home, href: "https://supervizion.io" },
-  { id: "blog", label: "블로그", icon: BookOpen, href: "#" },
-  { id: "youtube", label: "유튜브", icon: Youtube, href: "#" },
+  {
+    id: "home",
+    label: "홈페이지",
+    icon: Home,
+    href: "https://supervizion.io",
+    color: "text-emerald-600",
+    border: "border-emerald-200",
+    bg: "bg-emerald-50",
+  },
+  {
+    id: "blog",
+    label: "블로그",
+    icon: BookOpen,
+    href: "#",
+    color: "text-amber-600",
+    border: "border-amber-200",
+    bg: "bg-amber-50",
+  },
+  {
+    id: "youtube",
+    label: "유튜브",
+    icon: Youtube,
+    href: "#",
+    color: "text-red-500",
+    border: "border-red-200",
+    bg: "bg-red-50",
+  },
 ];
 
 const services: Tile[] = [
-  { id: "mainnet", label: "MainNet 기술", icon: Network },
-  { id: "ipp", label: "IPP", icon: Zap },
-  { id: "mall", label: "모바일 Mall", icon: ShoppingBag },
-  { id: "leisure", label: "레저와 여행", icon: Plane },
-  { id: "ppp", label: "PPP", icon: Building2 },
-  { id: "research", label: "경영연구원", icon: GraduationCap },
+  {
+    id: "mainnet",
+    label: "MainNet 기술",
+    icon: Network,
+    color: "text-indigo-600",
+    border: "border-indigo-200",
+    bg: "bg-indigo-50",
+  },
+  {
+    id: "ipp",
+    label: "IPP",
+    icon: Zap,
+    color: "text-yellow-500",
+    border: "border-yellow-200",
+    bg: "bg-yellow-50",
+  },
+  {
+    id: "mall",
+    label: "모바일 Mall",
+    icon: ShoppingBag,
+    color: "text-pink-500",
+    border: "border-pink-200",
+    bg: "bg-pink-50",
+  },
+  {
+    id: "leisure",
+    label: "레저와 여행",
+    icon: Plane,
+    color: "text-sky-500",
+    border: "border-sky-200",
+    bg: "bg-sky-50",
+  },
+  {
+    id: "ppp",
+    label: "PPP",
+    icon: Building2,
+    color: "text-teal-600",
+    border: "border-teal-200",
+    bg: "bg-teal-50",
+  },
+  {
+    id: "research",
+    label: "경영연구원",
+    icon: GraduationCap,
+    color: "text-violet-600",
+    border: "border-violet-200",
+    bg: "bg-violet-50",
+  },
 ];
 
 export function InsightGrid() {
@@ -71,11 +141,13 @@ function TileItem({ tile }: { tile: Tile }) {
       {...wrapperProps}
       className="group flex flex-col items-center gap-2 cursor-pointer"
     >
-      <div className="h-16 w-16 rounded-full border border-outline bg-surface grid place-items-center transition-all group-hover:border-primary/50 group-hover:bg-primary/5">
+      <div
+        className={`h-16 w-16 rounded-full border ${tile.border} ${tile.bg} grid place-items-center transition-all group-hover:scale-105 group-hover:shadow-sm`}
+      >
         <Icon
           size={28}
-          strokeWidth={1.5}
-          className="text-on-surface group-hover:text-primary transition-colors"
+          strokeWidth={1.75}
+          className={`${tile.color} transition-colors`}
         />
       </div>
       <span className="text-xs font-medium text-on-surface text-center leading-tight">
