@@ -58,7 +58,7 @@ export function QuickActions() {
           return (
             <a
               key={label}
-              href="https://www.supervizion.ai/vizionpower"
+              href="https://vizionpower.supervizion.ai"
               target="_blank"
               rel="noopener noreferrer"
               className={className}
