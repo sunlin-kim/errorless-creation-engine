@@ -26,6 +26,8 @@ function SettingsPage() {
   const network = useWalletStore((s) => s.network);
   const currency = useWalletStore((s) => s.currency);
   const language = useWalletStore((s) => s.language);
+  const autoLockMinutes = useWalletStore((s) => s.autoLockMinutes);
+  const setAutoLockMinutes = useWalletStore((s) => s.setAutoLockMinutes);
   const setCurrency = useWalletStore((s) => s.setCurrency);
   const setLanguage = useWalletStore((s) => s.setLanguage);
   const setVaultExists = useWalletStore((s) => s.setVaultExists);
