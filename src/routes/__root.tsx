@@ -12,7 +12,6 @@ import appCss from "../styles.css?url";
 import splashLogoUrl from "@/assets/splash-logo.png";
 
 import { useAutoLock } from "@/lib/wallet/autolock";
-import { loadUnlockedMnemonic } from "@/lib/wallet/session";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useEffect } from "react";
 import { SplashScreen } from "@/components/wallet/SplashScreen";
