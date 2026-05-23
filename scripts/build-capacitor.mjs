@@ -93,9 +93,10 @@ function walk(dir, files = []) {
 }
 
 const TEXT_EXT = /\.(html|js|mjs|cjs|css|map|json|txt|webmanifest)$/i;
+// 자원 로딩(src=/href=/import) 만 금지. 사용자 액션으로 외부 브라우저에서 여는
+// 링크 문자열(예: "https://vizionpower.supervizion.ai", 익스플로러 URL, RPC URL)은 허용.
 const FORBIDDEN = [
-  /https?:\/\/(?:[a-z0-9-]+\.)*supervizion\.ai/i,
-  // src="https://..." 같은 절대 출처 스크립트/링크 (CDN 등은 명시 화이트리스트 필요)
+  // <script src="https://..."> / <link href="https://...">
   /(?:src|href)\s*=\s*["']https?:\/\//i,
   // import "https://..."
   /import\s+[^"'`]*["']https?:\/\//i,
