@@ -91,39 +91,13 @@ function AssetDetail() {
   const ep = useMemo(() => getEndpoints(network), [network]);
 
   const idUpper = id.toUpperCase();
-  if (!isSymbol(idUpper)) {
-    return (
-      <AppShell title="지원하지 않는 자산" subtitle={id}>
-        <Link to="/wallet" className="text-primary text-sm">
-          ← 지갑으로
-        </Link>
-      </AppShell>
-    );
-  }
-  const symbol: Symbol = idUpper;
+  const validSymbol = isSymbol(idUpper);
+  // 잘못된 심볼이어도 hooks 순서를 유지하기 위해 BTC 로 폴백
+  const symbol: Symbol = validSymbol ? idUpper : "BTC";
   const meta = SUPPORTED[symbol];
 
-  if (!mnemonic) {
-    return (
-      <AppShell title={meta.name} subtitle="지갑 잠금">
-        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            잔액을 보려면 지갑을 잠금 해제하세요.
-          </p>
-          <Link
-            to="/wallet/unlock"
-            className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
-          >
-            잠금 해제
-          </Link>
-        </div>
-      </AppShell>
-    );
-  }
-
   const balancesQ = useQuery({
-    enabled: !!addrs,
+    enabled: !!addrs && !!mnemonic && validSymbol,
     queryKey: ["asset", symbol, network, currency, addrs?.eth, addrs?.btc, addrs?.sol, addrs?.bnb],
     queryFn: async () => {
       if (!addrs) throw new Error("주소를 파생할 수 없습니다");
@@ -156,7 +130,7 @@ function AssetDetail() {
   });
 
   const historyQ = useQuery({
-    enabled: !!addrs,
+    enabled: !!addrs && !!mnemonic && validSymbol,
     queryKey: ["history", network, addrs?.eth, addrs?.btc],
     queryFn: async () => {
       if (!addrs) return [] as HistoryItem[];
@@ -165,6 +139,42 @@ function AssetDetail() {
     staleTime: 60_000,
   });
 
+  const txs = useMemo(() => {
+    const all = historyQ.data ?? [];
+    const target = symbol === "DUCKY" || symbol === "BNB" || symbol === "SOL" ? null : symbol;
+    if (!target) return [];
+    return all.filter((t) => t.asset === target).slice(0, 20);
+  }, [historyQ.data, symbol]);
+
+  if (!validSymbol) {
+    return (
+      <AppShell title="지원하지 않는 자산" subtitle={id}>
+        <Link to="/wallet" className="text-primary text-sm">
+          ← 지갑으로
+        </Link>
+      </AppShell>
+    );
+  }
+
+  if (!mnemonic) {
+    return (
+      <AppShell title={meta.name} subtitle="지갑 잠금">
+        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
+          <p className="mt-3 text-sm text-on-surface-variant">
+            잔액을 보려면 지갑을 잠금 해제하세요.
+          </p>
+          <Link
+            to="/wallet/unlock"
+            className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
+          >
+            잠금 해제
+          </Link>
+        </div>
+      </AppShell>
+    );
+  }
+
   const price = balancesQ.data?.prices.prices[symbol] ?? 0;
   const change24h = balancesQ.data?.prices.changes24h[symbol] ?? 0;
   const positive = change24h >= 0;
@@ -172,12 +182,6 @@ function AssetDetail() {
     ? toFiat(balancesQ.data.balance, balancesQ.data.prices.prices)
     : 0;
 
-  const txs = useMemo(() => {
-    const all = historyQ.data ?? [];
-    const target = symbol === "DUCKY" || symbol === "BNB" || symbol === "SOL" ? null : symbol;
-    if (!target) return [];
-    return all.filter((t) => t.asset === target).slice(0, 20);
-  }, [historyQ.data, symbol]);
 
   const addressForExplorer =
     symbol === "BTC"
