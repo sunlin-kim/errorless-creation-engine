@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  자동 백업·D2D(기기간 이전) 시 지갑 데이터(IndexedDB 포함) 가 절대 빠져나가지
+  않도록 모든 도메인을 제외한다. 시드 vault 는 사용자의 비밀번호 기반 KDF 로
+  보호되지만, 평문 백업 자체를 차단하는 것이 더 안전하다.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>
