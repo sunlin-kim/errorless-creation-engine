@@ -6,10 +6,15 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-// @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
+// Capacitor 빌드 시 BUILD_TARGET=capacitor 가 세팅됨 → base: './' 로 상대 경로 강제
+// (APK 내부 파일 스킴에서 자산이 해결되도록).
+const isCapacitor = process.env.BUILD_TARGET === "capacitor";
+
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
+  },
+  vite: {
+    base: isCapacitor ? "./" : "/",
   },
 });
