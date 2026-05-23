@@ -301,6 +301,48 @@ function AssetDetail() {
   );
 }
 
+function HistoryRow({ item }: { item: HistoryItem }) {
+  const Icon = item.direction === "in" ? ArrowDownLeft : ArrowUpRight;
+  const sign = item.direction === "in" ? "+" : "-";
+  const time = new Date(item.timestamp).toLocaleString("ko-KR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return (
+    <a
+      href={item.explorerUrl}
+      target="_blank"
+      rel="noreferrer"
+      className="flex items-center gap-4 p-3 rounded-2xl hover:bg-surface-container transition-colors"
+    >
+      <span className="h-10 w-10 rounded-full grid place-items-center bg-primary-container text-on-primary-container">
+        <Icon size={16} />
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="font-medium text-sm text-on-surface">
+            {item.direction === "in" ? "받음" : "보냄"}
+          </p>
+          <TxStatusBadge status={item.status} />
+        </div>
+        <p className="text-xs text-on-surface-variant truncate tnum">
+          {item.counterparty} · {item.network}
+        </p>
+      </div>
+      <div className="text-right">
+        <p className="tnum text-sm font-medium">
+          {sign}
+          {item.amount} {item.asset}
+        </p>
+        <p className="text-[11px] text-on-surface-variant tnum">{time}</p>
+      </div>
+    </a>
+  );
+}
+
+
 function shorten(addr: string): string {
   if (addr.length <= 14) return addr;
   return addr.slice(0, 8) + "…" + addr.slice(-6);
