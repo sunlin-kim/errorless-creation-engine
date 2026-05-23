@@ -79,6 +79,16 @@ export async function estimateEthFee(
   const priority = BigInt(prioHex);
   const baseFee = BigInt(block.baseFeePerGas ?? "0x0");
   const maxFee = baseFee * 2n + priority;
+  // Sanity cap: gas price > 1500 gwei 는 비정상 RPC 응답 가능성 → 거부
+  const MAX_GWEI = 1500n;
+  const ONE_GWEI = 10n ** 9n;
+  if (maxFee > MAX_GWEI * ONE_GWEI) {
+    throw new Error(`가스가 비정상적으로 높습니다 (${maxFee / ONE_GWEI} gwei). 잠시 후 다시 시도하세요.`);
+  }
+  // 가스 한도 sanity: 5,000,000 초과면 비정상
+  if (gasLimit > 5_000_000n) {
+    throw new Error(`가스 한도가 비정상적으로 높습니다 (${gasLimit}).`);
+  }
   return {
     gasLimit,
     maxFeePerGas: maxFee,
