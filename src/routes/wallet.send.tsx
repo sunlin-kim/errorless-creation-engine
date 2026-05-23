@@ -1,11 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/wallet/AppShell";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useT } from "@/lib/i18n";
 import { derivePrivateKeys } from "@/lib/wallet/keys";
 import { getEndpoints } from "@/lib/wallet/networks";
 import { useDerivedAddresses } from "@/lib/wallet/use-derived-addresses";
+import { toChecksumAddress } from "@/lib/wallet/derive";
+import { loadVault } from "@/lib/wallet/vault";
+import { decryptString } from "@/lib/wallet/crypto";
+import * as btc from "@scure/btc-signer";
+import { base58 } from "@scure/base";
 import {
   sendEth,
   sendUsdt,
@@ -13,8 +18,17 @@ import {
   sendBnb,
   sendSol,
   parseUnits,
+  estimateEthFee,
+  estimateBtcFee,
 } from "@/lib/wallet/send";
-import { ArrowLeft, Send, AlertTriangle, ExternalLink, KeyRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  AlertTriangle,
+  ExternalLink,
+  KeyRound,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 type Asset = "ETH" | "USDT" | "BTC" | "BNB" | "SOL";
@@ -36,6 +50,15 @@ function SendPage() {
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
   const [txid, setTxid] = useState<string | null>(null);
+
+  // 수수료 미리보기
+  const [feePreview, setFeePreview] = useState<string>("");
+  const [feeBusy, setFeeBusy] = useState(false);
+
+  // 비밀번호 재확인 모달
+  const [pwOpen, setPwOpen] = useState(false);
+  const [pw, setPw] = useState("");
+  const [pwBusy, setPwBusy] = useState(false);
 
   if (!mnemonic) {
     return (
@@ -71,12 +94,29 @@ function SendPage() {
     if (!v) return tr("wsend.errAddrRequired");
     if (asset === "BTC") {
       const isMain = network === "mainnet";
-      if (isMain && !/^(bc1|1|3)/.test(v)) return tr("wsend.errBtcAddr");
-      if (!isMain && !/^(tb1|m|n|2)/.test(v)) return tr("wsend.errBtcTestAddr");
+      const net = isMain ? btc.NETWORK : btc.TEST_NETWORK;
+      try {
+        const decoded = btc.Address(net).decode(v);
+        if (!decoded) return tr("wsend.errBtcAddr");
+      } catch {
+        return isMain ? tr("wsend.errBtcAddr") : tr("wsend.errBtcTestAddr");
+      }
     } else if (asset === "SOL") {
-      if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v)) return tr("wsend.errSolAddr");
+      try {
+        const bytes = base58.decode(v);
+        if (bytes.length !== 32) return tr("wsend.errSolAddr");
+      } catch {
+        return tr("wsend.errSolAddr");
+      }
     } else {
+      // EVM (ETH/USDT/BNB)
       if (!/^0x[0-9a-fA-F]{40}$/.test(v)) return tr("wsend.errEvmAddr");
+      const hasUpper = /[A-F]/.test(v);
+      const hasLower = /[a-f]/.test(v);
+      // 혼합 대소문자면 EIP-55 체크섬 강제
+      if (hasUpper && hasLower) {
+        if (toChecksumAddress(v) !== v) return tr("wsend.errEvmAddr");
+      }
     }
     return null;
   }
@@ -88,7 +128,47 @@ function SendPage() {
     return 18;
   }
 
-  async function onSend() {
+  // 수수료 미리보기 자동 추정
+  useEffect(() => {
+    setFeePreview("");
+    if (!amount || validateAddress() !== null) return;
+    let cancelled = false;
+    (async () => {
+      setFeeBusy(true);
+      try {
+        if (asset === "BTC") {
+          const fpb = await estimateBtcFee(ep);
+          if (!cancelled) setFeePreview(`~${fpb} sat/vB`);
+        } else if (asset === "SOL") {
+          if (!cancelled) setFeePreview("~0.000005 SOL");
+        } else {
+          const valueWei =
+            asset === "USDT" ? 0n : parseUnits(amount, decimalsFor(asset));
+          const fee = await estimateEthFee(
+            ep,
+            fromAddress,
+            asset === "USDT" ? ep.usdtContract ?? to.trim() : to.trim(),
+            valueWei,
+          );
+          const ethWhole = fee.totalFeeWei / 10n ** 18n;
+          const ethRem = fee.totalFeeWei % 10n ** 18n;
+          const ethStr = `${ethWhole}.${ethRem.toString().padStart(18, "0").slice(0, 6)}`;
+          if (!cancelled)
+            setFeePreview(`~${ethStr} ${asset === "BNB" ? "BNB" : "ETH"}`);
+        }
+      } catch {
+        if (!cancelled) setFeePreview("");
+      } finally {
+        if (!cancelled) setFeeBusy(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, to, asset, network]);
+
+  function openPasswordPrompt() {
     const addrErr = validateAddress();
     if (addrErr) return toast.error(addrErr);
     try {
@@ -96,11 +176,30 @@ function SendPage() {
     } catch (e) {
       return toast.error(e instanceof Error ? e.message : tr("wsend.errAmount"));
     }
-    if (network === "mainnet") {
-      const ok = confirm(tr("wsend.confirmMainnet", { amount, asset, to }));
-      if (!ok) return;
-    }
+    setPw("");
+    setPwOpen(true);
+  }
 
+  async function confirmAndSend() {
+    setPwBusy(true);
+    try {
+      const v = await loadVault();
+      if (!v) throw new Error("NO_VAULT");
+      // 비밀번호 검증 (잘못된 비밀번호면 WRONG_PASSWORD throw)
+      await decryptString(v.encryptedMnemonic, pw);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "";
+      toast.error(msg === "WRONG_PASSWORD" ? tr("settings.wrongPw") : tr("settings.decryptFail"));
+      setPwBusy(false);
+      return;
+    }
+    setPwBusy(false);
+    setPwOpen(false);
+    setPw("");
+    await onSend();
+  }
+
+  async function onSend() {
     setBusy(true);
     setTxid(null);
     let priv: Uint8Array | null = null;
@@ -115,7 +214,7 @@ function SendPage() {
           ? keys.btcPriv
           : asset === "SOL"
             ? keys.solPriv
-            : keys.ethPriv; // ETH / USDT / BNB
+            : keys.ethPriv;
 
       let id: string;
       if (asset === "ETH") {
@@ -229,6 +328,22 @@ function SendPage() {
             />
           </div>
 
+          {/* 수수료 미리보기 */}
+          <div className="rounded-lg bg-surface-container p-3 text-xs space-y-1">
+            <div className="flex justify-between">
+              <span className="text-on-surface-variant">예상 네트워크 수수료</span>
+              <span className="font-mono">{feeBusy ? "계산 중…" : feePreview || "—"}</span>
+            </div>
+            {amount && (
+              <div className="flex justify-between">
+                <span className="text-on-surface-variant">보낼 금액</span>
+                <span className="font-mono">
+                  {amount} {asset}
+                </span>
+              </div>
+            )}
+          </div>
+
           {network === "mainnet" && (
             <div className="flex gap-2 rounded-lg border border-red-500/40 bg-red-500/5 p-3">
               <AlertTriangle size={16} className="text-red-500 shrink-0" />
@@ -239,7 +354,7 @@ function SendPage() {
           )}
 
           <button
-            onClick={onSend}
+            onClick={openPasswordPrompt}
             disabled={busy || usdtUnavailable}
             className="w-full h-11 rounded-lg bg-primary text-on-primary font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50"
           >
@@ -262,6 +377,82 @@ function SendPage() {
           )}
         </section>
       </div>
+
+      {pwOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-outline bg-surface p-5 shadow-xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-semibold">송금 확인</h3>
+              <button
+                onClick={() => {
+                  setPwOpen(false);
+                  setPw("");
+                }}
+                className="p-1 rounded-md hover:bg-surface-container"
+                aria-label="닫기"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="mt-3 rounded-lg bg-surface-container p-3 text-xs space-y-1">
+              <div className="flex justify-between">
+                <span className="text-on-surface-variant">자산</span>
+                <span className="font-semibold">{asset}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-on-surface-variant">금액</span>
+                <span className="font-mono">
+                  {amount} {asset}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-on-surface-variant">예상 수수료</span>
+                <span className="font-mono">{feePreview || "—"}</span>
+              </div>
+              <div>
+                <p className="text-on-surface-variant mt-1">받는 주소</p>
+                <p className="font-mono break-all text-[11px] mt-0.5">{to.trim()}</p>
+              </div>
+            </div>
+            <label className="mt-3 block text-xs text-on-surface-variant">
+              지갑 비밀번호
+            </label>
+            <input
+              type="password"
+              value={pw}
+              autoFocus
+              onChange={(e) => setPw(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && pw && !pwBusy) confirmAndSend();
+              }}
+              className="mt-1 w-full h-10 rounded-lg border border-outline bg-background px-3 text-sm focus:border-primary outline-none"
+              placeholder="비밀번호 입력"
+            />
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => {
+                  setPwOpen(false);
+                  setPw("");
+                }}
+                className="flex-1 h-10 rounded-lg border border-outline text-xs"
+              >
+                취소
+              </button>
+              <button
+                onClick={confirmAndSend}
+                disabled={!pw || pwBusy}
+                className="flex-1 h-10 rounded-lg bg-primary text-on-primary text-xs font-semibold disabled:opacity-40"
+              >
+                {pwBusy ? "확인 중…" : "확인 후 송금"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
