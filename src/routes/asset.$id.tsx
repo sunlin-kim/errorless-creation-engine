@@ -264,19 +264,7 @@ function AssetDetail() {
                 </p>
               )}
               {txs.map((t) => (
-                <TxRow
-                  key={t.id}
-                  tx={{
-                    id: t.id,
-                    asset: t.asset,
-                    network: t.network,
-                    direction: t.direction === "self" ? "out" : t.direction,
-                    amount: parseFloat(t.amount) || 0,
-                    counterparty: t.counterparty,
-                    timestamp: t.timestamp,
-                    status: t.status,
-                  }}
-                />
+                <HistoryRow key={t.id} item={t} />
               ))}
             </div>
           </section>
