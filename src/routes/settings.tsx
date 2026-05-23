@@ -63,6 +63,22 @@ function SettingsPage() {
             </Link>
           </div>
 
+          <div className="p-3 rounded-xl border border-outline">
+            <p className="text-xs text-on-surface-variant">자동 잠금</p>
+            <p className="text-sm font-medium mt-0.5">
+              미사용 시 일정 시간 후 자동으로 잠급니다.
+            </p>
+            <select
+              value={String(autoLockMinutes)}
+              onChange={(e) => setAutoLockMinutes(parseInt(e.target.value, 10))}
+              className="mt-2 w-full bg-transparent text-sm font-medium outline-none cursor-pointer border border-outline rounded-md px-2 py-1.5"
+            >
+              <option value="5" className="bg-surface text-on-surface">5분</option>
+              <option value="10" className="bg-surface text-on-surface">10분 (권장)</option>
+              <option value="30" className="bg-surface text-on-surface">30분</option>
+              <option value="0" className="bg-surface text-on-surface">사용 안 함</option>
+            </select>
+          </div>
 
           <SeedRevealBlock disabled={!vaultPresent} />
 
