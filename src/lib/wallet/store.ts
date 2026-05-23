@@ -4,7 +4,6 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { clearUnlockedMnemonic, saveUnlockedMnemonic } from "./session";
 
 export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
