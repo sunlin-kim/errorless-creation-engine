@@ -184,77 +184,37 @@ function ReceivePage() {
 }
 
 /**
- * 간단한 결정론적 QR 시각화 (실제 QR 코드 라이브러리 미사용).
- * 주소 자체는 위쪽 텍스트/복사 버튼으로 정확하게 전달됩니다.
+ * 실제 QR 코드 — `qrcode` 라이브러리로 주소를 인코딩하여 스캐너 호환 보장.
  */
 function QrCanvas({ value }: { value: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const size = 25;
-  const pixel = 8;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let h = 0;
-    for (let i = 0; i < value.length; i++) h = (h * 31 + value.charCodeAt(i)) | 0;
-
-    const cells: boolean[] = [];
-    let s = h >>> 0 || 1;
-    for (let i = 0; i < size * size; i++) {
-      s = (s * 1664525 + 1013904223) >>> 0;
-      cells.push((s & 1) === 1);
-    }
-
-    const inFinder = (r: number, c: number) => {
-      const f = (br: number, bc: number) =>
-        r >= br && r < br + 7 && c >= bc && c < bc + 7;
-      return f(0, 0) || f(0, size - 7) || f(size - 7, 0);
+    if (!canvas || !value) return;
+    let cancelled = false;
+    (async () => {
+      const QR = (await import("qrcode")).default;
+      if (cancelled) return;
+      try {
+        await QR.toCanvas(canvas, value, {
+          width: 220,
+          margin: 1,
+          errorCorrectionLevel: "M",
+          color: { dark: "#065F46", light: "#ffffff" },
+        });
+      } catch {
+        // 무시 — 잘못된 입력 시 빈 캔버스
+      }
+    })();
+    return () => {
+      cancelled = true;
     };
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#065F46";
-
-    for (let i = 0; i < cells.length; i++) {
-      const r = Math.floor(i / size);
-      const c = i % size;
-      const finder = inFinder(r, c);
-      let fill = cells[i];
-
-      if (finder) {
-        const inSquare = (br: number, bc: number) => {
-          const lr = r - br;
-          const lc = c - bc;
-          return (
-            lr === 0 ||
-            lr === 6 ||
-            lc === 0 ||
-            lc === 6 ||
-            (lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4)
-          );
-        };
-        fill =
-          (r < 7 && c < 7 && inSquare(0, 0)) ||
-          (r < 7 && c >= size - 7 && inSquare(0, size - 7)) ||
-          (r >= size - 7 && c < 7 && inSquare(size - 7, 0));
-      }
-
-      if (fill) {
-        ctx.fillRect(c * pixel, r * pixel, pixel, pixel);
-      }
-    }
   }, [value]);
 
   return (
     <canvas
       ref={canvasRef}
-      width={size * pixel}
-      height={size * pixel}
       className="h-[220px] w-[220px]"
       aria-label="받기 주소 QR"
     />

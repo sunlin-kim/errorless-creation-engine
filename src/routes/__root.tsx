@@ -12,7 +12,6 @@ import appCss from "../styles.css?url";
 import splashLogoUrl from "@/assets/splash-logo.png";
 
 import { useAutoLock } from "@/lib/wallet/autolock";
-import { loadUnlockedMnemonic } from "@/lib/wallet/session";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useEffect } from "react";
 import { SplashScreen } from "@/components/wallet/SplashScreen";
@@ -136,7 +135,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const unlock = useWalletStore((s) => s.unlock);
   const language = useWalletStore((s) => s.language);
   useAutoLock();
 
@@ -145,23 +143,6 @@ function RootComponent() {
       document.documentElement.lang = language;
     }
   }, [language]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    loadUnlockedMnemonic()
-      .then((mnemonic) => {
-        if (!cancelled && mnemonic) {
-          unlock(mnemonic);
-        }
-      })
-      .catch(() => {
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [unlock]);
 
   return (
     <QueryClientProvider client={queryClient}>

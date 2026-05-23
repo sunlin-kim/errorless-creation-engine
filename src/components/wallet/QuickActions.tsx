@@ -12,7 +12,7 @@ type Action = {
 };
 
 const actions: Action[] = [
-  { to: "/send", label: "보내기", icon: Send },
+  { to: "/wallet/send", label: "보내기", icon: Send },
   { to: "/receive", label: "받기", icon: QrCode },
   { to: "/activity", label: "스왑", icon: ArrowLeftRight },
   {
