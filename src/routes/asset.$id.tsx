@@ -64,7 +64,7 @@ function AssetDetail() {
             <FakeChart up={positive} />
 
             <div className="mt-5 grid grid-cols-3 gap-3">
-              <ActionBtn to="/send" icon={Send} label="보내기" />
+              <ActionBtn to="/wallet/send" icon={Send} label="보내기" />
               <ActionBtn to="/receive" icon={QrCode} label="받기" />
               <ActionBtn to={isMobile ? "/wallet" : "/activity"} icon={ArrowLeftRight} label="스왑" />
             </div>
