@@ -15,7 +15,7 @@ const items = [
   { to: "/", key: "nav.home", icon: Home },
   { to: "/wallet", key: "nav.wallet", icon: Wallet },
   { to: "/points", key: "nav.points", icon: Gem },
-  { to: "/send", key: "nav.send", icon: Send },
+  { to: "/wallet/send", key: "nav.send", icon: Send },
   { to: "/receive", key: "nav.receive", icon: QrCode },
   { to: "/activity", key: "nav.activity", icon: Activity },
   { to: "/settings", key: "nav.settings", icon: Settings },
