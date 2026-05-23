@@ -40,7 +40,7 @@ function toHex(b: Uint8Array): string {
 }
 
 /** EIP-55 체크섬 주소 */
-function toChecksumAddress(addrLower: string): string {
+export function toChecksumAddress(addrLower: string): string {
   const a = addrLower.replace(/^0x/, "").toLowerCase();
   const hashBytes = keccak_256(new TextEncoder().encode(a));
   const hash = toHex(hashBytes);
