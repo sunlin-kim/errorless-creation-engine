@@ -370,8 +370,12 @@ function ShowSeedStep({
                 const ok = await copyText(mnemonic);
                 if (ok) {
                   toast.success(
-                    "클립보드에 복사됨 — 즉시 안전한 곳에 보관하고 삭제하세요",
+                    "클립보드에 복사됨 — 30초 후 자동으로 비워집니다",
                   );
+                  // 30초 후 클립보드 자동 비우기 (시드 노출 보호)
+                  setTimeout(() => {
+                    navigator.clipboard?.writeText("").catch(() => {});
+                  }, 30_000);
                 } else {
                   toast.error(
                     "자동 복사 실패 — 시드 단어를 길게 눌러 수동 복사하세요",
