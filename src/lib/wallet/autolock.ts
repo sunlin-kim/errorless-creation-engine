@@ -1,7 +1,7 @@
 /**
  * 자동 잠금 훅 — 사용자 활동(마우스/키/터치)을 감시하고,
- * autoLockMinutes 동안 미사용 시 잠금. 또한 탭이 숨겨진 후 같은 시간이
- * 경과하면 visibilitychange 에서도 잠금.
+ * autoLockMinutes 동안 미사용 시 잠금. 탭이 다시 보일 때(visibilitychange)도
+ * 동일하게 체크. autoLockMinutes <= 0 이면 비활성.
  */
 
 import { useEffect } from "react";
@@ -16,11 +16,40 @@ const ACTIVITY_EVENTS = [
   "wheel",
 ] as const;
 
+const CHECK_INTERVAL_MS = 15_000;
+
 export function useAutoLock() {
-  // 자동 잠금 기능 비활성화 — 사용자가 명시적으로 잠그기 전에는 잠금 해제 유지.
   useEffect(() => {
-    return;
+    if (typeof window === "undefined") return;
+
+    const touch = () => useWalletStore.getState().touchActivity();
+
+    const checkLock = () => {
+      const { mnemonic, autoLockMinutes, lastActivity, lock } =
+        useWalletStore.getState();
+      if (!mnemonic) return;
+      if (autoLockMinutes <= 0) return;
+      if (Date.now() - lastActivity >= autoLockMinutes * 60_000) {
+        lock();
+      }
+    };
+
+    for (const ev of ACTIVITY_EVENTS) {
+      window.addEventListener(ev, touch, { passive: true });
+    }
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") checkLock();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    const interval = window.setInterval(checkLock, CHECK_INTERVAL_MS);
+
+    return () => {
+      for (const ev of ACTIVITY_EVENTS) {
+        window.removeEventListener(ev, touch);
+      }
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.clearInterval(interval);
+    };
   }, []);
 }
-// no-op to keep ACTIVITY_EVENTS referenced
-void ACTIVITY_EVENTS;
