@@ -48,16 +48,14 @@ export const useWalletStore = create<WalletState>()(
       network: "mainnet",
       currency: "KRW",
       language: "ko",
-      autoLockMinutes: 0,
+      autoLockMinutes: 10,
       lastActivity: Date.now(),
 
       setVaultExists: (v) => set({ vaultExists: v }),
       unlock: (mnemonic) => {
-        void saveUnlockedMnemonic(mnemonic);
         set({ mnemonic, lastActivity: Date.now() });
       },
       lock: () => {
-        void clearUnlockedMnemonic();
         set({ mnemonic: null, derivedAddresses: { mainnet: null, testnet: null } });
       },
       setDerivedAddresses: (env, addresses) =>
@@ -74,7 +72,7 @@ export const useWalletStore = create<WalletState>()(
       touchActivity: () => set({ lastActivity: Date.now() }),
     }),
     {
-      name: "sv-wallet-prefs-v4",
+      name: "sv-wallet-prefs-v5",
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => ({
         network: s.network,
