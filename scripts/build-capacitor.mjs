@@ -67,10 +67,16 @@ if (existsSync(OUT)) {
 mkdirSync(OUT, { recursive: true });
 cpSync(source, OUT, { recursive: true });
 
+// SPA prerender 결과는 기본적으로 _shell.html 로 떨어진다 → index.html 로 승격.
+const shellPath = join(OUT, "_shell.html");
 const indexPath = join(OUT, "index.html");
+if (!existsSync(indexPath) && existsSync(shellPath)) {
+  renameSync(shellPath, indexPath);
+  log("_shell.html → index.html 로 승격");
+}
 if (!existsSync(indexPath)) {
   fail(
-    "index.html 이 없습니다. TanStack Start 의 prerender 설정을 활성화하거나, " +
+    "index.html 이 없습니다. TanStack Start 의 SPA prerender(tanstackStart.spa.enabled) 를 활성화하거나, " +
       "SPA 빌드 산출물을 명시적으로 생성해 주세요.",
   );
 }
