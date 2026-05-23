@@ -14,12 +14,15 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 const isCapacitor = process.env.BUILD_TARGET === "capacitor";
 
 export default defineConfig({
+  // Capacitor 빌드는 정적 SPA 셸만 필요하므로 Cloudflare Worker 출력은 끈다.
+  // (worker 어댑터가 켜져 있으면 prerender 가 dist/server/server.js 를 찾지 못함.)
+  ...(isCapacitor ? { cloudflare: false as const } : {}),
   tanstackStart: {
     server: { entry: "server" },
-    // SPA fallback shell — APK 로컬 번들이 어떤 경로로 진입해도 셸이 뜨도록
-    // maskPath "/" 로 prerender. Capacitor 빌드일 때만 활성화.
     ...(isCapacitor
       ? {
+          // SPA fallback shell — APK 로컬 번들이 어떤 경로로 진입해도 셸이 뜨도록
+          // maskPath "/" 로 prerender → .output/public/index.html 생성.
           spa: {
             enabled: true,
             maskPath: "/",
