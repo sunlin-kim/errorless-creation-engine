@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import splashLogoUrl from "@/assets/splash-logo.png";
 
 import { useAutoLock } from "@/lib/wallet/autolock";
+import { useSessionPersist } from "@/lib/wallet/session-persist";
 import { useWalletStore } from "@/lib/wallet/store";
 import { useEffect } from "react";
 import { SplashScreen } from "@/components/wallet/SplashScreen";
@@ -136,6 +137,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const language = useWalletStore((s) => s.language);
+  useSessionPersist();
   useAutoLock();
 
   useEffect(() => {
