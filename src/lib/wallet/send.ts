@@ -186,9 +186,14 @@ export async function estimateBtcFee(ep: ChainEndpoints): Promise<bigint> {
     if (r.ok) {
       const j = (await r.json()) as { halfHourFee?: number; hourFee?: number };
       const v = j.halfHourFee ?? j.hourFee ?? 5;
-      return BigInt(Math.max(1, Math.round(v)));
+      const fpb = BigInt(Math.max(1, Math.round(v)));
+      // Sanity cap: 1000 sat/vB 초과는 비정상
+      if (fpb > 1000n) throw new Error(`BTC 수수료가 비정상 (${fpb} sat/vB).`);
+      return fpb;
     }
-  } catch {}
+  } catch (e) {
+    if (e instanceof Error && e.message.startsWith("BTC 수수료")) throw e;
+  }
   return 5n;
 }
 
