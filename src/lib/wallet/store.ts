@@ -45,7 +45,7 @@ export const useWalletStore = create<WalletState>()(
       vaultExists: null,
       mnemonic: null,
       derivedAddresses: { mainnet: null, testnet: null },
-      network: "mainnet",
+      network: "testnet",
       currency: "KRW",
       language: "ko",
       autoLockMinutes: 10,

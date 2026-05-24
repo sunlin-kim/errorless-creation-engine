@@ -182,11 +182,12 @@ function SendPage() {
 
   async function confirmAndSend() {
     setPwBusy(true);
+    let decryptedMnemonic: string;
     try {
       const v = await loadVault();
       if (!v) throw new Error("NO_VAULT");
-      // 비밀번호 검증 (잘못된 비밀번호면 WRONG_PASSWORD throw)
-      await decryptString(v.encryptedMnemonic, pw);
+      // 비밀번호 검증 + 시드 복호화 — 서명은 반드시 이 값으로만 수행한다.
+      decryptedMnemonic = await decryptString(v.encryptedMnemonic, pw);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       toast.error(msg === "WRONG_PASSWORD" ? tr("settings.wrongPw") : tr("settings.decryptFail"));
@@ -196,19 +197,37 @@ function SendPage() {
     setPwBusy(false);
     setPwOpen(false);
     setPw("");
-    await onSend();
+    await onSend(decryptedMnemonic);
   }
 
-  async function onSend() {
+  async function onSend(signingMnemonic: string) {
     setBusy(true);
     setTxid(null);
     let priv: Uint8Array | null = null;
     let btcPub: Uint8Array | null = null;
     let solPriv: Uint8Array | null = null;
     try {
-      const keys = await derivePrivateKeys(mnemonic!, network);
+      // 비밀번호로 방금 복호화한 mnemonic 으로만 키 파생.
+      // (Zustand 메모리의 mnemonic 과 다를 가능성 — 세션 오염/탭 간 불일치 — 방지)
+      const keys = await derivePrivateKeys(signingMnemonic, network);
       btcPub = keys.btcPub;
       solPriv = keys.solPriv;
+
+      // 표시된 fromAddress 가 실제 서명 시드에서 파생되는 주소와 일치하는지 재검증.
+      const expectedFrom =
+        asset === "BTC"
+          ? keys.btcAddress
+          : asset === "SOL"
+            ? keys.solAddress
+            : keys.ethAddress;
+      if (
+        expectedFrom &&
+        fromAddress &&
+        expectedFrom.toLowerCase() !== fromAddress.toLowerCase()
+      ) {
+        throw new Error("서명 주소 불일치 — 지갑을 잠금/해제 후 다시 시도하세요.");
+      }
+
       priv =
         asset === "BTC"
           ? keys.btcPriv
