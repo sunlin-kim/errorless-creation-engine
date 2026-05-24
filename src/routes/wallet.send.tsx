@@ -6,7 +6,7 @@ import { useT } from "@/lib/i18n";
 import { derivePrivateKeys } from "@/lib/wallet/keys";
 import { getEndpoints } from "@/lib/wallet/networks";
 import { useDerivedAddresses } from "@/lib/wallet/use-derived-addresses";
-import { toChecksumAddress } from "@/lib/wallet/derive";
+import { toChecksumAddress, deriveAddresses } from "@/lib/wallet/derive";
 import { loadVault } from "@/lib/wallet/vault";
 import { decryptString } from "@/lib/wallet/crypto";
 import * as btc from "@scure/btc-signer";
@@ -214,12 +214,15 @@ function SendPage() {
       solPriv = keys.solPriv;
 
       // 표시된 fromAddress 가 실제 서명 시드에서 파생되는 주소와 일치하는지 재검증.
+      const signerAddrs = await deriveAddresses(signingMnemonic, network);
       const expectedFrom =
         asset === "BTC"
-          ? keys.btcAddress
+          ? signerAddrs.btc
           : asset === "SOL"
-            ? keys.solAddress
-            : keys.ethAddress;
+            ? signerAddrs.sol
+            : asset === "BNB"
+              ? signerAddrs.bnb
+              : signerAddrs.eth;
       if (
         expectedFrom &&
         fromAddress &&
