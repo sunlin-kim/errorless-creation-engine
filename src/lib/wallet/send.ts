@@ -286,14 +286,8 @@ export async function sendBnb(
   amountBnb: string,
   privateKey: Uint8Array,
 ): Promise<string> {
-  const bscEp: ChainEndpoints = {
-    ...ep,
-    ethRpc: ep.bscRpc,
-    ethChainId: ep.bscRpc.includes("testnet") ? 97 : 56,
-    ethExplorer: ep.bscExplorer,
-  };
   return sendEthLike({
-    ep: bscEp,
+    ep: toBscEndpoints(ep),
     from,
     to,
     valueWei: parseUnits(amountBnb, 18),
