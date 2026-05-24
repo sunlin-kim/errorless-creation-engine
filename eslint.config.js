@@ -36,5 +36,14 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // shadcn/ui 컴포넌트는 관례상 컴포넌트와 cva variants/Context helper 를 같은 파일에
+    // 같이 둔다. 별도 파일로 쪼개면 외부 라이브러리 업데이트 반영이 어려워지므로,
+    // Fast Refresh 경고만 ui/ 디렉토리에 한해 끈다. 런타임 동작과 무관한 DX 경고다.
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
   eslintPluginPrettier,
 );

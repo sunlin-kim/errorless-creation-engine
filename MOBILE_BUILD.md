@@ -18,89 +18,103 @@
 
 ## 2) Capacitor로 진짜 .apk 빌드 (로컬 PC 필요)
 
-`capacitor.config.ts`가 프로젝트 루트에 준비되어 있습니다.
-이 저장소에는 이제 **`android/` 네이티브 프로젝트가 포함**되어 있어,
-APK가 실제로 사용하는 런처 설정과 아이콘 리소스가 함께 관리됩니다.
+### 사전 요구사항 (반드시 이 버전 조합)
 
-### ⚠️ 중요: "앱이 설치는 되는데 홈/앱서랍에 아이콘이 안 보이고 검색해야 실행됨" 문제
+| 항목 | 버전 | 비고 |
+| --- | --- | --- |
+| Node.js | 20+ | LTS 권장 |
+| Bun | 1.3+ | 본 저장소는 **bun** 을 공식 패키지 매니저로 사용. `bun.lock` 커밋됨 |
+| JDK | **Temurin 17** | Gradle 8.13 / AGP 8.13 요구 사항 |
+| Android SDK | API 36 (compile/target), platform-tools, build-tools 36.0.0 | Android Studio Koala 이상 또는 cmdline-tools |
+| minSdk | 24 | `android/variables.gradle` |
 
-이전 빌드의 `public/icon-*.png`는 정사각형이 아니어서(1122×1402 세로 로고)
-Android 어댑티브 런처 아이콘 렌더링이 실패했습니다. 결과적으로 런처가 빈
-아이콘으로 처리해 **앱서랍/홈에서 보이지 않고 "검색"으로만 실행**됩니다.
-
-정밀 수정 완료 항목:
-- `resources/icon.png` (1024×1024 정사각형, 불투명)
-- `resources/icon-foreground.png` + `resources/icon-background.png` (어댑티브 아이콘)
-- `resources/splash.png`, `resources/splash-dark.png` (2732×2732)
-- `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` 정사각형 재생성
-- `android/app/src/main/AndroidManifest.xml` 내 **`MAIN` + `LAUNCHER`** 진입점 확인
-- `android/app/src/main/res/mipmap-*`, `mipmap-anydpi-v26/` 런처 아이콘 실생성 확인
-
-아래 빌드 절차에서 **`@capacitor/assets generate` 단계를 반드시 실행**하세요.
-이미 잘못된 APK를 설치했다면 **기기에서 먼저 제거(또는 데이터 삭제)** 후 재설치하세요.
-같은 `appId`로 덮어 설치할 경우 일부 런처가 깨진 아이콘 캐시를 유지합니다.
-
-### 사전 요구사항
-- Node.js 20+
-- **Android Studio** (최신 안정 버전)
-- **JDK 17** (Android Studio에 내장 가능)
-
-### 빌드 절차 (로컬 터미널)
+#### 환경변수 설정 예시 (macOS / Linux, zsh)
 
 ```bash
-# 0. 프로젝트 클론 (GitHub 연동 후)
-git clone <your-repo>
-cd <project>
-npm install
+# JDK 17 (Homebrew 예시)
+brew install --cask temurin@17
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
 
-# 1. Capacitor + 아이콘 생성기 설치
-npm i @capacitor/core @capacitor/cli @capacitor/android
-npm i -D @capacitor/assets
+# Android SDK (Android Studio 가 설치한 위치)
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
 
-# 2. 웹 앱 프로덕션 빌드
-npm run build
-
-# 3. ★ 런처 아이콘 / 스플래시 생성 (필수!)
-#    resources/icon.png + resources/splash.png 를 읽어
-#    android/app/src/main/res/mipmap-*/, drawable-*/ 에 모든 해상도 자동 생성
-npx @capacitor/assets generate --android
-
-# 4. 동기화
-npx cap sync android
-
-# 5. Android Studio 열기
-npx cap open android
+java -version    # 17.x 가 떠야 함
+sdkmanager --list | grep "platforms;android-36"
 ```
 
-### Android Studio에서 APK 산출
+#### Windows (PowerShell)
 
-1. Gradle Sync 완료 대기
-2. **Build → Build Bundle(s) / APK(s) → Build APK(s)**
-3. 결과물: `android/app/build/outputs/apk/debug/app-debug.apk`
+```powershell
+setx JAVA_HOME "C:\Program Files\Eclipse Adoptium\jdk-17"
+setx ANDROID_HOME "$env:LOCALAPPDATA\Android\Sdk"
+# 새 셸 열고 다시 시도
+```
+
+---
+
+### 빌드 절차 (한 번에 재현 가능)
+
+```bash
+# 0. 의존성
+bun install --frozen-lockfile
+
+# 1. 웹 산출물 (절대 URL 차단 검증 포함)
+bun run build:capacitor
+
+# 2. 런처 아이콘 / 스플래시 생성 (필수, 1회 또는 아이콘 변경 시)
+#    @capacitor/assets 는 빌드 산출물/런타임에 포함되지 않는 1회성 CLI 이므로
+#    devDependencies 에 두지 않고 npx/bunx 로 on-demand 실행한다.
+bunx -y @capacitor/assets@3 generate --android
+
+# 3. 네이티브 동기화
+bunx cap sync android
+
+# 4. APK 빌드 (CLI)
+cd android
+./gradlew :app:assembleDebug --no-daemon
+# 결과물: android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+CI 에서 동일 흐름이 `.github/workflows/android.yml` 로 실행됩니다 — 푸시/PR 마다
+APK 가 빌드되고 아티팩트로 업로드됩니다. JDK/SDK 설치는 워크플로 안에서
+`actions/setup-java@v4` + `android-actions/setup-android@v3` 가 자동 수행합니다.
+
+### Android Studio 에서 빌드 (GUI)
+
+1. Android Studio 로 `android/` 폴더 열기
+2. Gradle Sync 완료 대기
+3. **Build → Build Bundle(s) / APK(s) → Build APK(s)**
 
 ### 서명된 릴리즈 APK
+
 - **Build → Generate Signed Bundle / APK** → APK → 키스토어 생성 → release
 - 결과물: `android/app/build/outputs/apk/release/app-release.apk`
 
 ### 코드/아이콘 수정 후 재빌드
-```bash
-npm run build
-npx @capacitor/assets generate --android   # 아이콘 변경 시
-npx cap sync android
-```
-그 후 Android Studio에서 다시 Build APK.
 
-기기에서 테스트할 때는 **기존 앱 제거 → 새 APK 설치**를 권장합니다.
+```bash
+bun run build:capacitor
+bunx -y @capacitor/assets@3 generate --android   # 아이콘 변경 시
+bunx cap sync android
+cd android && ./gradlew :app:assembleDebug --no-daemon
+```
+
+---
+
+## 보안 / 재현성 메모
+
+- **lockfile**: 본 저장소는 `bun.lock` 을 단일 lockfile 로 사용합니다. `npm install`/`yarn install`/`pnpm install` 은 사용하지 마세요 (다른 lockfile 이 생기면 재현성이 깨집니다).
+- **`@capacitor/assets`**: 일반 dev dependency 가 아닙니다. 런처 아이콘 생성용 1회성 CLI 이므로 `bunx -y @capacitor/assets@3 ...` 로만 실행하며, 의존성 트리에 포함되지 않습니다. (과거 dev audit 에서 잡히던 `tar / minimatch / uuid` 계열 경고도 함께 제거.)
+- **FLAG_SECURE**: `MainActivity.java` 에서 강제. 화면 캡처/녹화 차단, 최근앱 썸네일 시드 잔상 제거.
+- **원격 URL 미사용**: `capacitor.config.ts` 의 `server.url` 미설정 — APK 는 로컬 번들만 로드합니다. 서버 침해 시 시드 탈취 위험 차단.
 
 ---
 
 ## Troubleshooting
 
-- **앱서랍에 안 보이고 검색해야 실행됨** → APK 내부 Android 런처 리소스가 누락/오염되었거나,
-  이전 잘못된 설치본의 런처 캐시가 남아있는 경우가 대부분입니다.
-  위 3단계(`@capacitor/assets generate --android`)를 실행했는지 확인. 기기에서
-  앱 제거 후 재설치.
-- **흰 화면**: `capacitor.config.ts`의 `server.url`이 가리키는 도메인이
-  실제로 배포(Publish)되어 있어야 합니다. 현재 설정: `https://supervizion.ai`
-- **권한**: 카메라/위치 등 추가 권한은
-  `android/app/src/main/AndroidManifest.xml`에서 선언.
+- **앱서랍에 안 보이고 검색해야 실행됨** → APK 내부 런처 리소스가 누락/오염되었거나, 이전 잘못된 설치본의 런처 캐시가 남아있는 경우입니다. 위 2단계 `@capacitor/assets generate --android` 를 다시 실행하고, 기기에서 앱 제거 후 재설치하세요.
+- **흰 화면**: `bun run build:capacitor` 가 실패했거나 `capacitor-web/` 이 비어 있는 상태에서 `cap sync` 한 경우입니다. 로그를 확인하고 다시 빌드하세요.
+- **`JAVA_HOME is not set ...`**: 위 "환경변수 설정 예시" 를 그대로 적용하세요. CI 에서는 자동 설치됩니다.
+- **권한**: 카메라/위치 등 추가 권한은 `android/app/src/main/AndroidManifest.xml` 에서 선언.
