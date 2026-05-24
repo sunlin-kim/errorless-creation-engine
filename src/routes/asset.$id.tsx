@@ -46,32 +46,38 @@ function isSymbol(x: string): x is Symbol {
   return x in SUPPORTED;
 }
 
-export const Route = createFileRoute("/asset/$id")({
-  component: AssetDetail,
-  notFoundComponent: () => (
+function AssetNotFoundComponent() {
+  return (
     <AppShell title="자산을 찾을 수 없음">
       <Link to="/wallet" className="text-primary text-sm">
         ← 지갑으로
       </Link>
     </AppShell>
-  ),
-  errorComponent: ({ error, reset }) => {
-    const router = useRouter();
-    return (
-      <AppShell title="자산을 불러오지 못했습니다">
-        <p className="text-sm text-on-surface-variant">{error.message}</p>
-        <button
-          onClick={() => {
-            reset();
-            router.invalidate();
-          }}
-          className="mt-3 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
-        >
-          다시 시도
-        </button>
-      </AppShell>
-    );
-  },
+  );
+}
+
+function AssetErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  return (
+    <AppShell title="자산을 불러오지 못했습니다">
+      <p className="text-sm text-on-surface-variant">{error.message}</p>
+      <button
+        onClick={() => {
+          reset();
+          router.invalidate();
+        }}
+        className="mt-3 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
+      >
+        다시 시도
+      </button>
+    </AppShell>
+  );
+}
+
+export const Route = createFileRoute("/asset/$id")({
+  component: AssetDetail,
+  notFoundComponent: AssetNotFoundComponent,
+  errorComponent: AssetErrorComponent,
 });
 
 function formatBalance(b: AssetBalance | null | undefined): string {
