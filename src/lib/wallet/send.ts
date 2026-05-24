@@ -63,10 +63,17 @@ export async function estimateEthFee(
   value: bigint,
   data: `0x${string}` = "0x",
 ): Promise<EthFeeEstimate> {
+  // 컨트랙트 호출(data !== "0x")일 때는 estimateGas 실패 시 fallback 금지.
+  // 21000 fallback 은 순수 native transfer 에만 안전하다.
+  const isContractCall = data !== "0x";
   const [gasHex, prioHex, block] = await Promise.all([
-    rpc<string>(ep.ethRpc, "eth_estimateGas", [
-      { from, to, value: "0x" + value.toString(16), data },
-    ]).catch(() => "0x5208"), // fallback 21000
+    isContractCall
+      ? rpc<string>(ep.ethRpc, "eth_estimateGas", [
+          { from, to, value: "0x" + value.toString(16), data },
+        ])
+      : rpc<string>(ep.ethRpc, "eth_estimateGas", [
+          { from, to, value: "0x" + value.toString(16), data },
+        ]).catch(() => "0x5208"), // native transfer 만 fallback 21000
     rpc<string>(ep.ethRpc, "eth_maxPriorityFeePerGas", []).catch(
       () => "0x77359400", // 2 gwei
     ),
