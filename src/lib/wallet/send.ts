@@ -292,7 +292,7 @@ function shortvecEncode(n: number): Uint8Array {
   const out: number[] = [];
   let v = n;
   while (true) {
-    let b = v & 0x7f;
+    const b = v & 0x7f;
     v >>>= 7;
     if (v === 0) {
       out.push(b);
