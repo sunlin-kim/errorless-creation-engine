@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
+    "test": "tsc --noEmit",
     "format": "prettier --write .",
     "build:capacitor": "node scripts/build-capacitor.mjs",
     "cap:sync": "bun run build:capacitor && cap sync android",

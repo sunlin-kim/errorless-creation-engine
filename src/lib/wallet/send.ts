@@ -42,11 +42,21 @@ async function rpc<T = unknown>(
 
 /* ---------------- ETH / USDT ---------------- */
 
-function encodeErc20Transfer(to: string, amount: bigint): `0x${string}` {
+export function encodeErc20Transfer(to: string, amount: bigint): `0x${string}` {
   // transfer(address,uint256) = 0xa9059cbb
   const addr = to.toLowerCase().replace(/^0x/, "").padStart(64, "0");
   const amt = amount.toString(16).padStart(64, "0");
   return ("0x" + "a9059cbb" + addr + amt) as `0x${string}`;
+}
+
+/** BNB(BSC)는 EVM 이지만 ETH 메인넷 RPC 와 체인이 다르므로 endpoint 를 BSC 로 바꿔준다. */
+export function toBscEndpoints(ep: ChainEndpoints): ChainEndpoints {
+  return {
+    ...ep,
+    ethRpc: ep.bscRpc,
+    ethChainId: ep.bscRpc.includes("testnet") ? 97 : 56,
+    ethExplorer: ep.bscExplorer,
+  };
 }
 
 export interface EthFeeEstimate {
@@ -276,14 +286,8 @@ export async function sendBnb(
   amountBnb: string,
   privateKey: Uint8Array,
 ): Promise<string> {
-  const bscEp: ChainEndpoints = {
-    ...ep,
-    ethRpc: ep.bscRpc,
-    ethChainId: ep.bscRpc.includes("testnet") ? 97 : 56,
-    ethExplorer: ep.bscExplorer,
-  };
   return sendEthLike({
-    ep: bscEp,
+    ep: toBscEndpoints(ep),
     from,
     to,
     valueWei: parseUnits(amountBnb, 18),

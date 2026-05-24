@@ -20,6 +20,8 @@ import {
   parseUnits,
   estimateEthFee,
   estimateBtcFee,
+  encodeErc20Transfer,
+  toBscEndpoints,
 } from "@/lib/wallet/send";
 import {
   ArrowLeft,
@@ -60,25 +62,7 @@ function SendPage() {
   const [pw, setPw] = useState("");
   const [pwBusy, setPwBusy] = useState(false);
 
-  if (!mnemonic) {
-    return (
-      <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitleWaiting")}>
-        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            {tr("activity.needWallet")}
-          </p>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/wallet/setup" })}
-            className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
-          >
-            <KeyRound size={14} /> {tr("wallet.setup")}
-          </button>
-        </div>
-      </AppShell>
-    );
-  }
+  // mnemonic 가드는 JSX 아래쪽에서 처리 (Hook 순서 유지를 위해 조기 return 금지)
 
   const fromAddress =
     asset === "BTC"
@@ -142,13 +126,27 @@ function SendPage() {
         } else if (asset === "SOL") {
           if (!cancelled) setFeePreview("~0.000005 SOL");
         } else {
-          const valueWei =
-            asset === "USDT" ? 0n : parseUnits(amount, decimalsFor(asset));
+          // BNB 는 BSC RPC, ETH/USDT 는 ETH RPC.
+          const feeEp = asset === "BNB" ? toBscEndpoints(ep) : ep;
+          // USDT 는 ERC-20 transfer 호출이므로 calldata 를 포함해 estimateGas 해야 한다.
+          let toForEstimate = to.trim();
+          let valueWei: bigint;
+          let data: `0x${string}` = "0x";
+          if (asset === "USDT") {
+            if (!ep.usdtContract) throw new Error("USDT mainnet only");
+            const amt = parseUnits(amount, 6);
+            data = encodeErc20Transfer(to.trim(), amt);
+            toForEstimate = ep.usdtContract;
+            valueWei = 0n;
+          } else {
+            valueWei = parseUnits(amount, decimalsFor(asset));
+          }
           const fee = await estimateEthFee(
-            ep,
+            feeEp,
             fromAddress,
-            asset === "USDT" ? ep.usdtContract ?? to.trim() : to.trim(),
+            toForEstimate,
             valueWei,
+            data,
           );
           const ethWhole = fee.totalFeeWei / 10n ** 18n;
           const ethRem = fee.totalFeeWei % 10n ** 18n;
@@ -277,8 +275,29 @@ function SendPage() {
 
   const usdtUnavailable = asset === "USDT" && !ep.usdtContract;
 
+  if (!mnemonic) {
+    return (
+      <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitleWaiting")}>
+        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
+          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
+          <p className="mt-3 text-sm text-on-surface-variant">
+            {tr("activity.needWallet")}
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/wallet/setup" })}
+            className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
+          >
+            <KeyRound size={14} /> {tr("wallet.setup")}
+          </button>
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitle", { label: ep.label })}>
+
       <div className="mx-auto max-w-xl space-y-5">
         <button
           onClick={() => navigate({ to: "/wallet" })}
