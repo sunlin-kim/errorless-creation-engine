@@ -154,15 +154,15 @@ function SendPage() {
   }, [amount, to, asset, network]);
 
   function openPasswordPrompt() {
-    if (!fromAddress) return toast.error(tr("wsend.errAmount"));
     const addrErr = validateAddress();
     if (addrErr) return toast.error(addrErr);
-    try {
-      const parsed = parseUnits(amount, decimalsFor(asset));
-      if (parsed <= 0n) return toast.error(tr("wsend.errAmount"));
-    } catch (e) {
-      return toast.error(e instanceof Error ? e.message : tr("wsend.errAmount"));
-    }
+    const pre = validateSendPrecondition({
+      fromAddress,
+      to: to.trim(),
+      amount,
+      decimals: decimalsFor(asset),
+    });
+    if (!pre.ok) return toast.error(tr("wsend.errAmount"));
     setPw("");
     setPwOpen(true);
   }
