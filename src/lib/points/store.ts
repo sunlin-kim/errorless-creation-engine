@@ -60,10 +60,10 @@ export const usePointsStore = create<PointsState>()(
         if (amount <= 0) return;
         set((s) => ({
           balance: s.balance + amount,
-          history: [
-            { id: uid(), label, amount, type, createdAt: Date.now() },
-            ...s.history,
-          ].slice(0, 100),
+          history: [{ id: uid(), label, amount, type, createdAt: Date.now() }, ...s.history].slice(
+            0,
+            100,
+          ),
         }));
       },
 
@@ -103,8 +103,7 @@ export const usePointsStore = create<PointsState>()(
         return { ok: true, amount: DAILY_CHECKIN };
       },
 
-      reset: () =>
-        set({ balance: 0, history: [], lastCheckinAt: null }),
+      reset: () => set({ balance: 0, history: [], lastCheckinAt: null }),
     }),
     {
       name: "sv-points-v2",

@@ -21,7 +21,7 @@ export function SplashScreen() {
     if (!mounted) return;
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
-    } catch {}
+    } catch { /* ignore */ }
     const t = setTimeout(() => setMounted(false), 3000);
     return () => clearTimeout(t);
   }, [mounted]);

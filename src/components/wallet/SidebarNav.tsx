@@ -1,13 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  Home,
-  Wallet,
-  Gem,
-  Send,
-  QrCode,
-  Activity,
-  Settings,
-} from "lucide-react";
+import { Home, Wallet, Gem, Send, QrCode, Activity, Settings } from "lucide-react";
 import { Logo } from "./Logo";
 import { useT } from "@/lib/i18n";
 
@@ -33,8 +25,7 @@ export function SidebarNav() {
 
       <nav className="flex-1 px-3 py-4 space-y-1">
         {items.map((item) => {
-          const active =
-            item.to === "/" ? path === "/" : path.startsWith(item.to);
+          const active = item.to === "/" ? path === "/" : path.startsWith(item.to);
           const Icon = item.icon;
           return (
             <Link

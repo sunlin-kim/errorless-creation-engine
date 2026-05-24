@@ -158,8 +158,7 @@ export const transactions: Tx[] = [
   },
 ];
 
-export const totalKrw = () =>
-  assets.reduce((sum, a) => sum + a.balance * a.priceKrw, 0);
+export const totalKrw = () => assets.reduce((sum, a) => sum + a.balance * a.priceKrw, 0);
 
 export const fmtKrw = (n: number) =>
   new Intl.NumberFormat("ko-KR", {

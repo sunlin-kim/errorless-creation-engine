@@ -59,10 +59,7 @@ function ethAddressFromPubkey(compressedPub: Uint8Array): string {
   return toChecksumAddress("0x" + addr);
 }
 
-function btcP2wpkhFromPubkey(
-  compressedPub: Uint8Array,
-  env: NetworkEnv,
-): string {
+function btcP2wpkhFromPubkey(compressedPub: Uint8Array, env: NetworkEnv): string {
   const sha = sha256(compressedPub);
   const hash160 = ripemd160(sha);
   const hrp = env === "mainnet" ? "bc" : "tb";

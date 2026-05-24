@@ -48,9 +48,7 @@ function ActivityPage() {
       <AppShell title={t("activity.title")} subtitle={t("activity.subtitleWaiting")}>
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            {t("activity.needWallet")}
-          </p>
+          <p className="mt-3 text-sm text-on-surface-variant">{t("activity.needWallet")}</p>
           <button
             type="button"
             onClick={() => navigate({ to: "/wallet/setup" })}
@@ -64,13 +62,14 @@ function ActivityPage() {
   }
 
   const filtered = (q.data ?? []).filter(
-    (it) =>
-      (asset === "all" || it.asset === asset) &&
-      (dir === "all" || it.direction === dir),
+    (it) => (asset === "all" || it.asset === asset) && (dir === "all" || it.direction === dir),
   );
 
   return (
-    <AppShell title={t("activity.title")} subtitle={t("activity.subtitleLive", { label: ep.label })}>
+    <AppShell
+      title={t("activity.title")}
+      subtitle={t("activity.subtitleLive", { label: ep.label })}
+    >
       <div className="rounded-3xl border border-outline bg-surface p-5">
         <div className="flex flex-wrap items-center gap-2">
           {(["all", "ETH", "USDT", "BTC"] as AssetFilter[]).map((a) => (
@@ -87,7 +86,13 @@ function ActivityPage() {
               key={d}
               active={dir === d}
               onClick={() => setDir(d)}
-              label={d === "all" ? t("activity.allDirs") : d === "in" ? t("activity.dirIn") : t("activity.dirOut")}
+              label={
+                d === "all"
+                  ? t("activity.allDirs")
+                  : d === "in"
+                    ? t("activity.dirIn")
+                    : t("activity.dirOut")
+              }
             />
           ))}
           <button
@@ -107,9 +112,7 @@ function ActivityPage() {
             </p>
           )}
           {q.isError && (
-            <p className="py-10 text-center text-sm text-red-500">
-              {t("activity.error")}
-            </p>
+            <p className="py-10 text-center text-sm text-red-500">{t("activity.error")}</p>
           )}
           {!q.isPending && !q.isError && filtered.length === 0 && (
             <p className="py-10 text-center text-sm text-on-surface-variant">
@@ -164,8 +167,7 @@ function HistoryRow({ item }: { item: HistoryItem }) {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const sign =
-    item.direction === "out" ? "-" : item.direction === "in" ? "+" : "";
+  const sign = item.direction === "out" ? "-" : item.direction === "in" ? "+" : "";
   const tone =
     item.status === "failed"
       ? "text-red-500"
@@ -189,7 +191,11 @@ function HistoryRow({ item }: { item: HistoryItem }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <p className="font-medium text-sm">
-            {item.direction === "in" ? t("activity.dirIn") : item.direction === "out" ? t("activity.dirOut") : t("activity.dirSelf")}
+            {item.direction === "in"
+              ? t("activity.dirIn")
+              : item.direction === "out"
+                ? t("activity.dirOut")
+                : t("activity.dirSelf")}
           </p>
           {item.status !== "success" && (
             <span

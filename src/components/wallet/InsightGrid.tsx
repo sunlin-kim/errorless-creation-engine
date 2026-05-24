@@ -120,9 +120,7 @@ export function InsightGrid() {
 function Section({ title, tiles }: { title: string; tiles: Tile[] }) {
   return (
     <section>
-      <h3 className="text-sm font-bold tracking-wide text-on-surface mb-3 px-1">
-        {title}
-      </h3>
+      <h3 className="text-sm font-bold tracking-wide text-on-surface mb-3 px-1">{title}</h3>
       <div className="rounded-3xl border border-outline bg-surface-container p-5">
         <div className="grid grid-cols-3 gap-y-6 gap-x-2">
           {tiles.map((t) => (
@@ -142,18 +140,11 @@ function TileItem({ tile }: { tile: Tile }) {
     : {};
 
   return (
-    <Wrapper
-      {...wrapperProps}
-      className="group flex flex-col items-center gap-2 cursor-pointer"
-    >
+    <Wrapper {...wrapperProps} className="group flex flex-col items-center gap-2 cursor-pointer">
       <div
         className={`h-16 w-16 rounded-full border ${tile.border} ${tile.bg} grid place-items-center transition-all group-hover:scale-105 group-hover:shadow-sm`}
       >
-        <Icon
-          size={28}
-          strokeWidth={1.75}
-          className={`${tile.color} transition-colors`}
-        />
+        <Icon size={28} strokeWidth={1.75} className={`${tile.color} transition-colors`} />
       </div>
       <span className="text-xs font-medium text-on-surface text-center leading-tight">
         {tile.label}

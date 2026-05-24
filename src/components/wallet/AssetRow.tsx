@@ -29,11 +29,7 @@ export function AssetRow({ asset }: { asset: Asset }) {
       </div>
       <div className="text-right">
         <p className="font-medium tnum text-on-surface">{fmtKrw(value)}</p>
-        <p
-          className={`text-xs tnum ${
-            positive ? "text-success" : "text-destructive"
-          }`}
-        >
+        <p className={`text-xs tnum ${positive ? "text-success" : "text-destructive"}`}>
           {positive ? "+" : ""}
           {asset.change24h.toFixed(2)}%
         </p>

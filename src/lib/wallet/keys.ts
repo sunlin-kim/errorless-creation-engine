@@ -15,10 +15,7 @@ export interface PrivateKeys {
   solPub: Uint8Array; // 32-byte 공개키
 }
 
-export async function derivePrivateKeys(
-  mnemonic: string,
-  env: NetworkEnv,
-): Promise<PrivateKeys> {
+export async function derivePrivateKeys(mnemonic: string, env: NetworkEnv): Promise<PrivateKeys> {
   const seed = await mnemonicToSeedBytes(mnemonic);
   const root = HDKey.fromMasterSeed(seed);
   const eth = root.derive("m/44'/60'/0'/0/0");

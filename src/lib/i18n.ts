@@ -78,8 +78,7 @@ const ko: Dict = {
   "wallet.mode": "모드",
   "wallet.holdings": "보유 자산",
   "wallet.assetsCount": "{n}개 · {mode}",
-  "wallet.dataNote":
-    "잔액은 온체인 RPC·mempool.space, 시세는 CoinGecko에서 실시간 조회됩니다.",
+  "wallet.dataNote": "잔액은 온체인 RPC·mempool.space, 시세는 CoinGecko에서 실시간 조회됩니다.",
   "wallet.receiveAddrs": "받기 주소",
   "wallet.receiveAddrsSub": "체인별 입금 주소 (HD 파생)",
   "wallet.copy": "복사",
@@ -118,8 +117,7 @@ const ko: Dict = {
   "wallet.addrCopied": "{sym} 주소가 복사되었습니다",
   "wallet.mainnetWarn":
     "메인넷에서는 실제 자산을 다룹니다.\n시드 분실·코드 버그 시 자산을 영구히 잃을 수 있습니다.\n그래도 계속하시겠습니까?",
-  "wallet.assetsNote":
-    "참고 — 현재 지원 자산은 BTC, ETH, USDT(ERC-20), BNB, SOL입니다.",
+  "wallet.assetsNote": "참고 — 현재 지원 자산은 BTC, ETH, USDT(ERC-20), BNB, SOL입니다.",
   "wallet.noteLabel": "참고",
 
   // home
@@ -138,8 +136,7 @@ const ko: Dict = {
   "home.loadingTitle": "지갑을 불러오는 중입니다",
   "home.loadingBody": "이 기기에 저장된 지갑 정보를 확인하고 있습니다.",
   "home.activeTitle": "지갑이 활성화되었습니다",
-  "home.activeBody":
-    "주소·잔액을 확인하고 네트워크(테스트넷/메인넷)를 전환할 수 있습니다.",
+  "home.activeBody": "주소·잔액을 확인하고 네트워크(테스트넷/메인넷)를 전환할 수 있습니다.",
   "home.openWallet": "지갑 열기",
 
   // activity
@@ -304,18 +301,15 @@ const en: Dict = {
     "Your seed phrase is stored only on your device. If lost, your assets are gone permanently.",
   "setup.warn2":
     "Supervizion does not store your seed, password or assets and cannot recover them for you.",
-  "setup.warn3":
-    "Code defects may cause asset loss; all responsibility lies with the user.",
-  "setup.warn4":
-    "Default network is testnet. Mainnet switch is done later with its own warning.",
+  "setup.warn3": "Code defects may cause asset loss; all responsibility lies with the user.",
+  "setup.warn4": "Default network is testnet. Mainnet switch is done later with its own warning.",
   "setup.agree":
     "I have read the above and understand and accept the risks of a non-custodial wallet.",
   "setup.create": "Create new wallet",
   "setup.restore": "Restore existing wallet from seed",
   "setup.later": "Skip for now (go to demo)",
   "setup.existingTitle": "A wallet already exists on this device",
-  "setup.existingDesc":
-    "Unlock with your existing password, or delete it and create a new one.",
+  "setup.existingDesc": "Unlock with your existing password, or delete it and create a new one.",
   "setup.existingUnlock": "Unlock with password",
   "setup.existingDelete": "Delete and create new",
   "setup.back": "Back",
@@ -334,8 +328,7 @@ const en: Dict = {
   "wallet.addrCopied": "{sym} address copied",
   "wallet.mainnetWarn":
     "Mainnet uses real funds.\nLost seed or code bugs may cause permanent loss.\nContinue anyway?",
-  "wallet.assetsNote":
-    "Note — currently supported: BTC, ETH, USDT (ERC-20), BNB, SOL.",
+  "wallet.assetsNote": "Note — currently supported: BTC, ETH, USDT (ERC-20), BNB, SOL.",
   "wallet.noteLabel": "Note",
 
   "home.title": "Home",
@@ -353,8 +346,7 @@ const en: Dict = {
   "home.loadingTitle": "Loading your wallet",
   "home.loadingBody": "Checking the wallet stored on this device.",
   "home.activeTitle": "Wallet is active",
-  "home.activeBody":
-    "View addresses and balances; switch between testnet and mainnet.",
+  "home.activeBody": "View addresses and balances; switch between testnet and mainnet.",
   "home.openWallet": "Open wallet",
 
   "activity.title": "Activity",

@@ -23,14 +23,7 @@ import {
   encodeErc20Transfer,
   toBscEndpoints,
 } from "@/lib/wallet/send";
-import {
-  ArrowLeft,
-  Send,
-  AlertTriangle,
-  ExternalLink,
-  KeyRound,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Send, AlertTriangle, ExternalLink, KeyRound, X } from "lucide-react";
 import { toast } from "sonner";
 
 type Asset = "ETH" | "USDT" | "BTC" | "BNB" | "SOL";
@@ -66,12 +59,12 @@ function SendPage() {
 
   const fromAddress =
     asset === "BTC"
-      ? addrs?.btc ?? ""
+      ? (addrs?.btc ?? "")
       : asset === "SOL"
-        ? addrs?.sol ?? ""
+        ? (addrs?.sol ?? "")
         : asset === "BNB"
-          ? addrs?.bnb ?? ""
-          : addrs?.eth ?? "";
+          ? (addrs?.bnb ?? "")
+          : (addrs?.eth ?? "");
 
   function validateAddress(): string | null {
     const v = to.trim();
@@ -141,18 +134,11 @@ function SendPage() {
           } else {
             valueWei = parseUnits(amount, decimalsFor(asset));
           }
-          const fee = await estimateEthFee(
-            feeEp,
-            fromAddress,
-            toForEstimate,
-            valueWei,
-            data,
-          );
+          const fee = await estimateEthFee(feeEp, fromAddress, toForEstimate, valueWei, data);
           const ethWhole = fee.totalFeeWei / 10n ** 18n;
           const ethRem = fee.totalFeeWei % 10n ** 18n;
           const ethStr = `${ethWhole}.${ethRem.toString().padStart(18, "0").slice(0, 6)}`;
-          if (!cancelled)
-            setFeePreview(`~${ethStr} ${asset === "BNB" ? "BNB" : "ETH"}`);
+          if (!cancelled) setFeePreview(`~${ethStr} ${asset === "BNB" ? "BNB" : "ETH"}`);
         }
       } catch {
         if (!cancelled) setFeePreview("");
@@ -167,10 +153,12 @@ function SendPage() {
   }, [amount, to, asset, network]);
 
   function openPasswordPrompt() {
+    if (!fromAddress) return toast.error(tr("wsend.errAmount"));
     const addrErr = validateAddress();
     if (addrErr) return toast.error(addrErr);
     try {
-      parseUnits(amount, decimalsFor(asset));
+      const parsed = parseUnits(amount, decimalsFor(asset));
+      if (parsed <= 0n) return toast.error(tr("wsend.errAmount"));
     } catch (e) {
       return toast.error(e instanceof Error ? e.message : tr("wsend.errAmount"));
     }
@@ -221,20 +209,11 @@ function SendPage() {
             : asset === "BNB"
               ? signerAddrs.bnb
               : signerAddrs.eth;
-      if (
-        expectedFrom &&
-        fromAddress &&
-        expectedFrom.toLowerCase() !== fromAddress.toLowerCase()
-      ) {
+      if (expectedFrom && fromAddress && expectedFrom.toLowerCase() !== fromAddress.toLowerCase()) {
         throw new Error("서명 주소 불일치 — 지갑을 잠금/해제 후 다시 시도하세요.");
       }
 
-      priv =
-        asset === "BTC"
-          ? keys.btcPriv
-          : asset === "SOL"
-            ? keys.solPriv
-            : keys.ethPriv;
+      priv = asset === "BTC" ? keys.btcPriv : asset === "SOL" ? keys.solPriv : keys.ethPriv;
 
       let id: string;
       if (asset === "ETH") {
@@ -280,9 +259,7 @@ function SendPage() {
       <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitleWaiting")}>
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            {tr("activity.needWallet")}
-          </p>
+          <p className="mt-3 text-sm text-on-surface-variant">{tr("activity.needWallet")}</p>
           <button
             type="button"
             onClick={() => navigate({ to: "/wallet/setup" })}
@@ -297,7 +274,6 @@ function SendPage() {
 
   return (
     <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitle", { label: ep.label })}>
-
       <div className="mx-auto max-w-xl space-y-5">
         <button
           onClick={() => navigate({ to: "/wallet" })}
@@ -325,9 +301,7 @@ function SendPage() {
               ))}
             </div>
             {usdtUnavailable && (
-              <p className="mt-2 text-[11px] text-amber-500">
-                {tr("wsend.usdtMainnetOnly")}
-              </p>
+              <p className="mt-2 text-[11px] text-amber-500">{tr("wsend.usdtMainnetOnly")}</p>
             )}
           </div>
 
@@ -459,9 +433,7 @@ function SendPage() {
                 <p className="font-mono break-all text-[11px] mt-0.5">{to.trim()}</p>
               </div>
             </div>
-            <label className="mt-3 block text-xs text-on-surface-variant">
-              지갑 비밀번호
-            </label>
+            <label className="mt-3 block text-xs text-on-surface-variant">지갑 비밀번호</label>
             <input
               type="password"
               value={pw}

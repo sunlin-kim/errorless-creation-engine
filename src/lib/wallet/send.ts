@@ -25,11 +25,7 @@ export function parseUnits(amount: string, decimals: number): bigint {
   return BigInt(whole) * 10n ** BigInt(decimals) + BigInt(padded || "0");
 }
 
-async function rpc<T = unknown>(
-  url: string,
-  method: string,
-  params: unknown[],
-): Promise<T> {
+async function rpc<T = unknown>(url: string, method: string, params: unknown[]): Promise<T> {
   const r = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -87,10 +83,7 @@ export async function estimateEthFee(
     rpc<string>(ep.ethRpc, "eth_maxPriorityFeePerGas", []).catch(
       () => "0x77359400", // 2 gwei
     ),
-    rpc<{ baseFeePerGas?: string }>(ep.ethRpc, "eth_getBlockByNumber", [
-      "latest",
-      false,
-    ]),
+    rpc<{ baseFeePerGas?: string }>(ep.ethRpc, "eth_getBlockByNumber", ["latest", false]),
   ]);
   const gasLimit = BigInt(gasHex);
   const priority = BigInt(prioHex);
@@ -100,7 +93,9 @@ export async function estimateEthFee(
   const MAX_GWEI = 1500n;
   const ONE_GWEI = 10n ** 9n;
   if (maxFee > MAX_GWEI * ONE_GWEI) {
-    throw new Error(`가스가 비정상적으로 높습니다 (${maxFee / ONE_GWEI} gwei). 잠시 후 다시 시도하세요.`);
+    throw new Error(
+      `가스가 비정상적으로 높습니다 (${maxFee / ONE_GWEI} gwei). 잠시 후 다시 시도하세요.`,
+    );
   }
   // 가스 한도 sanity: 5,000,000 초과면 비정상
   if (gasLimit > 5_000_000n) {
@@ -243,18 +238,13 @@ export async function sendBtc(
   }));
 
   // 3) Select UTXOs + build tx
-  const result = btc.selectUTXO(
-    inputs,
-    [{ address: toAddress, amount: amountSat }],
-    "default",
-    {
-      feePerByte,
-      changeAddress: fromAddress,
-      network,
-      createTx: true,
-      allowLegacyWitnessUtxo: true,
-    } as never,
-  );
+  const result = btc.selectUTXO(inputs, [{ address: toAddress, amount: amountSat }], "default", {
+    feePerByte,
+    changeAddress: fromAddress,
+    network,
+    createTx: true,
+    allowLegacyWitnessUtxo: true,
+  } as never);
   if (!result || !result.tx) throw new Error("UTXO 선택 실패 (잔액 부족 가능)");
 
   const tx = result.tx;
@@ -302,7 +292,7 @@ function shortvecEncode(n: number): Uint8Array {
   const out: number[] = [];
   let v = n;
   while (true) {
-    let b = v & 0x7f;
+    const b = v & 0x7f;
     v >>>= 7;
     if (v === 0) {
       out.push(b);
@@ -337,11 +327,7 @@ function u64le(n: bigint): Uint8Array {
   return b;
 }
 
-async function solRpc<T>(
-  url: string,
-  method: string,
-  params: unknown[],
-): Promise<T> {
+async function solRpc<T>(url: string, method: string, params: unknown[]): Promise<T> {
   const r = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -382,11 +368,9 @@ export async function sendSol(
   const systemProgramId = new Uint8Array(32); // all zeros
 
   // 2) 최신 blockhash
-  const bh = await solRpc<{ value: { blockhash: string } }>(
-    ep.solRpc,
-    "getLatestBlockhash",
-    [{ commitment: "finalized" }],
-  );
+  const bh = await solRpc<{ value: { blockhash: string } }>(ep.solRpc, "getLatestBlockhash", [
+    { commitment: "finalized" },
+  ]);
   const blockhash = base58.decode(bh.value.blockhash);
   if (blockhash.length !== 32) throw new Error("blockhash length");
 
@@ -408,12 +392,7 @@ export async function sendSol(
   );
   const instructionsSection = concatBytes(shortvecEncode(1), instruction);
 
-  const message = concatBytes(
-    header,
-    accountKeysSection,
-    blockhash,
-    instructionsSection,
-  );
+  const message = concatBytes(header, accountKeysSection, blockhash, instructionsSection);
 
   // 4) ed25519 서명
   const signature = ed25519.sign(message, privateKey);

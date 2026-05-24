@@ -45,15 +45,16 @@ function WalletPage() {
   const [vaultExists, setVaultExists] = useState<boolean | null>(null);
 
   useEffect(() => {
-    import("@/lib/wallet/vault").then(({ hasVault }) =>
-      hasVault().then(setVaultExists),
-    );
+    import("@/lib/wallet/vault").then(({ hasVault }) => hasVault().then(setVaultExists));
   }, []);
 
   if (!mnemonic) {
     const hasExisting = vaultExists === true;
     return (
-      <AppShell title={t("wallet.title")} subtitle={hasExisting ? t("wallet.subtitleLocked") : t("wallet.subtitleNoWallet")}>
+      <AppShell
+        title={t("wallet.title")}
+        subtitle={hasExisting ? t("wallet.subtitleLocked") : t("wallet.subtitleNoWallet")}
+      >
         <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
           <p className="mt-3 text-sm text-on-surface-variant">
@@ -305,8 +306,6 @@ function WalletInner({
     <AppShell title={t("wallet.title")} subtitle={t("wallet.subtitleLive", { label: ep.label })}>
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          
-
           <LiveBalanceCard
             total={totals.total}
             change={totals.change}
@@ -325,7 +324,10 @@ function WalletInner({
             <header className="flex items-center justify-between mb-2">
               <h2 className="text-base font-semibold">{t("wallet.holdings")}</h2>
               <span className="text-xs text-on-surface-variant tnum">
-                {t("wallet.assetsCount", { n: items.length, mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet") })}
+                {t("wallet.assetsCount", {
+                  n: items.length,
+                  mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet"),
+                })}
               </span>
             </header>
             <div className="divide-y divide-[color:var(--outline)]/40">
@@ -388,9 +390,7 @@ function LiveBalanceCard({
   const fiat = useWalletStore((s) => s.currency);
   const [hidden, setHidden] = useState(false);
   const positive = change >= 0;
-  const shortAddr = ethAddr
-    ? `${ethAddr.slice(0, 6)}…${ethAddr.slice(-4)}`
-    : "—";
+  const shortAddr = ethAddr ? `${ethAddr.slice(0, 6)}…${ethAddr.slice(-4)}` : "—";
 
   return (
     <div className="relative overflow-hidden rounded-3xl brand-gradient brand-glow text-white p-7">
@@ -404,7 +404,13 @@ function LiveBalanceCard({
           </p>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="tnum text-4xl md:text-5xl font-semibold">
-              {hidden ? (fiat === "KRW" ? "₩ ••••••••" : "$ ••••••••") : loading ? "—" : formatFiat(total, fiat)}
+              {hidden
+                ? fiat === "KRW"
+                  ? "₩ ••••••••"
+                  : "$ ••••••••"
+                : loading
+                  ? "—"
+                  : formatFiat(total, fiat)}
             </span>
           </div>
           <div className="mt-3 inline-flex items-center gap-1.5 text-sm bg-white/15 px-2.5 py-1 rounded-full">
@@ -443,10 +449,7 @@ function LiveBalanceCard({
           { label: t("wallet.activeAssets"), value: `${chains} ${t("wallet.chains")}` },
           { label: t("wallet.mode"), value: network === "mainnet" ? "Mainnet" : "Testnet" },
         ].map((s) => (
-          <div
-            key={s.label}
-            className="rounded-xl bg-white/10 px-3 py-2.5"
-          >
+          <div key={s.label} className="rounded-xl bg-white/10 px-3 py-2.5">
             <p className="text-white/60">{s.label}</p>
             <p className="mt-1 font-medium tnum truncate">{s.value}</p>
           </div>
@@ -500,14 +503,8 @@ function LiveAssetRow({
         <p className="font-medium tnum text-on-surface">
           {item.balance && item.priceKrw ? formatFiat(fiatValue, fiat) : "—"}
         </p>
-        <p
-          className={`text-xs tnum ${
-            positive ? "text-success" : "text-destructive"
-          }`}
-        >
-          {item.priceKrw
-            ? `${positive ? "+" : ""}${item.change24h.toFixed(2)}%`
-            : "—"}
+        <p className={`text-xs tnum ${positive ? "text-success" : "text-destructive"}`}>
+          {item.priceKrw ? `${positive ? "+" : ""}${item.change24h.toFixed(2)}%` : "—"}
         </p>
       </div>
     </div>
@@ -537,9 +534,7 @@ function AddressLine({
         <span className="text-on-surface-variant">{item.networkLabel}</span>
       </div>
       <div className="flex items-center gap-2">
-        <code className="flex-1 text-[11px] font-mono truncate">
-          {item.address ?? "—"}
-        </code>
+        <code className="flex-1 text-[11px] font-mono truncate">{item.address ?? "—"}</code>
         <button
           onClick={copy}
           className="h-7 w-7 grid place-items-center rounded hover:bg-surface text-on-surface-variant"
@@ -563,21 +558,13 @@ function AddressLine({
   );
 }
 
-function NetworkToggle({
-  value,
-  onChange,
-}: {
-  value: Net;
-  onChange: (n: Net) => void;
-}) {
+function NetworkToggle({ value, onChange }: { value: Net; onChange: (n: Net) => void }) {
   const t = useT();
   return (
     <div className="inline-flex rounded-lg overflow-hidden text-xs bg-white/10">
       <button
         onClick={() => onChange("testnet")}
-        className={`px-2.5 h-9 ${
-          value === "testnet" ? "bg-white text-black" : "text-white/80"
-        }`}
+        className={`px-2.5 h-9 ${value === "testnet" ? "bg-white text-black" : "text-white/80"}`}
       >
         {t("settings.testnet")}
       </button>
@@ -587,9 +574,7 @@ function NetworkToggle({
             onChange("mainnet");
           }
         }}
-        className={`px-2.5 h-9 ${
-          value === "mainnet" ? "bg-red-600 text-white" : "text-white/80"
-        }`}
+        className={`px-2.5 h-9 ${value === "mainnet" ? "bg-red-600 text-white" : "text-white/80"}`}
       >
         {t("settings.mainnet")}
       </button>
@@ -602,9 +587,9 @@ function MainnetWarning() {
     <div className="rounded-2xl border border-red-500/40 bg-red-500/5 p-4 flex gap-3">
       <ShieldAlert className="text-red-500 shrink-0" size={18} />
       <p className="text-xs text-on-surface-variant leading-relaxed">
-        <span className="font-semibold text-red-500">메인넷 모드</span> — 실제
-        자산이 이동합니다. 시드 구문을 분실하면 자산은 영구히 복구되지 않으며,
-        본 앱은 VASP 미신고 비수탁 도구로 모든 손실은 사용자 본인 책임입니다.
+        <span className="font-semibold text-red-500">메인넷 모드</span> — 실제 자산이 이동합니다.
+        시드 구문을 분실하면 자산은 영구히 복구되지 않으며, 본 앱은 VASP 미신고 비수탁 도구로 모든
+        손실은 사용자 본인 책임입니다.
       </p>
     </div>
   );

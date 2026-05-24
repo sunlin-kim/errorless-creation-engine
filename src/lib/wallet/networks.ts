@@ -36,7 +36,7 @@ export function getEndpoints(env: NetworkEnv): ChainEndpoints {
       bscExplorer: "https://bscscan.com",
       solRpc: "https://api.mainnet-beta.solana.com",
       solExplorer: "https://explorer.solana.com",
-      
+
       label: "Mainnet",
     };
   }

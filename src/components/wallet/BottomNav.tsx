@@ -4,9 +4,23 @@ import { useT } from "@/lib/i18n";
 
 const items = [
   { to: "/", key: "nav.home", icon: Home, match: (p: string) => p === "/" },
-  { to: "/wallet", key: "nav.wallet", icon: Wallet, match: (p: string) => p.startsWith("/wallet") || p.startsWith("/asset") || p.startsWith("/send") || p.startsWith("/receive") },
+  {
+    to: "/wallet",
+    key: "nav.wallet",
+    icon: Wallet,
+    match: (p: string) =>
+      p.startsWith("/wallet") ||
+      p.startsWith("/asset") ||
+      p.startsWith("/send") ||
+      p.startsWith("/receive"),
+  },
   { to: "/points", key: "nav.points", icon: Gem, match: (p: string) => p.startsWith("/points") },
-  { to: "/settings", key: "nav.settings", icon: Settings, match: (p: string) => p.startsWith("/settings") },
+  {
+    to: "/settings",
+    key: "nav.settings",
+    icon: Settings,
+    match: (p: string) => p.startsWith("/settings"),
+  },
 ] as const;
 
 export function BottomNav() {
@@ -31,9 +45,7 @@ export function BottomNav() {
               >
                 <span
                   className={`relative grid place-items-center h-10 w-12 rounded-2xl transition-all ${
-                    active
-                      ? "bg-primary-container/70 text-primary"
-                      : "text-on-surface-variant"
+                    active ? "bg-primary-container/70 text-primary" : "text-on-surface-variant"
                   }`}
                 >
                   {active && (
@@ -51,9 +63,7 @@ export function BottomNav() {
                 </span>
                 <span
                   className={`text-[10px] tracking-wide ${
-                    active
-                      ? "text-primary font-semibold"
-                      : "text-on-surface-variant"
+                    active ? "text-primary font-semibold" : "text-on-surface-variant"
                   }`}
                 >
                   {t(it.key)}

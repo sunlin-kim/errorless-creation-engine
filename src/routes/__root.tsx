@@ -87,8 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Supervizion — See Beyond. Lead Ahead." },
       {
         name: "description",
-        content:
-          "Supervizion 프리미엄 디지털자산 지갑. 멀티체인 송수신·스왑·스테이킹을 한 곳에서.",
+        content: "Supervizion 프리미엄 디지털자산 지갑. 멀티체인 송수신·스왑·스테이킹을 한 곳에서.",
       },
       { name: "author", content: "Supervizion" },
       { property: "og:title", content: "Supervizion — See Beyond. Lead Ahead." },
@@ -98,8 +97,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Supervizion — See Beyond. Lead Ahead." },
       { name: "description", content: "Supervizion · See Beyond. Lead Ahead." },
       { name: "twitter:description", content: "Supervizion · See Beyond. Lead Ahead." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/87afade4-e586-4e20-88ca-ead22743c61c/id-preview-a07759c5--f0faa359-e7e3-4fb3-8882-27751f3f8156.lovable.app-1779374806673.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/87afade4-e586-4e20-88ca-ead22743c61c/id-preview-a07759c5--f0faa359-e7e3-4fb3-8882-27751f3f8156.lovable.app-1779374806673.png" },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/87afade4-e586-4e20-88ca-ead22743c61c/id-preview-a07759c5--f0faa359-e7e3-4fb3-8882-27751f3f8156.lovable.app-1779374806673.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/87afade4-e586-4e20-88ca-ead22743c61c/id-preview-a07759c5--f0faa359-e7e3-4fb3-8882-27751f3f8156.lovable.app-1779374806673.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

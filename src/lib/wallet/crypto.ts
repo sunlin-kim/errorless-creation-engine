@@ -89,10 +89,7 @@ export async function encryptString(
   };
 }
 
-export async function decryptString(
-  payload: EncryptedPayload,
-  password: string,
-): Promise<string> {
+export async function decryptString(payload: EncryptedPayload, password: string): Promise<string> {
   const combined = fromBase64(payload.data);
   const salt = combined.slice(0, SALT_LENGTH_BYTES);
   const iv = combined.slice(SALT_LENGTH_BYTES, SALT_LENGTH_BYTES + IV_LENGTH_BYTES);
