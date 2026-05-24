@@ -1,4 +1,4 @@
-import type { CapacitorConfig } from "@capacitor/cli";
+﻿import type { CapacitorConfig } from "@capacitor/cli";
 
 /**
  * Capacitor configuration for the Supervizion native Android (.apk) wrapper.

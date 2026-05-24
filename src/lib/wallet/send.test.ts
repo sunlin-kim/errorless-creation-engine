@@ -51,9 +51,7 @@ describe("encodeErc20Transfer", () => {
     expect(data.slice(10, 74)).toBe(
       "00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8",
     );
-    expect(data.slice(74)).toBe(
-      "00000000000000000000000000000000000000000000000000000000000f4240",
-    );
+    expect(data.slice(74)).toBe("00000000000000000000000000000000000000000000000000000000000f4240");
   });
 
   it("handles large amounts without overflow", () => {
