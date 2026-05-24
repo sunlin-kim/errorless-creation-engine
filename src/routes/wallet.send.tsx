@@ -126,13 +126,27 @@ function SendPage() {
         } else if (asset === "SOL") {
           if (!cancelled) setFeePreview("~0.000005 SOL");
         } else {
-          const valueWei =
-            asset === "USDT" ? 0n : parseUnits(amount, decimalsFor(asset));
+          // BNB 는 BSC RPC, ETH/USDT 는 ETH RPC.
+          const feeEp = asset === "BNB" ? toBscEndpoints(ep) : ep;
+          // USDT 는 ERC-20 transfer 호출이므로 calldata 를 포함해 estimateGas 해야 한다.
+          let toForEstimate = to.trim();
+          let valueWei: bigint;
+          let data: `0x${string}` = "0x";
+          if (asset === "USDT") {
+            if (!ep.usdtContract) throw new Error("USDT mainnet only");
+            const amt = parseUnits(amount, 6);
+            data = encodeErc20Transfer(to.trim(), amt);
+            toForEstimate = ep.usdtContract;
+            valueWei = 0n;
+          } else {
+            valueWei = parseUnits(amount, decimalsFor(asset));
+          }
           const fee = await estimateEthFee(
-            ep,
+            feeEp,
             fromAddress,
-            asset === "USDT" ? ep.usdtContract ?? to.trim() : to.trim(),
+            toForEstimate,
             valueWei,
+            data,
           );
           const ethWhole = fee.totalFeeWei / 10n ** 18n;
           const ethRem = fee.totalFeeWei % 10n ** 18n;
