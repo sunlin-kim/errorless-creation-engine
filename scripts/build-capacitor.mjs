@@ -55,8 +55,7 @@ execSync("npx vite build", {
 const source = CANDIDATES.find((p) => existsSync(p));
 if (!source) {
   fail(
-    `클라이언트 산출물을 찾을 수 없습니다. 후보:\n` +
-      CANDIDATES.map((p) => `  - ${p}`).join("\n"),
+    `클라이언트 산출물을 찾을 수 없습니다. 후보:\n` + CANDIDATES.map((p) => `  - ${p}`).join("\n"),
   );
 }
 log(`소스 디렉토리: ${source}`);
