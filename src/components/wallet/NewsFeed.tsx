@@ -19,17 +19,18 @@ export function NewsFeed() {
   const featured = featuredNews;
 
   const next = () => setSlide((s) => (s + 1) % featured.length);
-  const prev = () =>
-    setSlide((s) => (s - 1 + featured.length) % featured.length);
+  const prev = () => setSlide((s) => (s - 1 + featured.length) % featured.length);
 
   return (
     <section className="rounded-3xl border border-outline bg-surface overflow-hidden">
       {/* Tabs */}
       <div className="px-5 pt-5 flex items-end gap-6 border-b border-outline">
-        {([
-          { id: "news", label: "소식" },
-          { id: "insight", label: "인사이트" },
-        ] as { id: Tab; label: string }[]).map((t) => {
+        {(
+          [
+            { id: "news", label: "소식" },
+            { id: "insight", label: "인사이트" },
+          ] as { id: Tab; label: string }[]
+        ).map((t) => {
           const active = tab === t.id;
           return (
             <button
@@ -150,9 +151,7 @@ export function NewsFeed() {
       {/* List */}
       {tab === "news" ? (
         <div className="px-5 pb-5">
-          <h3 className="text-sm font-semibold text-on-surface-variant mb-3 mt-1">
-            새 소식
-          </h3>
+          <h3 className="text-sm font-semibold text-on-surface-variant mb-3 mt-1">새 소식</h3>
           <div className="space-y-4">
             {newsFeed.map((item) => (
               <NewsCard key={item.id} item={item} />
@@ -190,17 +189,9 @@ function NewsCard({ item }: { item: NewsItem }) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
         {item.type === "video" ? (
-          <PlayCircle
-            size={48}
-            className="absolute inset-0 m-auto text-white drop-shadow-lg"
-          />
+          <PlayCircle size={48} className="absolute inset-0 m-auto text-white drop-shadow-lg" />
         ) : (
-          !item.image && (
-            <Newspaper
-              size={28}
-              className="absolute top-4 right-4 text-white/80"
-            />
-          )
+          !item.image && <Newspaper size={28} className="absolute top-4 right-4 text-white/80" />
         )}
         <span className="absolute top-3 left-3 text-[10px] tracking-[0.18em] font-semibold uppercase px-2 py-1 rounded-full bg-black/45 text-white">
           {item.category}
@@ -212,9 +203,7 @@ function NewsCard({ item }: { item: NewsItem }) {
         )}
       </div>
       <div className="p-4">
-        <p className="text-[11px] text-on-surface-variant tnum">
-          {relativeTime(item.publishedAt)}
-        </p>
+        <p className="text-[11px] text-on-surface-variant tnum">{relativeTime(item.publishedAt)}</p>
         <h4 className="mt-1.5 font-bold text-on-surface leading-snug group-hover:text-primary transition-colors line-clamp-2">
           {item.title}
         </h4>
@@ -224,9 +213,7 @@ function NewsCard({ item }: { item: NewsItem }) {
           </p>
         )}
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-[11px] text-on-surface-variant">
-            {item.source}
-          </span>
+          <span className="text-[11px] text-on-surface-variant">{item.source}</span>
           <span className="text-xs font-semibold text-primary">더보기 →</span>
         </div>
       </div>

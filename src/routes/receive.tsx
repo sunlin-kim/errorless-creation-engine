@@ -89,9 +89,7 @@ function ReceivePage() {
       <AppShell title={t("receive.title")} subtitle={t("receive.subtitleWaiting")}>
         <div className="max-w-xl mx-auto rounded-3xl border border-outline bg-surface p-8 text-center">
           <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            {t("activity.needWallet")}
-          </p>
+          <p className="mt-3 text-sm text-on-surface-variant">{t("activity.needWallet")}</p>
           <button
             type="button"
             onClick={() => navigate({ to: "/wallet/setup" })}
@@ -129,7 +127,9 @@ function ReceivePage() {
   return (
     <AppShell
       title={t("receive.title")}
-      subtitle={t("receive.subtitle", { mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet") })}
+      subtitle={t("receive.subtitle", {
+        mode: network === "mainnet" ? t("settings.mainnet") : t("settings.testnet"),
+      })}
     >
       <div className="max-w-xl mx-auto rounded-3xl border border-outline bg-surface p-6">
         <div className="flex flex-wrap gap-2">
@@ -212,11 +212,5 @@ function QrCanvas({ value }: { value: string }) {
     };
   }, [value]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="h-[220px] w-[220px]"
-      aria-label="받기 주소 QR"
-    />
-  );
+  return <canvas ref={canvasRef} className="h-[220px] w-[220px]" aria-label="받기 주소 QR" />;
 }

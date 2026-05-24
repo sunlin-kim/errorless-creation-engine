@@ -33,10 +33,7 @@ import { ArrowLeft, Send, QrCode, ArrowLeftRight, KeyRound } from "lucide-react"
 
 type Symbol = "BTC" | "ETH" | "USDT" | "BNB" | "SOL" | "DUCKY";
 
-const SUPPORTED: Record<
-  Symbol,
-  { name: string; networkLabel: string; color: string }
-> = {
+const SUPPORTED: Record<Symbol, { name: string; networkLabel: string; color: string }> = {
   BTC: { name: "Bitcoin", networkLabel: "Bitcoin", color: "#F7931A" },
   ETH: { name: "Ethereum", networkLabel: "Ethereum", color: "#627EEA" },
   USDT: { name: "Tether USD (ERC-20)", networkLabel: "Ethereum", color: "#26A17B" },
@@ -182,7 +179,6 @@ function AssetDetail() {
     ? toFiat(balancesQ.data.balance, balancesQ.data.prices.prices)
     : 0;
 
-
   const addressForExplorer =
     symbol === "BTC"
       ? addrs?.btc
@@ -258,9 +254,7 @@ function AssetDetail() {
             <h2 className="text-base font-semibold mb-2">관련 거래</h2>
             <div className="divide-y divide-[color:var(--outline)]/40">
               {historyQ.isPending && (
-                <p className="py-8 text-center text-sm text-on-surface-variant">
-                  불러오는 중…
-                </p>
+                <p className="py-8 text-center text-sm text-on-surface-variant">불러오는 중…</p>
               )}
               {!historyQ.isPending && txs.length === 0 && (
                 <p className="py-8 text-center text-sm text-on-surface-variant">
@@ -295,9 +289,8 @@ function AssetDetail() {
             </a>
           </section>
           <section className="rounded-3xl border border-outline bg-surface-container p-5 text-xs text-on-surface-variant leading-relaxed">
-            시세는 외부 가격 피드(CoinGecko) 기반이며, 실제 거래소 가격과 차이가 있을 수
-            있습니다. 차트는 신뢰할 수 있는 가격 시계열이 확보되기 전까지 표시하지
-            않습니다.
+            시세는 외부 가격 피드(CoinGecko) 기반이며, 실제 거래소 가격과 차이가 있을 수 있습니다.
+            차트는 신뢰할 수 있는 가격 시계열이 확보되기 전까지 표시하지 않습니다.
           </section>
         </aside>
       </div>
@@ -345,7 +338,6 @@ function HistoryRow({ item }: { item: HistoryItem }) {
     </a>
   );
 }
-
 
 function shorten(addr: string): string {
   if (addr.length <= 14) return addr;

@@ -104,7 +104,10 @@ function PointsPage() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Rewards */}
-          <section id="rewards-section" className="rounded-3xl border border-outline bg-surface p-5">
+          <section
+            id="rewards-section"
+            className="rounded-3xl border border-outline bg-surface p-5"
+          >
             <header className="flex items-center justify-between mb-3">
               <h2 className="text-base font-semibold">포인트 스토어</h2>
               <button className="text-xs text-primary inline-flex items-center gap-1 hover:underline">
@@ -124,9 +127,7 @@ function PointsPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <p className="font-medium text-on-surface truncate">
-                          {r.label}
-                        </p>
+                        <p className="font-medium text-on-surface truncate">{r.label}</p>
                         {r.tag && (
                           <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-premium/15 text-premium tracking-wider">
                             {r.tag}
@@ -163,14 +164,9 @@ function PointsPage() {
             ) : (
               <ul className="divide-y divide-[color:var(--outline)]/40 max-h-[420px] overflow-y-auto">
                 {history.map((h) => (
-                  <li
-                    key={h.id}
-                    className="flex items-center justify-between py-3"
-                  >
+                  <li key={h.id} className="flex items-center justify-between py-3">
                     <div>
-                      <p className="text-sm font-medium text-on-surface">
-                        {h.label}
-                      </p>
+                      <p className="text-sm font-medium text-on-surface">{h.label}</p>
                       <p className="text-[11px] text-on-surface-variant">
                         {formatRelativeDate(h.createdAt)}
                       </p>
@@ -206,9 +202,7 @@ function PointsPage() {
               포인트를 USDT로 전환합니다. (1,000 P = 1 USDT)
             </p>
             <div>
-              <label className="text-xs font-medium text-on-surface-variant">
-                전환할 포인트
-              </label>
+              <label className="text-xs font-medium text-on-surface-variant">전환할 포인트</label>
               <input
                 type="number"
                 value={convertAmount}

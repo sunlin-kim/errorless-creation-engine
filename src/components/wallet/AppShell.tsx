@@ -30,9 +30,7 @@ export function AppShell({
                 <div className="hidden lg:block min-w-0">
                   <h1 className="text-lg font-semibold truncate">{title}</h1>
                   {subtitle && (
-                    <p className="text-xs text-on-surface-variant truncate">
-                      {subtitle}
-                    </p>
+                    <p className="text-xs text-on-surface-variant truncate">{subtitle}</p>
                   )}
                 </div>
               )}
@@ -57,9 +55,7 @@ export function AppShell({
           {title && (
             <div className="lg:hidden px-5 pb-4">
               <h1 className="text-xl font-semibold">{title}</h1>
-              {subtitle && (
-                <p className="text-xs text-on-surface-variant mt-1">{subtitle}</p>
-              )}
+              {subtitle && <p className="text-xs text-on-surface-variant mt-1">{subtitle}</p>}
             </div>
           )}
         </header>

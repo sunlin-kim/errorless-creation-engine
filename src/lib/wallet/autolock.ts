@@ -25,8 +25,7 @@ export function useAutoLock() {
     const touch = () => useWalletStore.getState().touchActivity();
 
     const checkLock = () => {
-      const { mnemonic, autoLockMinutes, lastActivity, lock } =
-        useWalletStore.getState();
+      const { mnemonic, autoLockMinutes, lastActivity, lock } = useWalletStore.getState();
       if (!mnemonic) return;
       if (autoLockMinutes <= 0) return;
       if (Date.now() - lastActivity >= autoLockMinutes * 60_000) {

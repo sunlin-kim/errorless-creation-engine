@@ -67,7 +67,8 @@ function SetupPage() {
   }, []);
 
   async function overwriteExisting() {
-    if (!confirm("기존 지갑을 삭제하고 새로 만드시겠습니까? 시드가 없으면 자산을 영구히 잃습니다.")) return;
+    if (!confirm("기존 지갑을 삭제하고 새로 만드시겠습니까? 시드가 없으면 자산을 영구히 잃습니다."))
+      return;
     const { deleteVault } = await import("@/lib/wallet/vault");
     await deleteVault();
     setExistingVault(false);
@@ -327,7 +328,8 @@ function ShowSeedStep({
       <div className="rounded-xl bg-amber-500/10 border border-amber-500/30 p-3 flex gap-2 text-xs text-amber-200">
         <AlertTriangle size={14} className="shrink-0 mt-0.5" />
         <span>
-          이 12단어는 지갑의 <strong>유일한 백업</strong> 입니다. 종이에 적어 안전한 곳에 보관하세요. 사진·스크린샷·클라우드 저장은 위험합니다.
+          이 12단어는 지갑의 <strong>유일한 백업</strong> 입니다. 종이에 적어 안전한 곳에
+          보관하세요. 사진·스크린샷·클라우드 저장은 위험합니다.
         </span>
       </div>
 
@@ -340,7 +342,9 @@ function ShowSeedStep({
             <div className="text-center">
               <Eye size={28} className="mx-auto mb-2 text-primary" />
               <p className="text-sm font-semibold">탭하여 시드 보기</p>
-              <p className="text-xs text-on-surface-variant mt-1">주변에 사람이 없는지 확인하세요</p>
+              <p className="text-xs text-on-surface-variant mt-1">
+                주변에 사람이 없는지 확인하세요
+              </p>
             </div>
           </button>
         )}
@@ -369,17 +373,13 @@ function ShowSeedStep({
               onClick={async () => {
                 const ok = await copyText(mnemonic);
                 if (ok) {
-                  toast.success(
-                    "클립보드에 복사됨 — 30초 후 자동으로 비워집니다",
-                  );
+                  toast.success("클립보드에 복사됨 — 30초 후 자동으로 비워집니다");
                   // 30초 후 클립보드 자동 비우기 (시드 노출 보호)
                   setTimeout(() => {
                     navigator.clipboard?.writeText("").catch(() => {});
                   }, 30_000);
                 } else {
-                  toast.error(
-                    "자동 복사 실패 — 시드 단어를 길게 눌러 수동 복사하세요",
-                  );
+                  toast.error("자동 복사 실패 — 시드 단어를 길게 눌러 수동 복사하세요");
                 }
               }}
               className="flex-1 h-9 rounded-lg border border-outline text-xs flex items-center justify-center gap-1.5 hover:bg-surface"
@@ -420,9 +420,7 @@ function ConfirmSeedStep({
     return Array.from(positions).sort((a, b) => a - b);
   }, []);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const allCorrect = challenges.every(
-    (i) => (answers[i] ?? "").trim().toLowerCase() === words[i],
-  );
+  const allCorrect = challenges.every((i) => (answers[i] ?? "").trim().toLowerCase() === words[i]);
 
   return (
     <div className="space-y-5">
@@ -487,7 +485,8 @@ function PasswordStep({
   return (
     <div className="space-y-5">
       <p className="text-sm text-on-surface-variant">
-        이 비밀번호는 시드를 이 기기에서 암호화하는 데만 사용됩니다. 분실 시 시드 구문으로만 복구할 수 있습니다.
+        이 비밀번호는 시드를 이 기기에서 암호화하는 데만 사용됩니다. 분실 시 시드 구문으로만 복구할
+        수 있습니다.
       </p>
       <label className="block">
         <span className="text-xs text-on-surface-variant">비밀번호 (8자 이상)</span>
@@ -540,9 +539,7 @@ function RestoreStep({
   return (
     <div className="space-y-5">
       <label className="block">
-        <span className="text-xs text-on-surface-variant">
-          시드 구문 (12단어, 공백으로 구분)
-        </span>
+        <span className="text-xs text-on-surface-variant">시드 구문 (12단어, 공백으로 구분)</span>
         <textarea
           value={restorePhrase}
           onChange={(e) => setRestorePhrase(e.target.value)}

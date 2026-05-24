@@ -10,7 +10,6 @@ export type NewsItem = {
   thumb?: string; // gradient seed (fallback)
   image?: string; // article thumbnail URL
   duration?: string;
-
 };
 
 export const featuredNews: NewsItem[] = [
@@ -33,7 +32,6 @@ export const featuredNews: NewsItem[] = [
     publishedAt: "2026-05-18T10:00:00+09:00",
     url: "https://supervizion.io/news/solar-partnership",
     thumb: "from-amber-400 via-orange-500 to-emerald-600",
-
   },
   {
     id: "f3",
@@ -83,7 +81,8 @@ export const newsFeed: NewsItem[] = [
     source: "한국경제TV",
     publishedAt: "2026-05-19T15:31:00+09:00",
     url: "https://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202605190440&t=NN",
-    image: "https://img.wowtv.co.kr/nrcs/production/images/20260519/20260519_1f8e779a0e0445a2b818cbfa114fb559.png",
+    image:
+      "https://img.wowtv.co.kr/nrcs/production/images/20260519/20260519_1f8e779a0e0445a2b818cbfa114fb559.png",
     thumb: "from-amber-500 via-orange-500 to-rose-500",
   },
   {
@@ -96,7 +95,8 @@ export const newsFeed: NewsItem[] = [
     source: "국민일보",
     publishedAt: "2025-12-29T11:05:00+09:00",
     url: "https://www.kmib.co.kr/article/view.asp?arcid=0029176445&code=61151111&cp=nv",
-    image: "https://image.kmib.co.kr/online_image/2025/1229/2025122911050274644_1766973902_0029176445.jpg",
+    image:
+      "https://image.kmib.co.kr/online_image/2025/1229/2025122911050274644_1766973902_0029176445.jpg",
     thumb: "from-rose-500 via-red-500 to-amber-500",
   },
   {
@@ -122,7 +122,8 @@ export const newsFeed: NewsItem[] = [
     source: "매일경제",
     publishedAt: "2024-02-29T16:20:00+09:00",
     url: "https://www.mk.co.kr/news/business/10954068",
-    image: "https://wimg.mk.co.kr/news/cms/202402/29/news-p.v1.20240229.b48141c209b24c98af0c08af27d47a20_P1.jpg",
+    image:
+      "https://wimg.mk.co.kr/news/cms/202402/29/news-p.v1.20240229.b48141c209b24c98af0c08af27d47a20_P1.jpg",
     thumb: "from-indigo-600 via-violet-600 to-fuchsia-500",
   },
 ];
@@ -133,8 +134,7 @@ export const insights: NewsItem[] = [
     type: "news",
     category: "리서치",
     title: "온체인 데이터로 본 스테이블코인 시장 — 공급량 사상 최대",
-    excerpt:
-      "USDT·USDC를 비롯한 주요 스테이블코인 공급량이 2,300억 달러를 돌파했습니다.",
+    excerpt: "USDT·USDC를 비롯한 주요 스테이블코인 공급량이 2,300억 달러를 돌파했습니다.",
     source: "Supervizion Research",
     publishedAt: "2026-05-19T12:00:00+09:00",
     url: "https://supervizion.io/insight/stablecoin-supply",
@@ -156,8 +156,7 @@ export const insights: NewsItem[] = [
     type: "news",
     category: "규제",
     title: "가상자산이용자보호법 2차 시행 — 사업자가 준비해야 할 7가지",
-    excerpt:
-      "분리보관·이상거래 감시·트래블룰 등 핵심 7개 항목을 체크리스트로 정리했습니다.",
+    excerpt: "분리보관·이상거래 감시·트래블룰 등 핵심 7개 항목을 체크리스트로 정리했습니다.",
     source: "Supervizion Legal",
     publishedAt: "2026-05-08T09:30:00+09:00",
     url: "https://supervizion.io/insight/vaupa-checklist",

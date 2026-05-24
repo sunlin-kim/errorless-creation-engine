@@ -142,10 +142,7 @@ interface MempoolTx {
   vout: { scriptpubkey_address?: string; value: number }[];
 }
 
-export async function getBtcHistory(
-  ep: ChainEndpoints,
-  address: string,
-): Promise<HistoryItem[]> {
+export async function getBtcHistory(ep: ChainEndpoints, address: string): Promise<HistoryItem[]> {
   const r = await fetch(`${ep.btcApi}/address/${address}/txs`);
   if (!r.ok) throw new Error("BTC history HTTP " + r.status);
   const txs = (await r.json()) as MempoolTx[];
@@ -157,15 +154,15 @@ export async function getBtcHistory(
       .filter((v) => v.scriptpubkey_address === address)
       .reduce((s, v) => s + v.value, 0);
     const delta = outSum - inSum; // sat
-    const direction: HistoryItem["direction"] =
-      delta > 0 ? "in" : delta < 0 ? "out" : "self";
+    const direction: HistoryItem["direction"] = delta > 0 ? "in" : delta < 0 ? "out" : "self";
     // counterparty: 첫 번째 상대 주소
     const counterAddr =
       direction === "out"
         ? t.vout.find((v) => v.scriptpubkey_address && v.scriptpubkey_address !== address)
             ?.scriptpubkey_address
-        : t.vin.find((v) => v.prevout?.scriptpubkey_address && v.prevout.scriptpubkey_address !== address)
-            ?.prevout?.scriptpubkey_address;
+        : t.vin.find(
+            (v) => v.prevout?.scriptpubkey_address && v.prevout.scriptpubkey_address !== address,
+          )?.prevout?.scriptpubkey_address;
     return {
       id: t.txid,
       hash: t.txid,

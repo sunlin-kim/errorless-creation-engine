@@ -52,10 +52,7 @@ async function rpc(url: string, method: string, params: unknown[]): Promise<unkn
   return j.result;
 }
 
-export async function getEthBalance(
-  ep: ChainEndpoints,
-  address: string,
-): Promise<AssetBalance> {
+export async function getEthBalance(ep: ChainEndpoints, address: string): Promise<AssetBalance> {
   const hex = (await rpc(ep.ethRpc, "eth_getBalance", [address, "latest"])) as string;
   const raw = BigInt(hex);
   return {
@@ -88,10 +85,7 @@ export async function getUsdtBalance(
   };
 }
 
-export async function getBtcBalance(
-  ep: ChainEndpoints,
-  address: string,
-): Promise<AssetBalance> {
+export async function getBtcBalance(ep: ChainEndpoints, address: string): Promise<AssetBalance> {
   const r = await fetch(`${ep.btcApi}/address/${address}`);
   if (!r.ok) throw new Error(`BTC API HTTP ${r.status}`);
   const j = (await r.json()) as {
@@ -113,10 +107,7 @@ export async function getBtcBalance(
   };
 }
 
-export async function getBnbBalance(
-  ep: ChainEndpoints,
-  address: string,
-): Promise<AssetBalance> {
+export async function getBnbBalance(ep: ChainEndpoints, address: string): Promise<AssetBalance> {
   const hex = (await rpc(ep.bscRpc, "eth_getBalance", [address, "latest"])) as string;
   const raw = BigInt(hex);
   return {
@@ -127,10 +118,7 @@ export async function getBnbBalance(
   };
 }
 
-export async function getSolBalance(
-  ep: ChainEndpoints,
-  address: string,
-): Promise<AssetBalance> {
+export async function getSolBalance(ep: ChainEndpoints, address: string): Promise<AssetBalance> {
   const r = await fetch(ep.solRpc, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -205,7 +193,6 @@ export async function getDuckyBalance(
   if (!ep.duckyMint) return null;
   return getSplBalance(ep, owner, ep.duckyMint, "DUCKY", DUCKY_DECIMALS);
 }
-
 
 export interface PriceMap {
   ETH: number;
