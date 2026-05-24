@@ -23,6 +23,7 @@ import {
   encodeErc20Transfer,
   toBscEndpoints,
 } from "@/lib/wallet/send";
+import { validateSendPrecondition } from "@/lib/wallet/send-guard";
 import { ArrowLeft, Send, AlertTriangle, ExternalLink, KeyRound, X } from "lucide-react";
 import { toast } from "sonner";
 
