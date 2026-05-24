@@ -62,25 +62,7 @@ function SendPage() {
   const [pw, setPw] = useState("");
   const [pwBusy, setPwBusy] = useState(false);
 
-  if (!mnemonic) {
-    return (
-      <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitleWaiting")}>
-        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
-          <KeyRound size={28} className="mx-auto text-on-surface-variant" />
-          <p className="mt-3 text-sm text-on-surface-variant">
-            {tr("activity.needWallet")}
-          </p>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/wallet/setup" })}
-            className="mt-4 inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold"
-          >
-            <KeyRound size={14} /> {tr("wallet.setup")}
-          </button>
-        </div>
-      </AppShell>
-    );
-  }
+  // mnemonic 가드는 JSX 아래쪽에서 처리 (Hook 순서 유지를 위해 조기 return 금지)
 
   const fromAddress =
     asset === "BTC"
