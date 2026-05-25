@@ -86,6 +86,7 @@ export const useWalletStore = create<WalletState>()(
     {
       name: "sv-wallet-prefs-v5",
       version: 1,
+      skipHydration: true,
       storage: createJSONStorage(() =>
         typeof window !== "undefined" ? window.localStorage : (undefined as unknown as Storage),
       ),
@@ -106,4 +107,12 @@ export const useWalletStore = create<WalletState>()(
 
 export function isUnlocked(): boolean {
   return useWalletStore.getState().mnemonic !== null;
+}
+
+export function hasWalletStoreHydrated(): boolean {
+  return useWalletStore.persist.hasHydrated();
+}
+
+export function rehydrateWalletStore(): Promise<void> {
+  return useWalletStore.persist.rehydrate();
 }
