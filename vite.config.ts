@@ -33,11 +33,10 @@ export default defineConfig({
   vite: {
     base: isCapacitor ? "./" : "/",
     ssr: {
-      // h3-v2 is a direct import in @tanstack/start-server-core. The Cloudflare
-      // worker bundle leaves it external by default, which crashes at module
-      // instantiation in the deployed worker ("No such module h3-v2" → 502).
-      // Force-inline it (and the start-server-core chain) into the worker bundle.
-      noExternal: ["h3-v2", "@tanstack/start-server-core"],
+      // The deployed worker runtime cannot resolve bare external SSR imports.
+      // Keep TanStack's server-core chain and its transitive runtime modules
+      // inlined in the worker bundle to avoid "No such module ..." 502s.
+      noExternal: ["h3-v2", "rou3", "@tanstack/start-server-core"],
     },
   },
 });
