@@ -4,31 +4,32 @@ import splashLogo from "@/assets/splash-logo.png";
 const SESSION_KEY = "sv-splash-shown";
 
 export function SplashScreen() {
-  // Render on first paint (incl. SSR). A pure-CSS animation handles
-  // fade-out + auto-removal so the splash disappears even if React
-  // hydration is delayed. After fully animated out, we unmount.
-  const [mounted, setMounted] = useState(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      return !sessionStorage.getItem(SESSION_KEY);
-    } catch {
-      return true;
-    }
-  });
+  // Only show the splash once per browser tab (first load).
+  // Default to hidden so SSR + refreshes never flash the logo;
+  // we opt-in on the client only when sessionStorage shows no prior view.
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!mounted) return;
+    let shown = false;
+    try {
+      shown = !!sessionStorage.getItem(SESSION_KEY);
+    } catch {
+      /* ignore */
+    }
+    if (shown) return;
     try {
       sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
       /* ignore */
     }
+    setMounted(true);
     const t = setTimeout(() => setMounted(false), 3000);
     return () => clearTimeout(t);
-  }, [mounted]);
+  }, []);
 
   if (!mounted) return null;
+
 
   return (
     <div className="splash-root" aria-hidden="true">
