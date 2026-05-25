@@ -114,5 +114,5 @@ export function hasWalletStoreHydrated(): boolean {
 }
 
 export function rehydrateWalletStore(): Promise<void> {
-  return useWalletStore.persist.rehydrate();
+  return Promise.resolve(useWalletStore.persist.rehydrate());
 }
