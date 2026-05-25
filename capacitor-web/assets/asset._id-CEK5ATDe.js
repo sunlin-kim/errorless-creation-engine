@@ -1,1 +1,0 @@
-import{j as t,L as o}from"./index-Cq4a1Zu1.js";import{A as e}from"./AppShell-DrSZYLRx.js";import"./Logo-CW3K1uut.js";const p=()=>t.jsx(e,{title:"자산을 찾을 수 없음",children:t.jsx(o,{to:"/wallet",className:"text-primary text-sm",children:"← 지갑으로"})});export{p as notFoundComponent};
