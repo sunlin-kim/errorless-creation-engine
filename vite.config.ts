@@ -39,10 +39,5 @@ export default defineConfig({
       // stay external (the worker runtime resolves them natively).
       noExternal: true,
     },
-    resolve: {
-      // Fallback for @cloudflare/vite-plugin's worker environment in case the
-      // top-level ssr.noExternal isn't picked up there.
-      noExternal: true,
-    },
   },
 });
