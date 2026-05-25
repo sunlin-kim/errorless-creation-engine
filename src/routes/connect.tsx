@@ -233,11 +233,36 @@ function ConnectPage() {
                   ? { id: request.id, jsonrpc: "2.0", result: res.result }
                   : { id: request.id, jsonrpc: "2.0", error: res.error },
               });
+              // chain switch 가 성공했으면 dApp 에게 chainChanged 이벤트를 emit
+              // 해야 새 네트워크로 인식한다. (응답만으로는 wagmi/viem 계열
+              // 클라이언트가 활성 체인을 갱신하지 않음.)
+              if (
+                res.ok &&
+                (request.method === "wallet_switchEthereumChain" ||
+                  request.method === "wallet_addEthereumChain") &&
+                kit.emitSessionEvent
+              ) {
+                try {
+                  const wanted = (request.params as [{ chainId?: string }])?.[0]?.chainId;
+                  const wantedNum = wanted ? Number(BigInt(wanted)) : NaN;
+                  if (wantedNum === 1 || wantedNum === 56 || wantedNum === 97) {
+                    const caip2 = `eip155:${wantedNum}`;
+                    await kit.emitSessionEvent({
+                      topic: request.topic,
+                      event: { name: "chainChanged", data: wantedNum },
+                      chainId: caip2,
+                    });
+                  }
+                } catch (e) {
+                  console.warn("[wc] chainChanged emit failed", e);
+                }
+              }
               if (res.ok) toast.success(`${request.method} 완료`);
               else toast.error(`${request.method} 실패: ${res.error.message}`);
             } catch (e) {
               toast.error(`응답 전송 실패: ${e instanceof Error ? e.message : String(e)}`);
             } finally {
+
               useWcStore.getState().setRequest(null);
             }
           }}
