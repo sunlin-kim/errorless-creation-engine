@@ -52,15 +52,6 @@ export default defineConfig({
       : {}),
   },
 
-          // SPA fallback shell — APK 로컬 번들이 어떤 경로로 진입해도 셸이 뜨도록
-          // maskPath "/" 로 prerender → .output/public/index.html 생성.
-          spa: {
-            enabled: true,
-            maskPath: "/",
-          },
-        }
-      : {}),
-  },
   vite: {
     base: isCapacitor ? "./" : "/",
     plugins: [tanstackInjectedHeadScriptsVirtualModule()],
