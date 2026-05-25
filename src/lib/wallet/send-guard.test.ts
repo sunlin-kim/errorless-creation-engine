@@ -15,7 +15,7 @@ describe("validateSendPrecondition", () => {
     if (r.ok) expect(r.parsed).toBe(10n ** 18n);
   });
 
-  it("blocks when fromAddress is missing (지갑 파생 전 차단)", () => {
+  it("blocks when fromAddress is missing (before wallet derivation)", () => {
     for (const v of [null, undefined, "", "   "]) {
       const r = validateSendPrecondition({ ...base, fromAddress: v as string | null });
       expect(r).toEqual({ ok: false, error: "NO_FROM" });
@@ -27,7 +27,7 @@ describe("validateSendPrecondition", () => {
     expect(r).toEqual({ ok: false, error: "NO_TO" });
   });
 
-  it("blocks zero amount (0원 송금 차단)", () => {
+  it("blocks zero amount", () => {
     expect(validateSendPrecondition({ ...base, amount: "0" })).toEqual({
       ok: false,
       error: "ZERO_AMOUNT",

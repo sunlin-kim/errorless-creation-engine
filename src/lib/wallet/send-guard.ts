@@ -1,10 +1,10 @@
 /**
- * 송금 전 사전 검증 (UI 와 분리된 순수 함수, 테스트 가능).
+ * Pre-send validation (UI-independent pure function, testable).
  *
- * 차단 조건:
- *  - fromAddress 비어있음 (지갑 파생 전)
- *  - 수신 주소 비어있음
- *  - 금액 파싱 실패 / 0 이하 / 음수 / 비정상 입력
+ * Block conditions:
+ *  - fromAddress empty (wallet not derived)
+ *  - recipient empty
+ *  - amount parse failure / zero / negative / malformed input
  */
 
 import { parseUnits } from "./send";
@@ -16,12 +16,7 @@ export interface PreSendInput {
   decimals: number;
 }
 
-export type PreSendError =
-  | "NO_FROM"
-  | "NO_TO"
-  | "BAD_AMOUNT"
-  | "ZERO_AMOUNT"
-  | "NEGATIVE_AMOUNT";
+export type PreSendError = "NO_FROM" | "NO_TO" | "BAD_AMOUNT" | "ZERO_AMOUNT" | "NEGATIVE_AMOUNT";
 
 export interface PreSendOk {
   ok: true;

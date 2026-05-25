@@ -18,9 +18,9 @@ import type { ChainEndpoints } from "./networks";
 
 export function parseUnits(amount: string, decimals: number): bigint {
   const s = amount.trim();
-  if (!/^\d+(\.\d+)?$/.test(s)) throw new Error("금액 형식 오류");
+  if (!/^\d+(\.\d+)?$/.test(s)) throw new Error("Invalid amount format");
   const [whole, frac = ""] = s.split(".");
-  if (frac.length > decimals) throw new Error(`소수점은 최대 ${decimals}자리`);
+  if (frac.length > decimals) throw new Error(`At most ${decimals} fractional digits allowed`);
   const padded = (frac + "0".repeat(decimals)).slice(0, decimals);
   return BigInt(whole) * 10n ** BigInt(decimals) + BigInt(padded || "0");
 }
