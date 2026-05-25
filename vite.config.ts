@@ -38,20 +38,29 @@ export default defineConfig({
       // "No such module ...". Inline ALL npm packages; only node:* builtins
       // stay external (the worker runtime resolves them natively).
       //
-      // EXCEPTION: WalletConnect / Reown WalletKit are browser-only
-      // (loaded via dynamic import() inside getWalletKit(), guarded by
-      // `typeof window === "undefined"`). They are CJS-heavy and pull React's
-      // CJS entry into the SSR module graph when inlined, crashing SSR with
-      // `ReferenceError: module is not defined`. They are never executed on
-      // the server, so marking them external is safe.
+      // EXCEPTION list (kept external to avoid bundling into SSR):
+      //   - react / react-dom: Vite 7's SSR module-runner cannot evaluate
+      //     React 19's CJS `index.js` (`module is not defined`) when inlined.
+      //     They are not used in server-only code paths anyway; the SSR
+      //     renderer pulls them through TanStack's server entry which Vite
+      //     resolves to the ESM build when they're external.
+      //   - @reown/walletkit / @walletconnect/*: browser-only, loaded via
+      //     dynamic import() guarded by `typeof window === "undefined"`,
+      //     never executed on the server. Inlining drags their CJS deps
+      //     into the SSR graph and breaks React resolution.
       noExternal: true,
       external: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
         "@reown/walletkit",
         "@walletconnect/core",
         "@walletconnect/utils",
         "@walletconnect/types",
       ],
     },
+
 
   },
 });
