@@ -33,10 +33,16 @@ export default defineConfig({
   vite: {
     base: isCapacitor ? "./" : "/",
     ssr: {
-      // The deployed worker runtime cannot resolve bare external SSR imports.
-      // Keep TanStack's server-core chain and its transitive runtime modules
-      // inlined in the worker bundle to avoid "No such module ..." 502s.
-      noExternal: ["h3-v2", "rou3", "@tanstack/start-server-core"],
+      // The deployed worker (dynamic worker loader) has no node_modules, so any
+      // bare specifier left external at build time crashes at runtime with
+      // "No such module ...". Inline ALL npm packages; only node:* builtins
+      // stay external (the worker runtime resolves them natively).
+      noExternal: true,
+    },
+    resolve: {
+      // Fallback for @cloudflare/vite-plugin's worker environment in case the
+      // top-level ssr.noExternal isn't picked up there.
+      noExternal: true,
     },
   },
 });
