@@ -1,9 +1,9 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 export default createServerEntry({
-  async fetch(request, env, ctx) {
+  async fetch(request) {
     try {
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(request);
       return response;
     } catch (error) {
       console.error(error);
