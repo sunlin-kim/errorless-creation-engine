@@ -30,7 +30,6 @@ export function SplashScreen() {
 
   if (!mounted) return null;
 
-
   return (
     <div className="splash-root" aria-hidden="true">
       <img
