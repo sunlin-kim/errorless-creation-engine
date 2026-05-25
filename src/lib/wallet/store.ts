@@ -10,6 +10,15 @@ function debugWallet(event: string, payload?: Record<string, unknown>) {
   console.info("[wallet-debug]", event, payload ?? {});
 }
 
+const serverStorage: Storage = {
+  length: 0,
+  clear: () => undefined,
+  getItem: () => null,
+  key: () => null,
+  removeItem: () => undefined,
+  setItem: () => undefined,
+};
+
 export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
 export type AppLanguage = "ko" | "en";
@@ -106,9 +115,7 @@ export const useWalletStore = create<WalletState>()(
       name: "sv-wallet-prefs-v5",
       version: 1,
       skipHydration: true,
-      storage: createJSONStorage(() =>
-        typeof window !== "undefined" ? window.localStorage : (undefined as unknown as Storage),
-      ),
+      storage: createJSONStorage(() => (typeof window !== "undefined" ? window.localStorage : serverStorage)),
       merge: (persistedState, currentState) => ({
         ...currentState,
         ...sanitizePersistedState(persistedState as Partial<WalletState> | undefined),
