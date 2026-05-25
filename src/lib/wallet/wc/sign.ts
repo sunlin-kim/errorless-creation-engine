@@ -6,7 +6,7 @@
  *   - signTyped(typed, privateKey)            → EIP-712 v4 호환
  */
 
-import { eip191Signer, signTyped, type TypedData, type EIP712Types } from "micro-eth-signer";
+import { eip191Signer, signTyped } from "micro-eth-signer";
 
 function hexToBytes(hex: string): Uint8Array {
   const h = hex.startsWith("0x") ? hex.slice(2) : hex;
