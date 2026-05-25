@@ -21,4 +21,9 @@ minimumReleaseAgeExcludes = [
   "@tanstack/server-functions-plugin",
   "@tanstack/eslint-plugin-router",
   "@tanstack/virtual-file-routes",
+  "@tanstack/react-start-client",
+  "@tanstack/react-start-server",
+  "@tanstack/react-start-rsc",
+  "@tanstack/react-start-config",
+  "@tanstack/react-start-plugin",
 ]
