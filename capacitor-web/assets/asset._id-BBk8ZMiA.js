@@ -1,1 +1,0 @@
-import{j as t,L as o}from"./index-C8z7fd5g.js";import{A as e}from"./AppShell-FP9GGB6p.js";import"./Logo-DiOCumXt.js";function m(){return t.jsx(e,{title:"자산을 찾을 수 없음",children:t.jsx(o,{to:"/wallet",className:"text-primary text-sm",children:"← 지갑으로"})})}export{m as notFoundComponent};

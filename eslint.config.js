@@ -6,7 +6,17 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  {
+    ignores: [
+      "dist",
+      "dist-ssr",
+      ".output",
+      ".vinxi",
+      "capacitor-web/**",
+      "android/app/src/main/assets/public/**",
+      "android/app/src/main/assets/capacitor.config.json",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -37,9 +47,10 @@ export default tseslint.config(
     },
   },
   {
-    // shadcn/ui 컴포넌트는 관례상 컴포넌트와 cva variants/Context helper 를 같은 파일에
-    // 같이 둔다. 별도 파일로 쪼개면 외부 라이브러리 업데이트 반영이 어려워지므로,
-    // Fast Refresh 경고만 ui/ 디렉토리에 한해 끈다. 런타임 동작과 무관한 DX 경고다.
+    // shadcn/ui components conventionally colocate the component with its cva
+    // variants and Context helpers. Splitting them into separate files makes
+    // upstream updates harder, so we disable the Fast Refresh-only warning for
+    // the ui/ directory. This has no runtime effect.
     files: ["src/components/ui/**/*.{ts,tsx}"],
     rules: {
       "react-refresh/only-export-components": "off",

@@ -1,4 +1,4 @@
-﻿# Supervizion — 모바일 앱 빌드 가이드
+# Supervizion — Mobile App Build Guide
 
 이 앱은 두 가지 방식으로 모바일 앱처럼 사용할 수 있습니다.
 
@@ -18,12 +18,11 @@
 
 ## 2) Capacitor로 진짜 .apk 빌드 (로컬 PC 필요)
 
-### 사전 요구사항 (반드시 이 버전 조합)
+### 사전 요구사항
 
 | 항목 | 버전 | 비고 |
 | --- | --- | --- |
-| Node.js | 20+ | LTS 권장 |
-| Bun | 1.3+ | 본 저장소는 **bun** 을 공식 패키지 매니저로 사용. `bun.lock` 커밋됨 |
+| Node.js | 20+ | LTS 권장. 본 저장소는 **npm** 을 공식 패키지 매니저로 사용 (`package-lock.json` 커밋됨) |
 | JDK | **Temurin 17** | Gradle 8.13 / AGP 8.13 요구 사항 |
 | Android SDK | API 36 (compile/target), platform-tools, build-tools 36.0.0 | Android Studio Koala 이상 또는 cmdline-tools |
 | minSdk | 24 | `android/variables.gradle` |
@@ -57,19 +56,19 @@ setx ANDROID_HOME "$env:LOCALAPPDATA\Android\Sdk"
 ### 빌드 절차 (한 번에 재현 가능)
 
 ```bash
-# 0. 의존성
-bun install --frozen-lockfile
+# 0. 의존성 (lockfile 고정)
+npm ci
 
 # 1. 웹 산출물 (절대 URL 차단 검증 포함)
-bun run build:capacitor
+npm run build:capacitor
 
 # 2. 런처 아이콘 / 스플래시 생성 (필수, 1회 또는 아이콘 변경 시)
 #    @capacitor/assets 는 빌드 산출물/런타임에 포함되지 않는 1회성 CLI 이므로
-#    devDependencies 에 두지 않고 npx/bunx 로 on-demand 실행한다.
-bunx -y @capacitor/assets@3 generate --android
+#    devDependencies 에 두지 않고 npx 로 on-demand 실행한다.
+npx -y @capacitor/assets@3 generate --android
 
 # 3. 네이티브 동기화
-bunx cap sync android
+npx cap sync android
 
 # 4. APK 빌드 (CLI)
 cd android
@@ -95,9 +94,9 @@ APK 가 빌드되고 아티팩트로 업로드됩니다. JDK/SDK 설치는 워�
 ### 코드/아이콘 수정 후 재빌드
 
 ```bash
-bun run build:capacitor
-bunx -y @capacitor/assets@3 generate --android   # 아이콘 변경 시
-bunx cap sync android
+npm run build:capacitor
+npx -y @capacitor/assets@3 generate --android   # 아이콘 변경 시
+npx cap sync android
 cd android && ./gradlew :app:assembleDebug --no-daemon
 ```
 
@@ -105,8 +104,8 @@ cd android && ./gradlew :app:assembleDebug --no-daemon
 
 ## 보안 / 재현성 메모
 
-- **lockfile**: 본 저장소는 `bun.lock` 을 단일 lockfile 로 사용합니다. `npm install`/`yarn install`/`pnpm install` 은 사용하지 마세요 (다른 lockfile 이 생기면 재현성이 깨집니다).
-- **`@capacitor/assets`**: 일반 dev dependency 가 아닙니다. 런처 아이콘 생성용 1회성 CLI 이므로 `bunx -y @capacitor/assets@3 ...` 로만 실행하며, 의존성 트리에 포함되지 않습니다. (과거 dev audit 에서 잡히던 `tar / minimatch / uuid` 계열 경고도 함께 제거.)
+- **lockfile**: 본 저장소는 `package-lock.json` 을 단일 lockfile 로 사용합니다. `bun install`/`yarn install`/`pnpm install` 은 사용하지 마세요 (다른 lockfile 이 생기면 재현성이 깨집니다).
+- **`@capacitor/assets`**: 일반 dev dependency 가 아닙니다. 런처 아이콘 생성용 1회성 CLI 이므로 `npx -y @capacitor/assets@3 ...` 로만 실행하며, 의존성 트리에 포함되지 않습니다. (과거 dev audit 에서 잡히던 `tar / minimatch / uuid` 계열 경고도 함께 제거.)
 - **FLAG_SECURE**: `MainActivity.java` 에서 강제. 화면 캡처/녹화 차단, 최근앱 썸네일 시드 잔상 제거.
 - **원격 URL 미사용**: `capacitor.config.ts` 의 `server.url` 미설정 — APK 는 로컬 번들만 로드합니다. 서버 침해 시 시드 탈취 위험 차단.
 
@@ -115,6 +114,6 @@ cd android && ./gradlew :app:assembleDebug --no-daemon
 ## Troubleshooting
 
 - **앱서랍에 안 보이고 검색해야 실행됨** → APK 내부 런처 리소스가 누락/오염되었거나, 이전 잘못된 설치본의 런처 캐시가 남아있는 경우입니다. 위 2단계 `@capacitor/assets generate --android` 를 다시 실행하고, 기기에서 앱 제거 후 재설치하세요.
-- **흰 화면**: `bun run build:capacitor` 가 실패했거나 `capacitor-web/` 이 비어 있는 상태에서 `cap sync` 한 경우입니다. 로그를 확인하고 다시 빌드하세요.
+- **흰 화면**: `npm run build:capacitor` 가 실패했거나 `capacitor-web/` 이 비어 있는 상태에서 `cap sync` 한 경우입니다. 로그를 확인하고 다시 빌드하세요.
 - **`JAVA_HOME is not set ...`**: 위 "환경변수 설정 예시" 를 그대로 적용하세요. CI 에서는 자동 설치됩니다.
 - **권한**: 카메라/위치 등 추가 권한은 `android/app/src/main/AndroidManifest.xml` 에서 선언.

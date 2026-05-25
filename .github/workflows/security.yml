@@ -1,21 +1,23 @@
-﻿name: security
+name: security
 
 on:
   push:
     branches: [main]
   pull_request:
   schedule:
-    - cron: "0 4 * * 1" # 매주 월요일 04:00 UTC
+    - cron: "0 4 * * 1" # Mondays 04:00 UTC
 
 jobs:
   audit:
-    name: bun audit (락파일 고정 의존성 취약점 검사)
+    name: npm audit (production dependency vulnerability scan)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
-      # bun.lock 은 커밋되어 있으므로 install 없이 audit 만 실행
-      - name: bun audit
-        run: bun audit --prod
+          node-version: "20"
+          cache: "npm"
+      - name: Install JS deps
+        run: npm ci
+      - name: npm audit (production)
+        run: npm audit --omit=dev

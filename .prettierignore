@@ -1,8 +1,12 @@
 node_modules
 dist
+dist-ssr
 .output
 .vinxi
 pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+capacitor-web/**
+android/app/src/main/assets/public/**
+android/app/src/main/assets/capacitor.config.json
