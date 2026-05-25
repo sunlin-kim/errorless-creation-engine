@@ -143,7 +143,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
   const walletHydrated = useWalletStoreHydrated();
   const language = useWalletStore((s) => s.language);
   const mnemonic = useWalletStore((s) => s.mnemonic);
@@ -165,18 +164,10 @@ function RootComponent() {
     }
   }, [language, walletHydrated]);
 
-  if (!walletHydrated) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <div className="min-h-screen bg-background" />
-      </QueryClientProvider>
-    );
-  }
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <SplashScreen />
       <Outlet />
-    </QueryClientProvider>
+    </>
   );
 }
