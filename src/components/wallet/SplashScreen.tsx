@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import splashLogo from "@/assets/splash-logo.png";
 
 const SESSION_KEY = "sv-splash-shown";
+const shouldSkipSplash = import.meta.env.DEV;
 
 export function SplashScreen() {
   // Only show the splash once per browser tab (first load).
@@ -10,6 +11,7 @@ export function SplashScreen() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    if (shouldSkipSplash) return;
     if (typeof window === "undefined") return;
     let shown = false;
     try {
@@ -28,6 +30,7 @@ export function SplashScreen() {
     return () => clearTimeout(t);
   }, []);
 
+  if (shouldSkipSplash) return null;
   if (!mounted) return null;
 
   return (
