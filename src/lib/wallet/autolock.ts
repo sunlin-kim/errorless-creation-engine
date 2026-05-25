@@ -5,7 +5,7 @@
  */
 
 import { useEffect } from "react";
-import { useWalletStore } from "./store";
+import { hasWalletStoreHydrated, useWalletStore } from "./store";
 
 const ACTIVITY_EVENTS = [
   "mousemove",
@@ -25,10 +25,18 @@ export function useAutoLock() {
     const touch = () => useWalletStore.getState().touchActivity();
 
     const checkLock = () => {
-      const { mnemonic, autoLockMinutes, lastActivity, lock } = useWalletStore.getState();
+      if (!hasWalletStoreHydrated()) return;
+
+      const { mnemonic, autoLockMinutes, autoLockGraceUntil, lastActivity, lock } = useWalletStore.getState();
       if (!mnemonic) return;
       if (autoLockMinutes <= 0) return;
+      if (Date.now() < autoLockGraceUntil) return;
       if (Date.now() - lastActivity >= autoLockMinutes * 60_000) {
+        console.warn("[wallet] auto-lock triggered", {
+          autoLockMinutes,
+          lastActivity,
+          now: Date.now(),
+        });
         lock();
       }
     };
