@@ -81,6 +81,7 @@ export const useWalletStore = create<WalletState>()(
         debugWallet("lock", {
           now: Date.now(),
           hadMnemonic: useWalletStore.getState().mnemonic !== null,
+          stack: new Error().stack,
         });
         set({
           mnemonic: null,
