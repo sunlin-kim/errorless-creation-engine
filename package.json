@@ -58,7 +58,7 @@
     "@scure/btc-signer": "^2.2.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.83.0",
-    "@tanstack/react-router": "1.168.11",
+    "@tanstack/react-router": "1.170.8",
     "@tanstack/react-start": "1.168.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
