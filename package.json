@@ -85,8 +85,10 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.25.5",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "^1.7.0",
+    "@tanstack/router-plugin": "^1.167.28",
     "@types/node": "^22.16.5",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.0",
@@ -102,6 +104,14 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1",
+    "vite-tsconfig-paths": "^6.0.2",
+    "vitest": "^4.1.7"
+  },
+  "overrides": {
+    "ws": "^8.18.0",
+    "brace-expansion": "^2.0.2"
+  }
+}
     "vitest": "^4.1.7"
   }
 }
