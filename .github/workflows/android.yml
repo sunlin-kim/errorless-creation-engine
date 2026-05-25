@@ -1,4 +1,4 @@
-﻿name: android-apk
+name: android-apk
 
 on:
   push:
@@ -13,9 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: "20"
+          cache: "npm"
 
       - uses: actions/setup-java@v4
         with:
@@ -27,16 +28,19 @@ jobs:
           packages: "platforms;android-36 build-tools;36.0.0"
 
       - name: Install JS deps
-        run: bun install --frozen-lockfile
+        run: npm ci
+
+      - name: Verify web build (lint + typecheck + test + build)
+        run: npm run verify
 
       - name: Build web bundle for Capacitor
-        run: bun run build:capacitor
+        run: npm run build:capacitor
 
       - name: Generate launcher icons + splash (on-demand, not a dev dep)
-        run: bunx -y @capacitor/assets@3 generate --android || echo "icons already present"
+        run: npx -y @capacitor/assets@3 generate --android || echo "icons already present"
 
       - name: cap sync android
-        run: bunx cap sync android
+        run: npx cap sync android
 
       - name: gradle assembleDebug
         working-directory: android

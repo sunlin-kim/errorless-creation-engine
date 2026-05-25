@@ -13,8 +13,8 @@
  *        않았는지 검사.
  *
  * 사용:
- *   bun run build:capacitor
- *   bun run cap:sync
+ *   npm run build:capacitor
+ *   npm run cap:sync
  */
 import { execSync } from "node:child_process";
 import {
@@ -133,4 +133,4 @@ log(`완료. 산출물: ${OUT}`);
 log(`  - index.html: OK`);
 log(`  - 절대 출처: 없음`);
 log(`  - SSR 진입점: 없음`);
-log("다음 단계: bun run cap:sync");
+log("다음 단계: npm run cap:sync  (또는 npx cap sync android)");
