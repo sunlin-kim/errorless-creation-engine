@@ -70,7 +70,7 @@ export function QuickActions() {
         return (
           <Link
             key={label}
-            to={isMobile && to === "/activity" ? "/wallet" : to}
+            to={isMobile && to === "/activity" ? "/wallet/" : to}
             preload="intent"
             className={className}
           >

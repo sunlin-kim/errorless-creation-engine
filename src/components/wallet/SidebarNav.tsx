@@ -5,7 +5,7 @@ import { useT } from "@/lib/i18n";
 
 const items = [
   { to: "/", key: "nav.home", icon: Home },
-  { to: "/wallet", key: "nav.wallet", icon: Wallet },
+  { to: "/wallet/", key: "nav.wallet", icon: Wallet },
   { to: "/points", key: "nav.points", icon: Gem },
   { to: "/wallet/send", key: "nav.send", icon: Send },
   { to: "/receive", key: "nav.receive", icon: QrCode },
