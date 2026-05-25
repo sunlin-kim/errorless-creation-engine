@@ -46,6 +46,20 @@ export default defineConfig({
       // so they are reachable in the SSR graph (and must be bundled) but
       // never executed on the server.
       noExternal: true,
+      // Vite 7 dev SSR (module-runner) — react 의 CJS index.js 가 module-runner
+      // 의 ESM 평가 경로에 그대로 들어가면 `ReferenceError: module is not defined`
+      // 가 난다. 사전 번들에 포함시켜 ESM 으로 변환된 버전이 쓰이도록 한다.
+      // (배포 Worker 빌드는 noExternal:true 로 따로 처리되므로 영향 없음.)
+      optimizeDeps: {
+        include: [
+          "react",
+          "react/jsx-runtime",
+          "react/jsx-dev-runtime",
+          "react-dom",
+          "react-dom/server",
+          "react-dom/client",
+        ],
+      },
     },
   },
 });
