@@ -146,8 +146,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const walletHydrated = useWalletStoreHydrated();
   const language = useWalletStore((s) => s.language);
+  const mnemonic = useWalletStore((s) => s.mnemonic);
   useSessionPersist();
   useAutoLock();
+
+  useEffect(() => {
+    console.info("[wallet-debug] root-state", {
+      walletHydrated,
+      hasMnemonic: mnemonic !== null,
+      path: typeof window !== "undefined" ? window.location.pathname : "server",
+    });
+  }, [walletHydrated, mnemonic]);
 
   useEffect(() => {
     if (!walletHydrated) return;

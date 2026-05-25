@@ -37,10 +37,12 @@ function UnlockPage() {
         return;
       }
       const mnemonic = await decryptString(v.encryptedMnemonic, pw);
+      console.info("[wallet-debug] unlock-page:decrypted", { length: mnemonic.length });
       unlock(mnemonic);
       setVaultExists(true);
       toast.success(t("unlock.loadedToast"));
-      navigate({ to: "/wallet" });
+      console.info("[wallet-debug] unlock-page:navigate", { to: "/wallet/" });
+      navigate({ to: "/wallet/" });
     } catch (err) {
       if ((err as Error).message === "WRONG_PASSWORD") {
         toast.error(t("unlock.wrongPw"));
