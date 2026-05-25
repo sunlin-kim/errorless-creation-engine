@@ -5,7 +5,7 @@ import { useT } from "@/lib/i18n";
 const items = [
   { to: "/", key: "nav.home", icon: Home, match: (p: string) => p === "/" },
   {
-    to: "/wallet",
+    to: "/wallet/",
     key: "nav.wallet",
     icon: Wallet,
     match: (p: string) =>
