@@ -109,6 +109,7 @@
   },
   "overrides": {
     "ws": "^8.18.0",
-    "brace-expansion": "^2.0.2"
+    "brace-expansion": "^2.0.2",
+    "esbuild": "^0.25.0"
   }
 }
