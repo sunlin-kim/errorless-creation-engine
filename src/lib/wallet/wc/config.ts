@@ -8,7 +8,7 @@
  * fallback 상수를 사용한다. 사용자가 ID 를 주면 fallback 한 줄만 교체.
  */
 
-const FALLBACK_PROJECT_ID = "REPLACE_WITH_REOWN_PROJECT_ID";
+const FALLBACK_PROJECT_ID = "2c92e08686c2b2f5e839a5eb27eeebb0";
 
 export const WC_PROJECT_ID: string =
   (import.meta.env?.VITE_WC_PROJECT_ID as string | undefined) ?? FALLBACK_PROJECT_ID;
