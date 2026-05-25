@@ -49,7 +49,7 @@ function isSymbol(x: string): x is Symbol {
 function AssetNotFoundComponent() {
   return (
     <AppShell title="자산을 찾을 수 없음">
-      <Link to="/wallet" className="text-primary text-sm">
+      <Link to="/wallet/" className="text-primary text-sm">
         ← 지갑으로
       </Link>
     </AppShell>
@@ -152,7 +152,7 @@ function AssetDetail() {
   if (!validSymbol) {
     return (
       <AppShell title="지원하지 않는 자산" subtitle={id}>
-        <Link to="/wallet" className="text-primary text-sm">
+        <Link to="/wallet/" className="text-primary text-sm">
           ← 지갑으로
         </Link>
       </AppShell>
@@ -205,7 +205,7 @@ function AssetDetail() {
   return (
     <AppShell title={meta.name} subtitle={`${symbol} · ${meta.networkLabel}`}>
       <Link
-        to="/wallet"
+        to="/wallet/"
         className="inline-flex items-center gap-1 text-xs text-on-surface-variant hover:text-on-surface mb-4"
       >
         <ArrowLeft size={14} /> 지갑으로
