@@ -111,6 +111,10 @@
   "overrides": {
     "ws": "^8.18.0",
     "brace-expansion": "^2.0.2",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "@tanstack/react-router": "1.170.8",
+    "@tanstack/start-client-core": "1.170.4",
+    "@tanstack/start-plugin-core": "1.171.6",
+    "@tanstack/start-server-core": "1.169.4"
   }
 }
