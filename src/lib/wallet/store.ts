@@ -53,7 +53,7 @@ interface WalletState {
 
 export const useWalletStore = create<WalletState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       vaultExists: null,
       mnemonic: null,
       derivedAddresses: { mainnet: null, testnet: null },
@@ -92,6 +92,7 @@ export const useWalletStore = create<WalletState>()(
       ),
       merge: (persistedState, currentState) => ({
         ...currentState,
+        ...get(),
         ...sanitizePersistedState(persistedState as Partial<WalletState> | undefined),
       }),
       migrate: (persistedState) => sanitizePersistedState(persistedState as Partial<WalletState>),
