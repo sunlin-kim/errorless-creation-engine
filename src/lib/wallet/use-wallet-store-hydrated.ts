@@ -9,7 +9,13 @@ export function useWalletStoreHydrated() {
     const unsubscribeFinish = useWalletStore.persist.onFinishHydration(() => setHydrated(true));
 
     if (!useWalletStore.persist.hasHydrated()) {
-      void rehydrateWalletStore();
+      void rehydrateWalletStore()
+        .catch((error) => {
+          console.error("[wallet-debug] rehydrate failed", error);
+        })
+        .finally(() => {
+          setHydrated(true);
+        });
     } else {
       setHydrated(true);
     }

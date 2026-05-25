@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 
@@ -12,6 +12,7 @@ export const getRouter = () => {
     defaultPreload: "intent",
     defaultPreloadDelay: 0,
     defaultPreloadStaleTime: 0,
+    Wrap: ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>,
   });
 
   return router;
