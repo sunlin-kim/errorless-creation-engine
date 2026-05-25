@@ -14,12 +14,13 @@ import type { Plugin } from "vite";
 //   기본값을 건드리지 않는다.)
 const isCapacitor = process.env.BUILD_TARGET === "capacitor";
 
-function tanstackInjectedHeadScriptsCompatPlugin(): Plugin {
+function tanstackInjectedHeadScriptsVirtualModule(): Plugin {
   const virtualId = "tanstack-start-injected-head-scripts:v";
   const resolvedVirtualId = `\0${virtualId}`;
 
   return {
-    name: "tanstack-injected-head-scripts-compat",
+    name: "tanstack-start-injected-head-scripts-virtual",
+    apply: "serve",
     enforce: "pre",
     resolveId(id) {
       if (id === virtualId) {
@@ -28,7 +29,7 @@ function tanstackInjectedHeadScriptsCompatPlugin(): Plugin {
     },
     load(id) {
       if (id === resolvedVirtualId) {
-        return "export const injectedHeadScripts = undefined;";
+        return "export const injectedHeadScripts = undefined;\n";
       }
     },
   };
@@ -59,6 +60,6 @@ export default defineConfig({
   },
   vite: {
     base: isCapacitor ? "./" : "/",
-    plugins: [tanstackInjectedHeadScriptsCompatPlugin()],
+    plugins: [tanstackInjectedHeadScriptsVirtualModule()],
   },
 });
