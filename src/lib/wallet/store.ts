@@ -5,6 +5,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+function debugWallet(event: string, payload?: Record<string, unknown>) {
+  if (typeof console === "undefined") return;
+  console.info("[wallet-debug]", event, payload ?? {});
+}
+
 export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
 export type AppLanguage = "ko" | "en";
@@ -69,9 +74,15 @@ export const useWalletStore = create<WalletState>()(
       setVaultExists: (v) => set({ vaultExists: v }),
       unlock: (mnemonic) => {
         const now = Date.now();
+        debugWallet("unlock", { now, length: mnemonic.length });
         set({ mnemonic, lastActivity: now, autoLockGraceUntil: now + 30_000 });
       },
       lock: () => {
+        debugWallet("lock", {
+          now: Date.now(),
+          hadMnemonic: useWalletStore.getState().mnemonic !== null,
+          stack: new Error().stack,
+        });
         set({
           mnemonic: null,
           autoLockGraceUntil: 0,
@@ -122,5 +133,6 @@ export function hasWalletStoreHydrated(): boolean {
 }
 
 export function rehydrateWalletStore(): Promise<void> {
+  debugWallet("rehydrate:start", { hydrated: useWalletStore.persist.hasHydrated() });
   return Promise.resolve(useWalletStore.persist.rehydrate());
 }

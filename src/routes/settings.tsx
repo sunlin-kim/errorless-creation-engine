@@ -56,7 +56,7 @@ function SettingsPage() {
               </p>
             </div>
             <Link
-              to={mnemonic ? "/wallet" : "/wallet/setup"}
+              to={mnemonic ? "/wallet/" : "/wallet/setup"}
               className="h-9 px-3 rounded-lg border border-outline text-xs font-semibold inline-flex items-center gap-1.5"
             >
               {mnemonic ? t("settings.viewWallet") : t("settings.walletSetup")}
@@ -115,7 +115,7 @@ function SettingsPage() {
               </span>
             </p>
             <Link
-              to="/wallet"
+              to="/wallet/"
               className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
               {t("settings.switchNetwork")} <ChevronRight size={12} />
