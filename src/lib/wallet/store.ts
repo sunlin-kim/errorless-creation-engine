@@ -9,6 +9,18 @@ export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
 export type AppLanguage = "ko" | "en";
 
+function sanitizePersistedState(state: Partial<WalletState> | undefined) {
+  return {
+    network: state?.network === "mainnet" || state?.network === "testnet" ? state.network : "testnet",
+    currency: state?.currency === "USD" || state?.currency === "KRW" ? state.currency : "KRW",
+    language: state?.language === "en" || state?.language === "ko" ? state.language : "ko",
+    autoLockMinutes:
+      typeof state?.autoLockMinutes === "number" && Number.isFinite(state.autoLockMinutes)
+        ? Math.max(0, state.autoLockMinutes)
+        : 10,
+  } as const;
+}
+
 interface WalletState {
   vaultExists: boolean | null;
   /** 잠금 해제된 평문 니모닉 — 메모리에만 (persist 제외) */
@@ -73,9 +85,15 @@ export const useWalletStore = create<WalletState>()(
     }),
     {
       name: "sv-wallet-prefs-v5",
+      version: 1,
       storage: createJSONStorage(() =>
         typeof window !== "undefined" ? window.localStorage : (undefined as unknown as Storage),
       ),
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...sanitizePersistedState(persistedState as Partial<WalletState> | undefined),
+      }),
+      migrate: (persistedState) => sanitizePersistedState(persistedState as Partial<WalletState>),
       partialize: (s) => ({
         network: s.network,
         currency: s.currency,
