@@ -73,7 +73,11 @@ export const useWalletStore = create<WalletState>()(
     }),
     {
       name: "sv-wallet-prefs-v5",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined"
+          ? window.localStorage
+          : (undefined as unknown as Storage),
+      ),
       partialize: (s) => ({
         network: s.network,
         currency: s.currency,
