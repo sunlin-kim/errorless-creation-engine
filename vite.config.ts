@@ -37,7 +37,21 @@ export default defineConfig({
       // bare specifier left external at build time crashes at runtime with
       // "No such module ...". Inline ALL npm packages; only node:* builtins
       // stay external (the worker runtime resolves them natively).
+      //
+      // EXCEPTION: WalletConnect / Reown WalletKit are browser-only
+      // (loaded via dynamic import() inside getWalletKit(), guarded by
+      // `typeof window === "undefined"`). They are CJS-heavy and pull React's
+      // CJS entry into the SSR module graph when inlined, crashing SSR with
+      // `ReferenceError: module is not defined`. They are never executed on
+      // the server, so marking them external is safe.
       noExternal: true,
+      external: [
+        "@reown/walletkit",
+        "@walletconnect/core",
+        "@walletconnect/utils",
+        "@walletconnect/types",
+      ],
     },
+
   },
 });
