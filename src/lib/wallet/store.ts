@@ -25,6 +25,8 @@ interface WalletState {
   vaultExists: boolean | null;
   /** 잠금 해제된 평문 니모닉 — 메모리에만 (persist 제외) */
   mnemonic: string | null;
+  /** unlock 직후 auto-lock 오작동 방지용 짧은 유예 구간 */
+  autoLockGraceUntil: number;
   derivedAddresses: {
     mainnet: { eth: string; btc: string; bnb: string; sol: string } | null;
     testnet: { eth: string; btc: string; bnb: string; sol: string } | null;
@@ -56,6 +58,7 @@ export const useWalletStore = create<WalletState>()(
     (set) => ({
       vaultExists: null,
       mnemonic: null,
+      autoLockGraceUntil: 0,
       derivedAddresses: { mainnet: null, testnet: null },
       network: "testnet",
       currency: "KRW",
@@ -65,10 +68,15 @@ export const useWalletStore = create<WalletState>()(
 
       setVaultExists: (v) => set({ vaultExists: v }),
       unlock: (mnemonic) => {
-        set({ mnemonic, lastActivity: Date.now() });
+        const now = Date.now();
+        set({ mnemonic, lastActivity: now, autoLockGraceUntil: now + 30_000 });
       },
       lock: () => {
-        set({ mnemonic: null, derivedAddresses: { mainnet: null, testnet: null } });
+        set({
+          mnemonic: null,
+          autoLockGraceUntil: 0,
+          derivedAddresses: { mainnet: null, testnet: null },
+        });
       },
       setDerivedAddresses: (env, addresses) =>
         set((s) => ({
