@@ -67,6 +67,14 @@ export function chainIdToCaip2(chainId: number): SupportedChain | null {
   return null;
 }
 
+/** Placeholder value used before a real Reown Cloud project ID was issued. */
+const PLACEHOLDER_PROJECT_ID = "YOUR_REOWN_PROJECT_ID";
+
 export function isProjectIdConfigured(): boolean {
-  return WC_PROJECT_ID !== FALLBACK_PROJECT_ID && WC_PROJECT_ID.length > 0;
+  return (
+    WC_PROJECT_ID.length > 0 &&
+    WC_PROJECT_ID !== PLACEHOLDER_PROJECT_ID &&
+    // 32-char hex from Reown Cloud
+    /^[0-9a-f]{32}$/i.test(WC_PROJECT_ID)
+  );
 }
