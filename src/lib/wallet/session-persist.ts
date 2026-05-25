@@ -1,75 +1,26 @@
 /**
- * Tab-scoped mnemonic cache.
+ * 세션 영속화 정책: 평문 mnemonic/seed/private key는 어떤 Web Storage에도
+ * 저장하지 않는다. 새로고침 시 다시 잠기는 것은 비수탁 지갑의 의도된
+ * 보안 동작이며, unlock 상태는 메모리 Zustand에만 보관한다.
  *
- * Stores the unlocked mnemonic in sessionStorage so that the wallet stays
- * unlocked across SPA reloads / TanStack route remounts / HMR within the
- * SAME browser tab. sessionStorage is automatically cleared when the tab
- * closes, so the secret cannot leak across tabs or persist on disk.
- *
- * Trade-off vs the previous "memory only" model:
- *   - Pro: unlock survives reload — fixes the "unlock → re-init → locked
- *     again" loop users hit after a refresh or hot module reload.
- *   - Con: an active XSS within the tab can read sessionStorage.
- *     Mitigated by: CSP, no third-party script eval, sessionStorage scope
- *     (no persistence across sessions / no leak to other tabs).
- *
- * Legacy localStorage keys (if any from older builds) are wiped.
+ * 이 모듈의 유일한 역할은 과거 빌드가 남겼을 수 있는 legacy 평문 키를
+ * 발견 즉시 삭제하는 마이그레이션이다.
  */
 
 import { useEffect } from "react";
-import { useWalletStore } from "./store";
 
-const SESSION_KEY = "sv-wallet-session-v2";
-const LEGACY_KEYS = ["sv-wallet-session-v1"];
-
-export function readSessionMnemonic(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const v = sessionStorage.getItem(SESSION_KEY);
-    return v && v.length > 0 ? v : null;
-  } catch {
-    return null;
-  }
-}
-
-export function writeSessionMnemonic(mnemonic: string | null) {
-  if (typeof window === "undefined") return;
-  try {
-    if (mnemonic) sessionStorage.setItem(SESSION_KEY, mnemonic);
-    else sessionStorage.removeItem(SESSION_KEY);
-  } catch {
-    /* private mode — ignore */
-  }
-}
+const LEGACY_KEYS = ["sv-wallet-session-v1", "sv-wallet-session-v2"];
 
 export function useSessionPersist() {
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    // 1) Migrate / clean legacy keys
     try {
-      for (const k of LEGACY_KEYS) sessionStorage.removeItem(k);
-      // also clean any localStorage leftover from very old builds
-      for (const k of LEGACY_KEYS) localStorage.removeItem(k);
-    } catch {
-      /* ignore */
-    }
-
-    // 2) Rehydrate mnemonic from sessionStorage if store is empty
-    const current = useWalletStore.getState().mnemonic;
-    if (!current) {
-      const cached = readSessionMnemonic();
-      if (cached) {
-        useWalletStore.getState().unlock(cached);
+      for (const k of LEGACY_KEYS) {
+        sessionStorage.removeItem(k);
+        localStorage.removeItem(k);
       }
+    } catch {
+      /* private mode 등 — 무시 */
     }
-
-    // 3) Mirror future store changes back to sessionStorage
-    const unsub = useWalletStore.subscribe((state, prev) => {
-      if (state.mnemonic === prev.mnemonic) return;
-      writeSessionMnemonic(state.mnemonic);
-    });
-
-    return () => unsub();
   }, []);
 }
