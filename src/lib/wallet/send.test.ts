@@ -31,7 +31,7 @@ describe("parseUnits", () => {
   });
 
   it("rejects fractional digits exceeding decimals", () => {
-    expect(() => parseUnits("0.0000001", 6)).toThrow(/소수점/);
+    expect(() => parseUnits("0.0000001", 6)).toThrow(/fractional digits/);
   });
 
   it("trims surrounding whitespace", () => {

@@ -12,11 +12,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "bun run lint && bun run typecheck && bun run test && bun run build",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build",
     "format": "prettier --write .",
     "build:capacitor": "node scripts/build-capacitor.mjs",
-    "cap:sync": "bun run build:capacitor && cap sync android",
-    "cap:open": "bun run cap:sync && cap open android"
+    "cap:sync": "npm run build:capacitor && npx cap sync android",
+    "cap:open": "npm run cap:sync && npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
@@ -109,6 +109,7 @@
   },
   "overrides": {
     "ws": "^8.18.0",
-    "brace-expansion": "^2.0.2"
+    "brace-expansion": "^2.0.2",
+    "esbuild": "^0.25.0"
   }
 }
