@@ -86,7 +86,7 @@ function WalletStatusCard({
           <p className="text-xs text-on-surface-variant mt-1">{t("home.activeBody")}</p>
           <div className="mt-3 flex gap-2">
             <Link
-              to="/wallet/"
+              to="/wallet"
               className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:brightness-110"
             >
               <Wallet size={14} /> {t("home.openWallet")}

@@ -277,7 +277,7 @@ function SendPage() {
     <AppShell title={tr("wsend.title")} subtitle={tr("wsend.subtitle", { label: ep.label })}>
       <div className="mx-auto max-w-xl space-y-5">
         <button
-          onClick={() => navigate({ to: "/wallet/" })}
+          onClick={() => navigate({ to: "/wallet" })}
           className="inline-flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-on-surface"
         >
           <ArrowLeft size={14} /> {tr("wsend.back")}
