@@ -76,11 +76,7 @@ export const useWalletStore = create<WalletState>()(
       storage: createJSONStorage(() =>
         typeof window !== "undefined"
           ? window.localStorage
-          : ({
-              getItem: () => null,
-              setItem: () => {},
-              removeItem: () => {},
-            } as Storage),
+          : (undefined as unknown as Storage),
       ),
       partialize: (s) => ({
         network: s.network,
