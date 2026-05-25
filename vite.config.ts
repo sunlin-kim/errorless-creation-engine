@@ -58,6 +58,12 @@ export default defineConfig({
           "react-dom",
           "react-dom/server",
           "react-dom/client",
+          // CJS shim used by @tanstack/react-store — module-runner can't
+          // evaluate the raw CJS, so force esbuild pre-bundling to ESM.
+          "use-sync-external-store",
+          "use-sync-external-store/shim",
+          "use-sync-external-store/shim/with-selector",
+          "@tanstack/react-store",
         ],
       },
     },
