@@ -5,7 +5,6 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import type { Plugin } from "vite";
 
 // Capacitor 빌드 시 BUILD_TARGET=capacitor 가 세팅됨
 // - base: './' → APK 내부 파일 스킴에서 자산 상대경로 해결
@@ -13,27 +12,6 @@ import type { Plugin } from "vite";
 //   .output/public/index.html 을 생성. (서버 빌드에서는 SSR을 유지하기 위해
 //   기본값을 건드리지 않는다.)
 const isCapacitor = process.env.BUILD_TARGET === "capacitor";
-
-function tanstackInjectedHeadScriptsVirtualModule(): Plugin {
-  const virtualId = "tanstack-start-injected-head-scripts:v";
-  const resolvedVirtualId = `\0${virtualId}`;
-
-  return {
-    name: "tanstack-start-injected-head-scripts-virtual",
-    apply: "serve",
-    enforce: "pre",
-    resolveId(id) {
-      if (id === virtualId) {
-        return resolvedVirtualId;
-      }
-    },
-    load(id) {
-      if (id === resolvedVirtualId) {
-        return "export const injectedHeadScripts = undefined;\n";
-      }
-    },
-  };
-}
 
 export default defineConfig({
   // Capacitor 빌드는 정적 SPA 셸만 필요하므로 Cloudflare Worker 출력은 끈다.
@@ -54,6 +32,5 @@ export default defineConfig({
 
   vite: {
     base: isCapacitor ? "./" : "/",
-    plugins: [tanstackInjectedHeadScriptsVirtualModule()],
   },
 });
