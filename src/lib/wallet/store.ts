@@ -53,7 +53,7 @@ interface WalletState {
 
 export const useWalletStore = create<WalletState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       vaultExists: null,
       mnemonic: null,
       derivedAddresses: { mainnet: null, testnet: null },
@@ -90,11 +90,18 @@ export const useWalletStore = create<WalletState>()(
       storage: createJSONStorage(() =>
         typeof window !== "undefined" ? window.localStorage : (undefined as unknown as Storage),
       ),
-      merge: (persistedState, currentState) => ({
-        ...currentState,
-        ...get(),
-        ...sanitizePersistedState(persistedState as Partial<WalletState> | undefined),
-      }),
+      merge: (persistedState, currentState) => {
+        const runtimeState = useWalletStore.getState();
+        return {
+          ...currentState,
+          ...runtimeState,
+          ...sanitizePersistedState(persistedState as Partial<WalletState> | undefined),
+          vaultExists: runtimeState.vaultExists,
+          mnemonic: runtimeState.mnemonic,
+          derivedAddresses: runtimeState.derivedAddresses,
+          lastActivity: runtimeState.lastActivity,
+        };
+      },
       migrate: (persistedState) => sanitizePersistedState(persistedState as Partial<WalletState>),
       partialize: (s) => ({
         network: s.network,
