@@ -46,9 +46,7 @@ export function signTypedDataV4(
   typedDataJson: string | object,
   privateKey: Uint8Array,
 ): `0x${string}` {
-  const td = (
-    typeof typedDataJson === "string" ? JSON.parse(typedDataJson) : typedDataJson
-  ) as TypedData<EIP712Types, string>;
+  const td = (typeof typedDataJson === "string" ? JSON.parse(typedDataJson) : typedDataJson) as Parameters<typeof signTyped>[0];
   const sig = signTyped(td, privKeyToHex(privateKey));
   return (sig.startsWith("0x") ? sig : "0x" + sig) as `0x${string}`;
 }
