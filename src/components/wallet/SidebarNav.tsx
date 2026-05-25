@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Wallet, Gem, Send, QrCode, Activity, Settings } from "lucide-react";
+import { Home, Wallet, Gem, Send, QrCode, Activity, Settings, Link2 } from "lucide-react";
 import { Logo } from "./Logo";
 import { useT } from "@/lib/i18n";
 
@@ -9,6 +9,7 @@ const items = [
   { to: "/points", key: "nav.points", icon: Gem },
   { to: "/wallet/send", key: "nav.send", icon: Send },
   { to: "/receive", key: "nav.receive", icon: QrCode },
+  { to: "/connect", key: "nav.connect", icon: Link2 },
   { to: "/activity", key: "nav.activity", icon: Activity },
   { to: "/settings", key: "nav.settings", icon: Settings },
 ] as const;

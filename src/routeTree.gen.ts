@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as ReceiveRouteImport } from './routes/receive'
 import { Route as PointsRouteImport } from './routes/points'
+import { Route as ConnectRouteImport } from './routes/connect'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WalletIndexRouteImport } from './routes/wallet.index'
@@ -46,6 +47,11 @@ const ReceiveRoute = ReceiveRouteImport.update({
 const PointsRoute = PointsRouteImport.update({
   id: '/points',
   path: '/points',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnectRoute = ConnectRouteImport.update({
+  id: '/connect',
+  path: '/connect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivityRoute = ActivityRouteImport.update({
@@ -92,6 +98,7 @@ const AssetIdRoute = AssetIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/connect': typeof ConnectRoute
   '/points': typeof PointsRoute
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/connect': typeof ConnectRoute
   '/points': typeof PointsRoute
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
+  '/connect': typeof ConnectRoute
   '/points': typeof PointsRoute
   '/receive': typeof ReceiveRoute
   '/send': typeof SendRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/activity'
+    | '/connect'
     | '/points'
     | '/receive'
     | '/send'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/activity'
+    | '/connect'
     | '/points'
     | '/receive'
     | '/send'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/activity'
+    | '/connect'
     | '/points'
     | '/receive'
     | '/send'
@@ -184,6 +196,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivityRoute: typeof ActivityRoute
+  ConnectRoute: typeof ConnectRoute
   PointsRoute: typeof PointsRoute
   ReceiveRoute: typeof ReceiveRoute
   SendRoute: typeof SendRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/points'
       fullPath: '/points'
       preLoaderRoute: typeof PointsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activity': {
@@ -309,6 +329,7 @@ const WalletRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivityRoute: ActivityRoute,
+  ConnectRoute: ConnectRoute,
   PointsRoute: PointsRoute,
   ReceiveRoute: ReceiveRoute,
   SendRoute: SendRoute,
