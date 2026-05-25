@@ -85,7 +85,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.25.5",
+    "@cloudflare/vite-plugin": "^1.37.0",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "^1.7.0",
     "@tanstack/router-plugin": "^1.167.28",
