@@ -42,7 +42,7 @@ function UnlockPage() {
       setVaultExists(true);
       toast.success(t("unlock.loadedToast"));
       console.info("[wallet-debug] unlock-page:navigate", { to: "/wallet/" });
-      navigate({ to: "/wallet/" });
+      navigate({ to: "/wallet" });
     } catch (err) {
       if ((err as Error).message === "WRONG_PASSWORD") {
         toast.error(t("unlock.wrongPw"));

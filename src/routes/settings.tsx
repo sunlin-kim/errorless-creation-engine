@@ -115,7 +115,7 @@ function SettingsPage() {
               </span>
             </p>
             <Link
-              to="/wallet/"
+              to="/wallet"
               className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
             >
               {t("settings.switchNetwork")} <ChevronRight size={12} />
