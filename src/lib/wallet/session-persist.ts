@@ -60,6 +60,7 @@ export async function saveUnlockRecoverySnapshot(mnemonic: string) {
     };
 
     sessionStorage.setItem(RECOVERY_KEY, JSON.stringify(payload));
+    console.info("[wallet-debug] recovery-snapshot:saved", { expiresAt: payload.expiresAt });
   } catch {
     /* ignore */
   }
@@ -99,6 +100,7 @@ async function consumeUnlockRecoverySnapshot() {
       fromBase64(payload.data) as BufferSource,
     );
     sessionStorage.removeItem(RECOVERY_KEY);
+    console.info("[wallet-debug] recovery-snapshot:consumed", { expiresAt: payload.expiresAt });
     return new TextDecoder().decode(decrypted);
   } catch {
     clearUnlockRecoverySnapshot();

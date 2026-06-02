@@ -45,6 +45,14 @@ export function useAutoLock() {
           now,
         });
         lock();
+      } else {
+        console.info("[wallet-debug] auto-lock:skip", {
+          now,
+          lastActivity,
+          autoLockMinutes,
+          autoLockGraceUntil,
+          remainingMs: autoLockMinutes * 60_000 - (now - lastActivity),
+        });
       }
     };
 
