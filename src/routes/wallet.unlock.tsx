@@ -88,11 +88,20 @@ function UnlockPage() {
             <input
               type="password"
               value={pw}
-              onChange={(e) => setPw(e.target.value)}
+              onChange={(e) => {
+                setPw(e.target.value);
+                if (errorMsg) setErrorMsg(null);
+              }}
               autoFocus
               placeholder={t("unlock.password")}
               className="w-full h-11 rounded-lg border border-outline bg-background px-3 text-sm focus:border-primary outline-none"
             />
+            {errorMsg && (
+              <p className="mt-2 text-xs text-destructive flex items-start gap-1.5">
+                <AlertTriangle size={12} className="shrink-0 mt-0.5" />
+                <span>{errorMsg}</span>
+              </p>
+            )}
             <button
               type="submit"
               disabled={busy || pw.length === 0}
