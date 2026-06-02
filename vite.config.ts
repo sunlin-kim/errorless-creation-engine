@@ -5,6 +5,7 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { fileURLToPath } from "node:url";
 
 // Capacitor 빌드 시 BUILD_TARGET=capacitor 가 세팅됨
 // - base: './' → APK 내부 파일 스킴에서 자산 상대경로 해결
@@ -12,6 +13,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 //   .output/public/index.html 을 생성. (서버 빌드에서는 SSR을 유지하기 위해
 //   기본값을 건드리지 않는다.)
 const isCapacitor = process.env.BUILD_TARGET === "capacitor";
+const browserEventsEntry = fileURLToPath(new URL("./node_modules/events/events.js", import.meta.url));
 
 export default defineConfig({
   // Capacitor 빌드는 정적 SPA 셸만 필요하므로 Cloudflare Worker 출력은 끈다.
@@ -38,6 +40,11 @@ export default defineConfig({
         // in production builds. Force the stable CJS entry so Vite handles
         // CommonJS conversion consistently for both dev and prod.
         "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
+        // WalletConnect packages import Node's events builtin, which Vite
+        // externalizes in browser builds. Pin both specifiers to the browser
+        // events polyfill package so Rollup sees real exports.
+        events: browserEventsEntry,
+        "node:events": browserEventsEntry,
       },
     },
     ssr: {
