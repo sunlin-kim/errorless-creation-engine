@@ -8,7 +8,7 @@
  */
 
 import { useEffect } from "react";
-import { useWalletStore } from "./store";
+import { ensureWalletStoreHydrated, useWalletStore } from "./store";
 
 const LEGACY_KEYS = ["sv-wallet-session-v1", "sv-wallet-session-v2"];
 const RECOVERY_KEY = "sv-wallet-reload-recovery-v1";
@@ -126,8 +126,9 @@ export function useSessionPersist() {
       return;
     }
 
-    void consumeUnlockRecoverySnapshot().then((mnemonic) => {
+    void consumeUnlockRecoverySnapshot().then(async (mnemonic) => {
       if (!mnemonic) return;
+      await ensureWalletStoreHydrated();
       if (useWalletStore.getState().mnemonic) return;
       useWalletStore.getState().unlock(mnemonic);
     });
