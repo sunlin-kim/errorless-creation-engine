@@ -20,6 +20,7 @@ function UnlockPage() {
   const [pw, setPw] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     hasVault().then((exists) => {
