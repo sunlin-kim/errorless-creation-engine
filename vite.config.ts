@@ -56,7 +56,18 @@ export default defineConfig({
         // 고정해 dev/publish 경로를 동일하게 만든다.
         "@reown/walletkit": nodeModuleFile("@reown/walletkit", "dist/index.cjs"),
         "@walletconnect/core": nodeModuleFile("@walletconnect/core", "dist/index.cjs"),
+        "@walletconnect/events": nodeModuleFile("@walletconnect/events", "dist/cjs/index.js"),
+        "@walletconnect/jsonrpc-types": nodeModuleFile(
+          "@walletconnect/jsonrpc-types",
+          "dist/index.cjs.js",
+        ),
+        "@walletconnect/jsonrpc-utils": nodeModuleFile(
+          "@walletconnect/jsonrpc-utils",
+          "dist/cjs/index.js",
+        ),
         "@walletconnect/sign-client": nodeModuleFile("@walletconnect/sign-client", "dist/index.cjs"),
+        "@walletconnect/safe-json": nodeModuleFile("@walletconnect/safe-json", "dist/cjs/index.js"),
+        "@walletconnect/time": nodeModuleFile("@walletconnect/time", "dist/cjs/index.js"),
         "@walletconnect/types": nodeModuleFile("@walletconnect/types", "dist/index.cjs"),
         "@walletconnect/utils": nodeModuleFile("@walletconnect/utils", "dist/index.cjs"),
         "@walletconnect/pay": nodeModuleFile("@walletconnect/pay", "dist/index.cjs"),
