@@ -4,6 +4,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { clearUnlockRecoverySnapshot } from "./session-persist";
 
 function debugWallet(event: string, payload?: Record<string, unknown>) {
   if (typeof console === "undefined") return;
@@ -94,6 +95,7 @@ export const useWalletStore = create<WalletState>()(
           hadMnemonic: useWalletStore.getState().mnemonic !== null,
           stack: new Error().stack,
         });
+        clearUnlockRecoverySnapshot();
         set({
           mnemonic: null,
           autoLockGraceUntil: 0,
