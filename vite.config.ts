@@ -5,7 +5,6 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // Capacitor 빌드 시 BUILD_TARGET=capacitor 가 세팅됨
 // - base: './' → APK 내부 파일 스킴에서 자산 상대경로 해결
@@ -32,12 +31,6 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [
-      nodePolyfills({
-        include: ["events"],
-        protocolImports: true,
-      }),
-    ],
     base: isCapacitor ? "./" : "/",
     resolve: {
       alias: {
@@ -45,6 +38,10 @@ export default defineConfig({
         // in production builds. Force the stable CJS entry so Vite handles
         // CommonJS conversion consistently for both dev and prod.
         "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
+        // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
+        // Aliasing avoids vite-plugin-node-polyfills (which clobbers SSR globals like util.TextEncoder).
+        events: "events/",
+        "node:events": "events/",
       },
     },
     ssr: {
