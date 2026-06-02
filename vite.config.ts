@@ -32,6 +32,14 @@ export default defineConfig({
 
   vite: {
     base: isCapacitor ? "./" : "/",
+    resolve: {
+      alias: {
+        // WalletConnect heartbeat's published ESM bundle can break Rollup
+        // in production builds. Force the stable CJS entry so Vite handles
+        // CommonJS conversion consistently for both dev and prod.
+        "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
+      },
+    },
     ssr: {
       // The deployed Cloudflare Worker (dynamic worker loader) has NO
       // node_modules at runtime, so every bare specifier MUST be inlined
