@@ -48,10 +48,18 @@ export default defineConfig({
     base: isCapacitor ? "./" : "/",
     resolve: {
       alias: {
-        // WalletConnect heartbeat's published ESM bundle can break Rollup
-        // in production builds. Force the stable CJS entry so Vite handles
-        // CommonJS conversion consistently for both dev and prod.
+        // 일부 WalletConnect/Reown ESM 배포본이 Rollup 프로덕션 번들에서
+        // 간헐적으로 파싱 실패한다. 브라우저에서도 동작하는 CJS 엔트리로
+        // 고정해 dev/publish 경로를 동일하게 만든다.
+        "@reown/walletkit": "@reown/walletkit/dist/index.cjs",
+        "@walletconnect/core": "@walletconnect/core/dist/index.cjs",
+        "@walletconnect/sign-client": "@walletconnect/sign-client/dist/index.cjs",
+        "@walletconnect/types": "@walletconnect/types/dist/index.cjs",
+        "@walletconnect/utils": "@walletconnect/utils/dist/index.cjs",
+        "@walletconnect/pay": "@walletconnect/pay/dist/index.cjs",
         "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
+        "@walletconnect/jsonrpc-provider": "@walletconnect/jsonrpc-provider/dist/index.cjs.js",
+        "@walletconnect/relay-auth": "@walletconnect/relay-auth/dist/index.cjs.js",
         // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
         events: "events/",
         "node:events": "events/",
