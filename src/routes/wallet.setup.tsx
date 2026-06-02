@@ -4,7 +4,7 @@ import { Logo } from "@/components/wallet/Logo";
 import { createMnemonic, isValidMnemonic, normalizeMnemonic } from "@/lib/wallet/seed";
 import { encryptString } from "@/lib/wallet/crypto";
 import { saveVault, hasVault, markBackupConfirmed } from "@/lib/wallet/vault";
-import { useWalletStore } from "@/lib/wallet/store";
+import { ensureWalletStoreHydrated, useWalletStore } from "@/lib/wallet/store";
 import { AlertTriangle, Check, Copy, Eye, EyeOff, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
@@ -91,6 +91,7 @@ function SetupPage() {
     }
     setBusy(true);
     try {
+      await ensureWalletStoreHydrated();
       const encrypted = await encryptString(mnemonic, pw);
       await saveVault({
         encryptedMnemonic: encrypted,
@@ -125,6 +126,7 @@ function SetupPage() {
     }
     setBusy(true);
     try {
+      await ensureWalletStoreHydrated();
       const encrypted = await encryptString(phrase, pw);
       await saveVault({
         encryptedMnemonic: encrypted,
