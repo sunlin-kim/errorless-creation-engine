@@ -60,15 +60,25 @@ export default defineConfig({
         "@walletconnect/types": nodeModuleFile("@walletconnect/types", "dist/index.cjs"),
         "@walletconnect/utils": nodeModuleFile("@walletconnect/utils", "dist/index.cjs"),
         "@walletconnect/pay": nodeModuleFile("@walletconnect/pay", "dist/index.cjs"),
+        "@walletconnect/logger": nodeModuleFile("@walletconnect/logger", "dist/index.cjs.js"),
+        "@walletconnect/keyvaluestorage": nodeModuleFile(
+          "@walletconnect/keyvaluestorage",
+          "dist/index.cjs.js",
+        ),
         "@walletconnect/heartbeat": nodeModuleFile("@walletconnect/heartbeat", "dist/index.cjs.js"),
         "@walletconnect/jsonrpc-provider": nodeModuleFile(
           "@walletconnect/jsonrpc-provider",
+          "dist/index.cjs.js",
+        ),
+        "@walletconnect/jsonrpc-ws-connection": nodeModuleFile(
+          "@walletconnect/jsonrpc-ws-connection",
           "dist/index.cjs.js",
         ),
         "@walletconnect/relay-auth": nodeModuleFile(
           "@walletconnect/relay-auth",
           "dist/index.cjs.js",
         ),
+        "@walletconnect/relay-api": nodeModuleFile("@walletconnect/relay-api", "dist/index.cjs.js"),
         // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
         events: "events/",
         "node:events": "events/",
