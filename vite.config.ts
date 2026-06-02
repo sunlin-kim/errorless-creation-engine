@@ -31,12 +31,6 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [
-      nodePolyfills({
-        include: ["events"],
-        protocolImports: true,
-      }),
-    ],
     base: isCapacitor ? "./" : "/",
     resolve: {
       alias: {
@@ -44,6 +38,10 @@ export default defineConfig({
         // in production builds. Force the stable CJS entry so Vite handles
         // CommonJS conversion consistently for both dev and prod.
         "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
+        // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
+        // Aliasing avoids vite-plugin-node-polyfills (which clobbers SSR globals like util.TextEncoder).
+        events: "events/",
+        "node:events": "events/",
       },
     },
     ssr: {
