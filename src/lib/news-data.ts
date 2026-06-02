@@ -12,6 +12,13 @@ export type NewsItem = {
   duration?: string;
 };
 
+const newsDateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  timeZone: "Asia/Seoul",
+});
+
 export const featuredNews: NewsItem[] = [
   {
     id: "f1",
@@ -170,9 +177,5 @@ export function relativeTime(iso: string) {
   if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
   if (diff < 604800) return `${Math.floor(diff / 86400)}일 전`;
-  return new Date(iso).toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  return newsDateFormatter.format(new Date(iso));
 }

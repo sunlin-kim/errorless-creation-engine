@@ -5,6 +5,7 @@
 //     error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { fileURLToPath } from "node:url";
 
 // Capacitor 빌드 시 BUILD_TARGET=capacitor 가 세팅됨
 // - base: './' → APK 내부 파일 스킴에서 자산 상대경로 해결
@@ -12,6 +13,8 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 //   .output/public/index.html 을 생성. (서버 빌드에서는 SSR을 유지하기 위해
 //   기본값을 건드리지 않는다.)
 const isCapacitor = process.env.BUILD_TARGET === "capacitor";
+const nodeModuleFile = (pkg: string, relativePath: string) =>
+  fileURLToPath(new URL(`./node_modules/${pkg}/${relativePath}`, import.meta.url));
 
 export default defineConfig({
   // Capacitor 빌드는 정적 SPA 셸만 필요하므로 Cloudflare Worker 출력은 끈다.
@@ -51,15 +54,21 @@ export default defineConfig({
         // 일부 WalletConnect/Reown ESM 배포본이 Rollup 프로덕션 번들에서
         // 간헐적으로 파싱 실패한다. 브라우저에서도 동작하는 CJS 엔트리로
         // 고정해 dev/publish 경로를 동일하게 만든다.
-        "@reown/walletkit": "@reown/walletkit/dist/index.cjs",
-        "@walletconnect/core": "@walletconnect/core/dist/index.cjs",
-        "@walletconnect/sign-client": "@walletconnect/sign-client/dist/index.cjs",
-        "@walletconnect/types": "@walletconnect/types/dist/index.cjs",
-        "@walletconnect/utils": "@walletconnect/utils/dist/index.cjs",
-        "@walletconnect/pay": "@walletconnect/pay/dist/index.cjs",
-        "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
-        "@walletconnect/jsonrpc-provider": "@walletconnect/jsonrpc-provider/dist/index.cjs.js",
-        "@walletconnect/relay-auth": "@walletconnect/relay-auth/dist/index.cjs.js",
+        "@reown/walletkit": nodeModuleFile("@reown/walletkit", "dist/index.cjs"),
+        "@walletconnect/core": nodeModuleFile("@walletconnect/core", "dist/index.cjs"),
+        "@walletconnect/sign-client": nodeModuleFile("@walletconnect/sign-client", "dist/index.cjs"),
+        "@walletconnect/types": nodeModuleFile("@walletconnect/types", "dist/index.cjs"),
+        "@walletconnect/utils": nodeModuleFile("@walletconnect/utils", "dist/index.cjs"),
+        "@walletconnect/pay": nodeModuleFile("@walletconnect/pay", "dist/index.cjs"),
+        "@walletconnect/heartbeat": nodeModuleFile("@walletconnect/heartbeat", "dist/index.cjs.js"),
+        "@walletconnect/jsonrpc-provider": nodeModuleFile(
+          "@walletconnect/jsonrpc-provider",
+          "dist/index.cjs.js",
+        ),
+        "@walletconnect/relay-auth": nodeModuleFile(
+          "@walletconnect/relay-auth",
+          "dist/index.cjs.js",
+        ),
         // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
         events: "events/",
         "node:events": "events/",
