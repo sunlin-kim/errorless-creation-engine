@@ -12,9 +12,7 @@ export function useWalletStoreHydrated() {
       void rehydrateWalletStore()
         .catch((error) => {
           console.error("[wallet-debug] rehydrate failed", error);
-        })
-        .finally(() => {
-          setHydrated(true);
+          setHydrated(useWalletStore.persist.hasHydrated());
         });
     } else {
       setHydrated(true);

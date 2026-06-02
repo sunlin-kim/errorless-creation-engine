@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/wallet/AppShell";
 import { QuickActions } from "@/components/wallet/QuickActions";
 import { useWalletStore } from "@/lib/wallet/store";
+import { useWalletStoreHydrated } from "@/lib/wallet/use-wallet-store-hydrated";
 import { deriveAddresses } from "@/lib/wallet/derive";
 import { getEndpoints } from "@/lib/wallet/networks";
 import {
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/wallet/")({
 
 function WalletPage() {
   const t = useT();
+  const hydrated = useWalletStoreHydrated();
   const mnemonic = useWalletStore((s) => s.mnemonic);
   const network = useWalletStore((s) => s.network);
   const setNetwork = useWalletStore((s) => s.setNetwork);
@@ -47,6 +49,17 @@ function WalletPage() {
   useEffect(() => {
     import("@/lib/wallet/vault").then(({ hasVault }) => hasVault().then(setVaultExists));
   }, []);
+
+  if (!hydrated) {
+    return (
+      <AppShell title={t("wallet.title")} subtitle={t("wallet.subtitlePrepare")}>
+        <div className="rounded-3xl border border-outline bg-surface p-8 text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-outline border-t-primary" />
+          <p className="mt-4 text-sm text-on-surface-variant">{t("wallet.subtitlePrepare")}</p>
+        </div>
+      </AppShell>
+    );
+  }
 
   if (!mnemonic) {
     const hasExisting = vaultExists === true;
