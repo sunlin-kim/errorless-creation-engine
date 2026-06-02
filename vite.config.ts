@@ -31,6 +31,20 @@ export default defineConfig({
   },
 
   vite: {
+    plugins: [
+      // SSR runs on Node — force `util` to the Node builtin so react-dom/server
+      // doesn't pick up the npm `util` browser polyfill (transitive dep) which
+      // lacks a constructable `TextEncoder` and breaks `renderToString`.
+      {
+        name: "lovable-ssr-node-builtins",
+        enforce: "pre" as const,
+        resolveId(id: string, _importer: string | undefined, opts: { ssr?: boolean }) {
+          if (!opts?.ssr) return null;
+          if (id === "util" || id === "node:util") return { id: "node:util", external: true };
+          return null;
+        },
+      },
+    ],
     base: isCapacitor ? "./" : "/",
     resolve: {
       alias: {
@@ -39,7 +53,6 @@ export default defineConfig({
         // CommonJS conversion consistently for both dev and prod.
         "@walletconnect/heartbeat": "@walletconnect/heartbeat/dist/index.cjs.js",
         // Browser polyfill for Node's `events` builtin used by @walletconnect/events.
-        // Aliasing avoids vite-plugin-node-polyfills (which clobbers SSR globals like util.TextEncoder).
         events: "events/",
         "node:events": "events/",
       },
