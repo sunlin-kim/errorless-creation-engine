@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/wallet/Logo";
 import { decryptString } from "@/lib/wallet/crypto";
+import { saveUnlockRecoverySnapshot } from "@/lib/wallet/session-persist";
 import { hasVault, loadVault, deleteVault } from "@/lib/wallet/vault";
 import { ensureWalletStoreHydrated, useWalletStore } from "@/lib/wallet/store";
 import { useT } from "@/lib/i18n";
@@ -41,6 +42,7 @@ function UnlockPage() {
       }
       const mnemonic = await decryptString(v.encryptedMnemonic, pw);
       console.info("[wallet-debug] unlock-page:decrypted", { length: mnemonic.length });
+      await saveUnlockRecoverySnapshot(mnemonic);
       unlock(mnemonic);
       setVaultExists(true);
       toast.success(t("unlock.loadedToast"));
