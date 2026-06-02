@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/wallet/Logo";
 import { decryptString } from "@/lib/wallet/crypto";
 import { hasVault, loadVault, deleteVault } from "@/lib/wallet/vault";
-import { useWalletStore } from "@/lib/wallet/store";
+import { ensureWalletStoreHydrated, useWalletStore } from "@/lib/wallet/store";
 import { useT } from "@/lib/i18n";
 import { toast } from "sonner";
 import { KeyRound, AlertTriangle } from "lucide-react";
@@ -33,6 +33,7 @@ function UnlockPage() {
     setBusy(true);
     setErrorMsg(null);
     try {
+      await ensureWalletStoreHydrated();
       const v = await loadVault();
       if (!v) {
         navigate({ to: "/wallet/setup" });
