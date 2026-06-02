@@ -31,6 +31,7 @@ function UnlockPage() {
   async function handleUnlock(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setErrorMsg(null);
     try {
       const v = await loadVault();
       if (!v) {
@@ -45,10 +46,16 @@ function UnlockPage() {
       console.info("[wallet-debug] unlock-page:navigate", { to: "/wallet/" });
       navigate({ to: "/wallet" });
     } catch (err) {
-      if ((err as Error).message === "WRONG_PASSWORD") {
-        toast.error(t("unlock.wrongPw"));
+      const msg = (err as Error).message;
+      console.error("[wallet-debug] unlock-page:error", err);
+      if (msg === "WRONG_PASSWORD") {
+        const m = t("unlock.wrongPw");
+        setErrorMsg(m);
+        toast.error(m);
       } else {
-        toast.error(t("unlock.loadFail", { msg: (err as Error).message }));
+        const m = t("unlock.loadFail", { msg });
+        setErrorMsg(m);
+        toast.error(m);
       }
       setPw("");
     } finally {
