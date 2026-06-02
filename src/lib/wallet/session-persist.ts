@@ -39,11 +39,17 @@ export async function saveUnlockRecoverySnapshot(mnemonic: string) {
   try {
     const keyBytes = crypto.getRandomValues(new Uint8Array(32));
     const iv = crypto.getRandomValues(new Uint8Array(12));
-    const key = await crypto.subtle.importKey("raw", keyBytes, "AES-GCM", false, ["encrypt"]);
+    const key = await crypto.subtle.importKey(
+      "raw",
+      keyBytes as BufferSource,
+      "AES-GCM",
+      false,
+      ["encrypt"],
+    );
     const encrypted = await crypto.subtle.encrypt(
-      { name: "AES-GCM", iv },
+      { name: "AES-GCM", iv: iv as BufferSource },
       key,
-      new TextEncoder().encode(mnemonic),
+      new TextEncoder().encode(mnemonic) as BufferSource,
     );
 
     const payload: RecoveryPayload = {
@@ -82,15 +88,15 @@ async function consumeUnlockRecoverySnapshot() {
 
     const key = await crypto.subtle.importKey(
       "raw",
-      fromBase64(payload.key),
+      fromBase64(payload.key) as BufferSource,
       "AES-GCM",
       false,
       ["decrypt"],
     );
     const decrypted = await crypto.subtle.decrypt(
-      { name: "AES-GCM", iv: fromBase64(payload.iv) },
+      { name: "AES-GCM", iv: fromBase64(payload.iv) as BufferSource },
       key,
-      fromBase64(payload.data),
+      fromBase64(payload.data) as BufferSource,
     );
     sessionStorage.removeItem(RECOVERY_KEY);
     return new TextDecoder().decode(decrypted);
