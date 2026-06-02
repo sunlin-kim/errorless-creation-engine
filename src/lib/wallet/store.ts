@@ -20,6 +20,7 @@ const serverStorage: Storage = {
 };
 
 let walletHydrationPromise: Promise<void> | null = null;
+const RECOVERY_KEY = "sv-wallet-reload-recovery-v1";
 
 export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
@@ -94,6 +95,13 @@ export const useWalletStore = create<WalletState>()(
           hadMnemonic: useWalletStore.getState().mnemonic !== null,
           stack: new Error().stack,
         });
+        if (typeof window !== "undefined") {
+          try {
+            sessionStorage.removeItem(RECOVERY_KEY);
+          } catch {
+            /* ignore */
+          }
+        }
         set({
           mnemonic: null,
           autoLockGraceUntil: 0,

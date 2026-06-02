@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/wallet/Logo";
 import { createMnemonic, isValidMnemonic, normalizeMnemonic } from "@/lib/wallet/seed";
 import { encryptString } from "@/lib/wallet/crypto";
+import { saveUnlockRecoverySnapshot } from "@/lib/wallet/session-persist";
 import { saveVault, hasVault, markBackupConfirmed } from "@/lib/wallet/vault";
 import { ensureWalletStoreHydrated, useWalletStore } from "@/lib/wallet/store";
 import { AlertTriangle, Check, Copy, Eye, EyeOff, ShieldAlert, ArrowLeft } from "lucide-react";
@@ -99,6 +100,7 @@ function SetupPage() {
         backupConfirmed: true,
       });
       await markBackupConfirmed();
+      await saveUnlockRecoverySnapshot(mnemonic);
       unlock(mnemonic);
       setVaultExists(true);
       toast.success("지갑이 생성되었습니다");
@@ -133,6 +135,7 @@ function SetupPage() {
         createdAt: Date.now(),
         backupConfirmed: true,
       });
+      await saveUnlockRecoverySnapshot(phrase);
       unlock(phrase);
       setVaultExists(true);
       toast.success("지갑이 복구되었습니다");

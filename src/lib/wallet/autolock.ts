@@ -17,25 +17,32 @@ const ACTIVITY_EVENTS = [
 ] as const;
 
 const CHECK_INTERVAL_MS = 15_000;
+const UNLOCK_STABILIZE_MS = 5_000;
 
 export function useAutoLock() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const touch = () => useWalletStore.getState().touchActivity();
+    const touch = () => {
+      const state = useWalletStore.getState();
+      if (!state.mnemonic) return;
+      state.touchActivity();
+    };
 
     const checkLock = () => {
       if (!hasWalletStoreHydrated()) return;
 
       const { mnemonic, autoLockMinutes, autoLockGraceUntil, lastActivity, lock } = useWalletStore.getState();
+      const now = Date.now();
       if (!mnemonic) return;
       if (autoLockMinutes <= 0) return;
-      if (Date.now() < autoLockGraceUntil) return;
-      if (Date.now() - lastActivity >= autoLockMinutes * 60_000) {
+      if (now < autoLockGraceUntil) return;
+      if (now - lastActivity < UNLOCK_STABILIZE_MS) return;
+      if (now - lastActivity >= autoLockMinutes * 60_000) {
         console.warn("[wallet] auto-lock triggered", {
           autoLockMinutes,
           lastActivity,
-          now: Date.now(),
+          now,
         });
         lock();
       }
@@ -45,7 +52,9 @@ export function useAutoLock() {
       window.addEventListener(ev, touch, { passive: true });
     }
     const onVisibility = () => {
-      if (document.visibilityState === "visible") checkLock();
+      if (document.visibilityState !== "visible") return;
+      touch();
+      window.setTimeout(checkLock, UNLOCK_STABILIZE_MS);
     };
     document.addEventListener("visibilitychange", onVisibility);
 
