@@ -19,6 +19,8 @@ const serverStorage: Storage = {
   setItem: () => undefined,
 };
 
+let walletHydrationPromise: Promise<void> | null = null;
+
 export type NetworkEnv = "testnet" | "mainnet";
 export type FiatCurrency = "KRW" | "USD";
 export type AppLanguage = "ko" | "en";
@@ -141,5 +143,19 @@ export function hasWalletStoreHydrated(): boolean {
 
 export function rehydrateWalletStore(): Promise<void> {
   debugWallet("rehydrate:start", { hydrated: useWalletStore.persist.hasHydrated() });
-  return Promise.resolve(useWalletStore.persist.rehydrate());
+  if (useWalletStore.persist.hasHydrated()) {
+    return Promise.resolve();
+  }
+
+  if (!walletHydrationPromise) {
+    walletHydrationPromise = Promise.resolve(useWalletStore.persist.rehydrate()).finally(() => {
+      walletHydrationPromise = null;
+    });
+  }
+
+  return walletHydrationPromise;
+}
+
+export function ensureWalletStoreHydrated(): Promise<void> {
+  return hasWalletStoreHydrated() ? Promise.resolve() : rehydrateWalletStore();
 }
