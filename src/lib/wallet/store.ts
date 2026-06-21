@@ -6,6 +6,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 function debugWallet(event: string, payload?: Record<string, unknown>) {
+  if (!import.meta.env.DEV) return;
   if (typeof console === "undefined") return;
   console.info("[wallet-debug]", event, payload ?? {});
 }
