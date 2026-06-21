@@ -6,6 +6,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 function debugWallet(event: string, payload?: Record<string, unknown>) {
+  if (!import.meta.env.DEV) return;
   if (typeof console === "undefined") return;
   console.info("[wallet-debug]", event, payload ?? {});
 }
@@ -90,11 +91,7 @@ export const useWalletStore = create<WalletState>()(
         set({ mnemonic, lastActivity: now, autoLockGraceUntil: now + 30_000 });
       },
       lock: () => {
-        debugWallet("lock", {
-          now: Date.now(),
-          hadMnemonic: useWalletStore.getState().mnemonic !== null,
-          stack: new Error().stack,
-        });
+        debugWallet("lock", { now: Date.now() });
         if (typeof window !== "undefined") {
           try {
             sessionStorage.removeItem(RECOVERY_KEY);

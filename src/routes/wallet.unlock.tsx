@@ -41,16 +41,14 @@ function UnlockPage() {
         return;
       }
       const mnemonic = await decryptString(v.encryptedMnemonic, pw);
-      console.info("[wallet-debug] unlock-page:decrypted", { length: mnemonic.length });
       await saveUnlockRecoverySnapshot(mnemonic);
       unlock(mnemonic);
       setVaultExists(true);
       toast.success(t("unlock.loadedToast"));
-      console.info("[wallet-debug] unlock-page:navigate", { to: "/wallet/" });
       navigate({ to: "/wallet" });
     } catch (err) {
       const msg = (err as Error).message;
-      console.error("[wallet-debug] unlock-page:error", err);
+      if (import.meta.env.DEV) console.error("[wallet-debug] unlock-page:error", err);
       if (msg === "WRONG_PASSWORD") {
         const m = t("unlock.wrongPw");
         setErrorMsg(m);
