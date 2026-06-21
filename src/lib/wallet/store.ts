@@ -91,11 +91,7 @@ export const useWalletStore = create<WalletState>()(
         set({ mnemonic, lastActivity: now, autoLockGraceUntil: now + 30_000 });
       },
       lock: () => {
-        debugWallet("lock", {
-          now: Date.now(),
-          hadMnemonic: useWalletStore.getState().mnemonic !== null,
-          stack: new Error().stack,
-        });
+        debugWallet("lock", { now: Date.now() });
         if (typeof window !== "undefined") {
           try {
             sessionStorage.removeItem(RECOVERY_KEY);
